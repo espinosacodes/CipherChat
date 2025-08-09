@@ -5,9 +5,14 @@ Handles secure storage and retrieval of cryptographic keys.
 
 import os
 import json
+import time
 from typing import Optional, Tuple
 from pathlib import Path
 from .crypto_engine import CryptoEngine
+from .config import config
+from .logger import logger
+from .security import SecurityValidator, SecureFileManager, security_auditor
+from .exceptions import KeyManagementError, ValidationError, SecurityError
 
 
 class KeyManager:
@@ -38,45 +43,63 @@ class KeyManager:
             
         Returns:
             Tuple of (private_key_path, public_key_path)
+            
+        Raises:
+            KeyManagementError: If key generation fails
+            ValidationError: If username is invalid
         """
-        # Generate key pair
-        private_key_pem, public_key_pem = self.crypto_engine.generate_rsa_key_pair()
+        try:
+            # Validate username
+            SecurityValidator.validate_username(username)
+            
+            if self.user_exists(username):
+                raise KeyManagementError(f"User '{username}' already exists", username)
+            
+            start_time = time.time()
+            logger.info(f"Generating key pair for user: {username}")
+            # Generate key pair
+            private_key_pem, public_key_pem = self.crypto_engine.generate_rsa_key_pair()
+            
+            # Create user directory
+            user_dir = self.keys_dir / username
+            user_dir.mkdir(exist_ok=True, mode=0o700)  # Secure directory permissions
+            
+            # Save private key securely
+            private_key_path = user_dir / f"{username}_private.pem"
+            SecureFileManager.secure_write(str(private_key_path), private_key_pem, 0o600)
+            
+            # Save public key
+            public_key_path = user_dir / f"{username}_public.pem"
+            SecureFileManager.secure_write(str(public_key_path), public_key_pem, 0o644)
         
-        # Create user directory
-        user_dir = self.keys_dir / username
-        user_dir.mkdir(exist_ok=True)
-        
-        # Save private key
-        private_key_path = user_dir / f"{username}_private.pem"
-        with open(private_key_path, 'wb') as f:
-            f.write(private_key_pem)
-        
-        # Save public key
-        public_key_path = user_dir / f"{username}_public.pem"
-        with open(public_key_path, 'wb') as f:
-            f.write(public_key_pem)
-        
-        # Set secure file permissions (read/write for owner only)
-        os.chmod(private_key_path, 0o600)
-        os.chmod(public_key_path, 0o644)
-        
-        # Save key metadata
-        metadata = {
-            'username': username,
-            'private_key_file': f"{username}_private.pem",
-            'public_key_file': f"{username}_public.pem",
-            'key_size': self.crypto_engine.rsa_key_size
-        }
-        
-        metadata_path = user_dir / f"{username}_metadata.json"
-        with open(metadata_path, 'w') as f:
-            json.dump(metadata, f, indent=2)
-        
-        print(f"✅ Generated key pair for user '{username}'")
-        print(f"   Private key: {private_key_path}")
-        print(f"   Public key: {public_key_path}")
-        
-        return str(private_key_path), str(public_key_path)
+            # Save key metadata
+            metadata = {
+                'username': username,
+                'private_key_file': f"{username}_private.pem",
+                'public_key_file': f"{username}_public.pem",
+                'key_size': self.crypto_engine.rsa_key_size,
+                'created_at': time.time(),
+                'version': '1.0'
+            }
+            
+            metadata_path = user_dir / f"{username}_metadata.json"
+            metadata_json = json.dumps(metadata, indent=2).encode('utf-8')
+            SecureFileManager.secure_write(str(metadata_path), metadata_json, 0o644)
+            
+            duration = (time.time() - start_time) * 1000
+            logger.info(f"✅ Generated key pair for user '{username}' in {duration:.2f}ms")
+            logger.info(f"   Private key: {private_key_path}")
+            logger.info(f"   Public key: {public_key_path}")
+            
+            security_auditor.log_security_event('KEY_GENERATION', f'New key pair generated', username)
+            
+            return str(private_key_path), str(public_key_path)
+            
+        except (ValidationError, KeyManagementError):
+            raise
+        except Exception as e:
+            security_auditor.log_security_event('KEY_GENERATION_FAILED', str(e), username)
+            raise KeyManagementError(f"Failed to generate keys for user '{username}': {str(e)}", username)
     
     def load_private_key(self, username: str) -> Optional[bytes]:
         """
@@ -87,14 +110,27 @@ class KeyManager:
             
         Returns:
             Private key in PEM format or None if not found
-        """
-        private_key_path = self.keys_dir / username / f"{username}_private.pem"
-        
-        if not private_key_path.exists():
-            return None
             
-        with open(private_key_path, 'rb') as f:
-            return f.read()
+        Raises:
+            KeyManagementError: If key loading fails
+        """
+        try:
+            SecurityValidator.validate_username(username)
+            
+            private_key_path = self.keys_dir / username / f"{username}_private.pem"
+            
+            if not private_key_path.exists():
+                logger.debug(f"Private key not found for user: {username}")
+                return None
+            
+            logger.debug(f"Loading private key for user: {username}")
+            return SecureFileManager.secure_read(str(private_key_path), SecurityValidator.MAX_KEY_FILE_SIZE)
+            
+        except ValidationError as e:
+            raise KeyManagementError(f"Invalid username: {str(e)}", username)
+        except (SecurityError, IOError) as e:
+            security_auditor.log_security_event('KEY_LOAD_FAILED', f'Failed to load private key: {str(e)}', username)
+            raise KeyManagementError(f"Failed to load private key for '{username}': {str(e)}", username)
     
     def load_public_key(self, username: str) -> Optional[bytes]:
         """
@@ -105,14 +141,27 @@ class KeyManager:
             
         Returns:
             Public key in PEM format or None if not found
-        """
-        public_key_path = self.keys_dir / username / f"{username}_public.pem"
-        
-        if not public_key_path.exists():
-            return None
             
-        with open(public_key_path, 'rb') as f:
-            return f.read()
+        Raises:
+            KeyManagementError: If key loading fails
+        """
+        try:
+            SecurityValidator.validate_username(username)
+            
+            public_key_path = self.keys_dir / username / f"{username}_public.pem"
+            
+            if not public_key_path.exists():
+                logger.debug(f"Public key not found for user: {username}")
+                return None
+            
+            logger.debug(f"Loading public key for user: {username}")
+            return SecureFileManager.secure_read(str(public_key_path), SecurityValidator.MAX_KEY_FILE_SIZE)
+            
+        except ValidationError as e:
+            raise KeyManagementError(f"Invalid username: {str(e)}", username)
+        except (SecurityError, IOError) as e:
+            security_auditor.log_security_event('KEY_LOAD_FAILED', f'Failed to load public key: {str(e)}', username)
+            raise KeyManagementError(f"Failed to load public key for '{username}': {str(e)}", username)
     
     def user_exists(self, username: str) -> bool:
         """
