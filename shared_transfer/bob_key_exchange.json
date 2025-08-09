@@ -1,0 +1,8 @@
+{
+  "sender": "bob",
+  "recipient": "alice",
+  "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvEzean2Wi6XU55dhLb6r\nmU/UMOZaqzUDzd/t9GXf7k1QNb/k4TIAjSyaIcfWdiTl3ItIS9rYkCDvZUNpIyB0\nOvHL9uWmdWECcKUVA3w6mJ1d4bBRGehxmRCUodXUWGo83JEzQiAuNjSV+u8GSq2p\nIJ3pDewBbPRGczxn1TOfASqqo6LFlWKYjk0yQdYP79MgHJJsqdI++ohvaRzvuKXh\nLG7WnWl7vUkHbn1JYuZettUd4t49jD6T/vmmAyzaxeawwa85VN518AbBQRyIplS5\ni3FMNoKWHksIJ8CYkzFff1wkEz7XLUQwEeJqlMQo4KnvFXZ9WvDPm4ZVFskV7bM1\nBwIDAQAB\n-----END PUBLIC KEY-----\n",
+  "timestamp": 1754773806.6104715,
+  "message_type": "key_exchange",
+  "signature": "TPzT7kzjax8xQs947HL7V8mal1VhehLv2gqRkhT7WjHmdkgVNgsenJsRPmHMzJTM3VYzeeUAXHkOAW4zdffxDEKM/3epcDQjaB/OOuqz4wz4lZTokvj0x0fn6uzN9QG3ugiszYjoSH1FlvjRvwRJdM93OqEgjQU+X8oRlzfMZT/2qOiJo5V19Fmbb07EI0tZi0JmhE66zopoYlVcoOy/+MVQlSnDm1BPqQSSWicPh86H34WiV0HI+Fs4iNRcISOrJEZ/u2z+jms9exwOKB5diTMmIB/vV4FMYex4boXmvM9S5FTIH3T2ciccksQ1kYC6eLi6Eo3/G4ZR15sk8Cw8JQ=="
+}
