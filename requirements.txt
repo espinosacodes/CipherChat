@@ -1,0 +1,4 @@
+# Runtime dependencies only
+cryptography>=41.0.0
+pycryptodome>=3.19.0
+colorama>=0.4.6

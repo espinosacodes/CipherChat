@@ -1,0 +1,12 @@
+{
+  "sender": "alice",
+  "recipient": "bob",
+  "encrypted_data": {
+    "encrypted_message": "Ls/Swazj/fzn7z5/sSTPsJ6gtkSxJ4y0d3fldUPhXc8yLrI6LSKGXap5gTcC4GRY+FbWDlJqoZpkyeX6ZWJhpg==",
+    "encrypted_key": "mNzoDxJxfkCXLAElp5YCWSQPew+xNKttAjzduKPSSBWOEDGqQGJw/3JSnHIcnfLpImBntBKNcGqQWinhsSwheOA1wLsInGv/gBeZHU3OO7bKyF6ikk9VYwhfKqlwbCP2qR6pAruyzwUma8kEcGrj0CQvaHaWoKNXtSFkIUz+q+gCZ1sp5PWnifEQVbzPBsV6eoBJhEDzIbQTiK8raVVWkYQ95SfulX7/r32qq4NUfdqvgtir4ZI5DIiSeG6jmYBtIq37ahcvnJ5XanA36LL3BGFxLpmhboY2Zrsw+iG1O725HRICifEirJlT8MNyugLEx4OI/XBloRiMzGBn8WHdFg==",
+    "iv": "1HVxAj7imz1lf/9714bagw=="
+  },
+  "signature": "dNad84Z1yVR18W6LOQITk5qBpy6iWpl3N3xqgRJIWyGTH5JpMFahP0EXc/Sn6HNbIk6DaMiapqIbvJmhyxSGC3VX/9MHmndz7oNjCZ1zRVHydjkjdZR3CCx1jF5iggSHCEqd1pZaX5cF8dWMoCq1H4MqC7x/MxM2/BrNMckXJsPJ5X1BoJlOHYWlbAFjSjAFxWdWRDlGldVWtZmHllWi7coY4cIw+voSwN2QGRerlbKXw2j/OB+bEjYOZ9szXpJLrP/nAyiQNgePPVfM7Oq0u4dwHzl1I3R90FiW3tpKj/Fgor75hUo+wWqU/jNPcoUJkLC7Q/C1Q9z0x6BfiFJtcA==",
+  "timestamp": 1754773806.7160926,
+  "message_type": "secure_message"
+}

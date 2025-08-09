@@ -1,0 +1,6 @@
+{
+  "username": "alice",
+  "private_key_file": "alice_private.pem",
+  "public_key_file": "alice_public.pem",
+  "key_size": 2048
+}
