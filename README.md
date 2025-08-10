@@ -225,6 +225,39 @@ This demonstrates:
 
 ## 📄 License
 
+## ⚠️ CRITICAL SECURITY WARNING
+
+### 🚨 Private Key Security
+**NEVER commit private cryptographic keys to version control!**
+
+- Private key files (`.pem`) contain highly sensitive information
+- If private keys are exposed, immediately revoke and regenerate them
+- Use the security tools provided: `python scripts/secure_key_management.py --all`
+- Follow the Security Checklist: `docs/SECURITY_CHECKLIST.md`
+
+### 🔒 Security Best Practices
+- Keep private keys secure and confidential
+- Use appropriate file permissions (600 for private keys)
+- Never share private keys with anyone
+- Regularly audit your security configuration
+- Monitor for unauthorized access
+
+### 🛡️ Security Tools
+```bash
+# Security verification
+python scripts/secure_key_management.py --verify
+
+# Secure cleanup
+python scripts/secure_key_management.py --cleanup
+
+# Complete security setup
+python scripts/secure_key_management.py --all
+```
+
+## ⚠️ Disclaimer
+
+This software is for educational and research purposes. While implementing industry-standard cryptographic algorithms and security measures, it has not undergone professional security audit. Use in production environments at your own risk.
+
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ## ⚠️ Disclaimer
