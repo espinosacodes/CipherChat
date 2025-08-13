@@ -1,6 +1,0 @@
-{
-  "username": "bob",
-  "private_key_file": "bob_private.pem",
-  "public_key_file": "bob_public.pem",
-  "key_size": 2048
-}
