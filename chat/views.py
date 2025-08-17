@@ -374,7 +374,7 @@ def generate_keys(request):
         
         # Log the event
         log_security_event(
-            "keys_generated",
+            "key_generation",
             "New cryptographic keys generated",
             request.user,
             success=True,
@@ -387,7 +387,7 @@ def generate_keys(request):
     except Exception as e:
         messages.error(request, f"Error generating keys: {str(e)}")
         log_security_event(
-            "keys_generated",
+            "key_generation",
             f"Failed to generate keys: {str(e)}",
             request.user,
             success=False,
@@ -500,3 +500,41 @@ def security_logs(request):
 def security_overview(request):
     """Display comprehensive security overview page."""
     return render(request, 'chat/security.html')
+
+
+@login_required
+def get_key_details(request, key_id):
+    """Get details for a specific imported public key via AJAX."""
+    try:
+        # Get the key, ensuring it belongs to the current user
+        key = get_object_or_404(PublicKey, id=key_id, owner=request.user)
+        
+        # Format the key data for display
+        key_data = {
+            'id': key.id,
+            'key_owner_username': key.key_owner_username,
+            'public_key': key.public_key,
+            'imported_at': key.imported_at.strftime('%B %d, %Y at %H:%M'),
+            'is_active': key.is_active,
+            'owner': key.owner.username,
+        }
+        
+        # Log the event
+        log_security_event(
+            "key_import",
+            f"Viewed details for key from {key.key_owner_username}",
+            request.user,
+            success=True,
+            details={'key_id': key.id, 'key_owner': key.key_owner_username}
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'key': key_data
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)
