@@ -20,6 +20,7 @@ urlpatterns = [
     path('keys/generate/', views.generate_keys, name='generate_keys'),
     path('keys/import/', views.import_key, name='import_key'),
     path('keys/export/', views.export_public_key, name='export_public_key'),
+    path('keys/<int:key_id>/details/', views.get_key_details, name='get_key_details'),
     
     # Key exchange
     path('exchange/', views.key_exchange, name='key_exchange'),

@@ -178,6 +178,9 @@
                 <!-- Content will be loaded here -->
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" onclick="copyPublicKey()">
+                    <i class="fas fa-copy"></i> Copy Key
+                </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -188,17 +191,98 @@
 {% block extra_js %}
 <script>
 function viewKeyDetails(keyId) {
-    // This would typically make an AJAX call to get key details
-    // For now, show a placeholder
+    // Show loading state
     document.getElementById('keyDetailsContent').innerHTML = `
         <div class="text-center py-3">
-            <i class="fas fa-key fa-2x text-muted mb-2"></i>
-            <p>Key details for key ID: ${keyId}</p>
-            <p class="text-muted">This would show the actual public key data and metadata.</p>
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading key details...</p>
         </div>
     `;
     
-    new bootstrap.Modal(document.getElementById('keyDetailsModal')).show();
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('keyDetailsModal'));
+    modal.show();
+    
+    // Make AJAX request to get key details
+    fetch(`/chat/keys/${keyId}/details/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const key = data.key;
+                document.getElementById('keyDetailsContent').innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-user"></i> Key Owner</h6>
+                            <p><strong>${key.key_owner_username}</strong></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-calendar"></i> Imported</h6>
+                            <p>${key.imported_at}</p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-toggle-on"></i> Status</h6>
+                            <span class="badge bg-${key.is_active ? 'success' : 'danger'}">
+                                ${key.is_active ? 'Active' : 'Inactive'}
+                            </span>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-user-shield"></i> Imported By</h6>
+                            <p>${key.owner}</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h6><i class="fas fa-key"></i> Public Key</h6>
+                        <div class="bg-light p-3 rounded">
+                            <pre class="mb-0" style="white-space: pre-wrap; font-size: 0.8em;">${key.public_key}</pre>
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('keyDetailsContent').innerHTML = `
+                    <div class="text-center py-3">
+                        <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                        <p class="text-danger">Error loading key details</p>
+                        <p class="text-muted">${data.error || 'Unknown error occurred'}</p>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            document.getElementById('keyDetailsContent').innerHTML = `
+                <div class="text-center py-3">
+                    <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
+                    <p class="text-danger">Failed to load key details</p>
+                    <p class="text-muted">Network error or server unavailable</p>
+                </div>
+            `;
+        });
+}
+
+function copyPublicKey() {
+    const keyContent = document.querySelector('#keyDetailsContent pre');
+    if (keyContent) {
+        navigator.clipboard.writeText(keyContent.textContent).then(() => {
+            // Show success message
+            const button = document.querySelector('.modal-footer .btn-outline-primary');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            button.classList.remove('btn-outline-primary');
+            button.classList.add('btn-success');
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-primary');
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            alert('Failed to copy key to clipboard');
+        });
+    }
 }
 </script>
 {% endblock %}
