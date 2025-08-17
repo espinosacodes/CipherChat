@@ -2,71 +2,297 @@
 
 {% block title %}Login - CipherChat{% endblock %}
 
+{% block extra_css %}
+<style>
+    .login-container {
+        position: relative;
+        z-index: 10;
+    }
+    
+    .login-card {
+        background: rgba(26, 26, 26, 0.95);
+        border: 2px solid var(--neon-red);
+        border-radius: 15px;
+        box-shadow: var(--glow-red);
+        backdrop-filter: blur(20px);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .login-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--neon-red), var(--neon-orange), var(--neon-yellow), var(--neon-pink));
+        animation: scan-line 4s linear infinite;
+    }
+    
+    .login-header {
+        background: linear-gradient(45deg, var(--neon-red), var(--neon-orange));
+        color: var(--dark-bg);
+        padding: 30px 20px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .login-header h3 {
+        font-family: 'Orbitron', monospace;
+        font-weight: 900;
+        font-size: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin: 0;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .login-header p {
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 500;
+        margin: 10px 0 0 0;
+        opacity: 0.9;
+    }
+    
+    .form-label {
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 600;
+        color: var(--neon-red);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+    
+    .form-control {
+        background: rgba(10, 10, 10, 0.8);
+        border: 2px solid var(--neon-red);
+        color: var(--text-primary);
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 1.1rem;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        background: rgba(10, 10, 10, 0.9);
+        border-color: var(--neon-orange);
+        box-shadow: var(--glow-orange);
+        color: var(--text-primary);
+    }
+    
+    .form-check-input {
+        background-color: var(--card-bg);
+        border: 2px solid var(--neon-red);
+        border-radius: 3px;
+    }
+    
+    .form-check-input:checked {
+        background-color: var(--neon-red);
+        border-color: var(--neon-red);
+        box-shadow: var(--glow-red);
+    }
+    
+    .form-check-label {
+        color: var(--text-secondary);
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 500;
+    }
+    
+    .login-btn {
+        background: linear-gradient(45deg, var(--neon-red), var(--neon-orange));
+        border: none;
+        color: var(--dark-bg);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        padding: 15px 30px;
+        border-radius: 8px;
+        box-shadow: var(--glow-red);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .login-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+    }
+    
+    .login-btn:hover::before {
+        left: 100%;
+    }
+    
+    .login-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 30px var(--neon-red), 0 0 60px var(--neon-red);
+    }
+    
+    .register-btn {
+        background: transparent;
+        border: 2px solid var(--neon-orange);
+        color: var(--neon-orange);
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 10px 20px;
+        border-radius: 5px;
+        box-shadow: var(--glow-orange);
+        transition: all 0.3s ease;
+    }
+    
+    .register-btn:hover {
+        background: var(--neon-orange);
+        color: var(--dark-bg);
+        box-shadow: 0 0 20px var(--neon-orange);
+        transform: translateY(-2px);
+    }
+    
+    .security-features {
+        background: rgba(10, 10, 10, 0.8);
+        border: 1px solid var(--neon-orange);
+        border-radius: 10px;
+        box-shadow: var(--glow-orange);
+        margin-top: 30px;
+    }
+    
+    .security-features h6 {
+        color: var(--neon-orange);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+    
+    .feature-item {
+        color: var(--text-secondary);
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 500;
+        margin: 5px 0;
+    }
+    
+    .feature-item i {
+        color: var(--neon-orange);
+        margin-right: 8px;
+    }
+    
+    .hologram-effect {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, 
+            transparent 30%, 
+            rgba(255, 0, 0, 0.1) 50%, 
+            transparent 70%);
+        animation: hologram-scan 3s ease-in-out infinite;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    @keyframes hologram-scan {
+        0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    }
+    
+    .error-message {
+        background: rgba(255, 0, 255, 0.1);
+        border: 1px solid var(--neon-pink);
+        color: var(--neon-pink);
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 500;
+        box-shadow: var(--glow-pink);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center login-container">
     <div class="col-md-6 col-lg-5">
-        <div class="card">
-            <div class="card-header text-center">
-                <h3 class="card-title mb-0">
-                    <i class="bi bi-shield-lock text-primary me-2"></i>
-                    Welcome to CipherChat
+        <div class="login-card">
+            <div class="hologram-effect"></div>
+            
+            <div class="login-header">
+                <h3>
+                    <i class="bi bi-shield-lock me-2"></i>
+                    CipherChat
                 </h3>
-                <p class="text-muted mt-2 mb-0">Secure end-to-end encrypted communication</p>
+                <p>Cyberpunk Secure Communication</p>
             </div>
-            <div class="card-body">
+            
+            <div class="card-body p-4">
                 <form method="post">
                     {% csrf_token %}
                     
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label for="{{ form.username.id_for_label }}" class="form-label">
                             <i class="bi bi-person me-1"></i>
                             Username
                         </label>
                         {{ form.username }}
                         {% if form.username.errors %}
-                            <div class="invalid-feedback d-block">
+                            <div class="error-message">
                                 {% for error in form.username.errors %}
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
                                     {{ error }}
                                 {% endfor %}
                             </div>
                         {% endif %}
                     </div>
                     
-                    <div class="mb-3">
+                    <div class="mb-4">
                         <label for="{{ form.password.id_for_label }}" class="form-label">
                             <i class="bi bi-lock me-1"></i>
                             Password
                         </label>
                         {{ form.password }}
                         {% if form.password.errors %}
-                            <div class="invalid-feedback d-block">
+                            <div class="error-message">
                                 {% for error in form.password.errors %}
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
                                     {{ error }}
                                 {% endfor %}
                             </div>
                         {% endif %}
                     </div>
                     
-                    <div class="mb-3 form-check">
+                    <div class="mb-4 form-check">
                         {{ form.remember_me }}
                         <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">
                             Remember me
                         </label>
                     </div>
                     
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">
+                    <div class="d-grid mb-4">
+                        <button type="submit" class="login-btn">
                             <i class="bi bi-box-arrow-in-right me-2"></i>
-                            Sign In
+                            Access System
                         </button>
                     </div>
                 </form>
                 
-                <hr class="my-4">
+                <hr class="my-4" style="border-color: var(--neon-red);">
                 
                 <div class="text-center">
-                    <p class="text-muted mb-2">Don't have an account?</p>
-                    <a href="{% url 'users:register' %}" class="btn btn-outline-primary">
+                    <p class="text-muted mb-3" style="font-family: 'Rajdhani', sans-serif; font-weight: 500;">
+                        New to the network?
+                    </p>
+                    <a href="{% url 'users:register' %}" class="register-btn">
                         <i class="bi bi-person-plus me-2"></i>
                         Create Account
                     </a>
@@ -75,38 +301,36 @@
         </div>
         
         <!-- Security Features Info -->
-        <div class="card mt-4">
-            <div class="card-body text-center">
-                <h6 class="card-title">
-                    <i class="bi bi-shield-check text-success me-2"></i>
-                    Security Features
-                </h6>
-                <div class="row text-muted">
-                    <div class="col-6">
-                        <small>
-                            <i class="bi bi-check-circle me-1"></i>
-                            RSA + AES Encryption
-                        </small>
-                    </div>
-                    <div class="col-6">
-                        <small>
-                            <i class="bi bi-check-circle me-1"></i>
-                            Digital Signatures
-                        </small>
+        <div class="security-features p-4">
+            <h6 class="text-center">
+                <i class="bi bi-shield-check me-2"></i>
+                Security Features
+            </h6>
+            <div class="row">
+                <div class="col-6">
+                    <div class="feature-item">
+                        <i class="bi bi-check-circle"></i>
+                        RSA + AES Encryption
                     </div>
                 </div>
-                <div class="row text-muted mt-1">
-                    <div class="col-6">
-                        <small>
-                            <i class="bi bi-check-circle me-1"></i>
-                            End-to-End Security
-                        </small>
+                <div class="col-6">
+                    <div class="feature-item">
+                        <i class="bi bi-check-circle"></i>
+                        Digital Signatures
                     </div>
-                    <div class="col-6">
-                        <small>
-                            <i class="bi bi-check-circle me-1"></i>
-                            Tamper-Proof Messages
-                        </small>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-6">
+                    <div class="feature-item">
+                        <i class="bi bi-check-circle"></i>
+                        End-to-End Security
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="feature-item">
+                        <i class="bi bi-check-circle"></i>
+                        Tamper-Proof Messages
                     </div>
                 </div>
             </div>

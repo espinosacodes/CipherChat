@@ -2,17 +2,325 @@
 
 {% block title %}Dashboard - CipherChat{% endblock %}
 
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background: linear-gradient(45deg, var(--neon-red), var(--neon-orange));
+        color: var(--dark-bg);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--neon-red), var(--neon-orange), var(--neon-yellow));
+        animation: scan-line 3s linear infinite;
+    }
+    
+    .dashboard-header h1 {
+        font-family: 'Orbitron', monospace;
+        font-weight: 900;
+        font-size: 2.5rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin: 0;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .status-card {
+        background: var(--card-bg);
+        border: 2px solid var(--neon-red);
+        border-radius: 15px;
+        box-shadow: var(--glow-red);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .status-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, var(--neon-red), var(--neon-orange));
+    }
+    
+    .status-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 0 30px var(--neon-red), 0 0 60px var(--neon-red);
+        border-color: var(--neon-orange);
+    }
+    
+    .status-card .card-body {
+        padding: 25px 20px;
+        text-align: center;
+    }
+    
+    .status-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        text-shadow: var(--glow-red);
+    }
+    
+    .status-number {
+        font-family: 'Orbitron', monospace;
+        font-weight: 900;
+        font-size: 2.5rem;
+        color: var(--neon-red);
+        text-shadow: var(--glow-red);
+        margin: 10px 0;
+    }
+    
+    .status-label {
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 0;
+    }
+    
+    .quick-actions {
+        background: var(--card-bg);
+        border: 2px solid var(--neon-orange);
+        border-radius: 15px;
+        box-shadow: var(--glow-orange);
+        margin-bottom: 30px;
+    }
+    
+    .quick-actions .card-header {
+        background: linear-gradient(45deg, var(--neon-orange), var(--neon-red));
+        color: var(--dark-bg);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-bottom: 2px solid var(--neon-orange);
+    }
+    
+    .action-btn {
+        background: linear-gradient(45deg, var(--neon-red), var(--neon-orange));
+        border: none;
+        color: var(--dark-bg);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: var(--glow-red);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .action-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+    }
+    
+    .action-btn:hover::before {
+        left: 100%;
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 30px var(--neon-red), 0 0 60px var(--neon-red);
+    }
+    
+    .action-btn-outline {
+        background: transparent;
+        border: 2px solid var(--neon-orange);
+        color: var(--neon-orange);
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 15px 25px;
+        border-radius: 8px;
+        box-shadow: var(--glow-orange);
+        transition: all 0.3s ease;
+    }
+    
+    .action-btn-outline:hover {
+        background: var(--neon-orange);
+        color: var(--dark-bg);
+        box-shadow: 0 0 30px var(--neon-orange);
+        transform: translateY(-3px);
+    }
+    
+    .message-list {
+        background: var(--card-bg);
+        border: 2px solid var(--neon-purple);
+        border-radius: 15px;
+        box-shadow: var(--glow-pink);
+    }
+    
+    .message-list .card-header {
+        background: linear-gradient(45deg, var(--neon-purple), var(--neon-pink));
+        color: var(--dark-bg);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-bottom: 2px solid var(--neon-purple);
+    }
+    
+    .message-item {
+        background: rgba(10, 10, 10, 0.5);
+        border: 1px solid var(--neon-red);
+        border-radius: 8px;
+        margin-bottom: 10px;
+        padding: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .message-item:hover {
+        background: rgba(255, 0, 0, 0.1);
+        border-color: var(--neon-orange);
+        box-shadow: var(--glow-orange);
+        transform: translateX(5px);
+    }
+    
+    .message-icon {
+        font-size: 1.8rem;
+        margin-right: 15px;
+    }
+    
+    .message-icon.sent {
+        color: var(--neon-orange);
+        text-shadow: var(--glow-orange);
+    }
+    
+    .message-icon.received {
+        color: var(--neon-red);
+        text-shadow: var(--glow-red);
+    }
+    
+    .message-info h6 {
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+    }
+    
+    .message-meta {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+    
+    .security-status {
+        background: var(--card-bg);
+        border: 2px solid var(--neon-orange);
+        border-radius: 15px;
+        box-shadow: 0 0 10px var(--neon-orange), 0 0 20px var(--neon-orange);
+    }
+    
+    .security-status .card-header {
+        background: linear-gradient(45deg, var(--neon-orange), var(--neon-pink));
+        color: var(--dark-bg);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-bottom: 2px solid var(--neon-orange);
+    }
+    
+    .security-item {
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 500;
+        margin: 8px 0;
+        padding: 5px 0;
+    }
+    
+    .security-item i {
+        margin-right: 10px;
+        font-size: 1.1rem;
+    }
+    
+    .security-item.success {
+        color: var(--neon-orange);
+    }
+    
+    .security-item.warning {
+        color: var(--neon-orange);
+    }
+    
+    .security-item.info {
+        color: var(--text-muted);
+    }
+    
+    .warning-alert {
+        background: rgba(255, 102, 0, 0.1);
+        border: 2px solid var(--neon-orange);
+        color: var(--neon-orange);
+        border-radius: 10px;
+        padding: 15px;
+        margin: 20px 0;
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 500;
+        box-shadow: 0 0 10px var(--neon-orange), 0 0 20px var(--neon-orange);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+    }
+    
+    .empty-state p {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+    }
+    
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h2 mb-0">
+        <div class="dashboard-header">
+            <h1>
                 <i class="bi bi-house-door me-2"></i>
                 Welcome back, {{ user.username }}!
             </h1>
-            <div class="security-badge">
+            <div class="security-badge mt-2">
                 <i class="bi bi-shield-check me-1"></i>
-                Secure Session
+                Secure Session Active
             </div>
         </div>
     </div>
@@ -21,39 +329,39 @@
 <!-- Status Cards -->
 <div class="row mb-4">
     <div class="col-md-3 mb-3">
-        <div class="card text-center h-100">
+        <div class="status-card">
             <div class="card-body">
-                <i class="bi bi-chat-dots text-primary" style="font-size: 2rem;"></i>
-                <h5 class="card-title mt-2">Messages</h5>
-                <p class="card-text display-6 text-primary">{{ unread_count }}</p>
+                <i class="bi bi-chat-dots status-icon" style="color: var(--neon-red);"></i>
+                <h5 class="status-label">Messages</h5>
+                <div class="status-number">{{ unread_count }}</div>
                 <small class="text-muted">Unread messages</small>
             </div>
         </div>
     </div>
     
     <div class="col-md-3 mb-3">
-        <div class="card text-center h-100">
+        <div class="status-card">
             <div class="card-body">
-                <i class="bi bi-key text-success" style="font-size: 2rem;"></i>
-                <h5 class="card-title mt-2">Keys</h5>
-                <p class="card-text display-6 text-success">{{ imported_keys_count }}</p>
+                <i class="bi bi-key status-icon" style="color: var(--neon-orange);"></i>
+                <h5 class="status-label">Keys</h5>
+                <div class="status-number">{{ imported_keys_count }}</div>
                 <small class="text-muted">Imported public keys</small>
             </div>
         </div>
     </div>
     
     <div class="col-md-3 mb-3">
-        <div class="card text-center h-100">
+        <div class="status-card">
             <div class="card-body">
-                <i class="bi bi-shield-lock text-info" style="font-size: 2rem;"></i>
-                <h5 class="card-title mt-2">Security</h5>
-                <p class="card-text display-6 text-info">
+                <i class="bi bi-shield-lock status-icon" style="color: var(--neon-purple);"></i>
+                <h5 class="status-label">Security</h5>
+                <div class="status-number">
                     {% if has_keys %}
-                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <i class="bi bi-check-circle-fill" style="color: var(--neon-orange);"></i>
                     {% else %}
-                        <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                        <i class="bi bi-exclamation-triangle-fill pulse-animation" style="color: var(--neon-orange);"></i>
                     {% endif %}
-                </p>
+                </div>
                 <small class="text-muted">
                     {% if has_keys %}
                         Keys generated
@@ -66,13 +374,13 @@
     </div>
     
     <div class="col-md-3 mb-3">
-        <div class="card text-center h-100">
+        <div class="status-card">
             <div class="card-body">
-                <i class="bi bi-clock text-warning" style="font-size: 2rem;"></i>
-                <h5 class="card-title mt-2">Activity</h5>
-                <p class="card-text display-6 text-warning">
+                <i class="bi bi-clock status-icon" style="color: var(--neon-pink);"></i>
+                <h5 class="status-label">Activity</h5>
+                <div class="status-number" style="font-size: 1.8rem;">
                     {{ profile.last_activity|date:"H:i" }}
-                </p>
+                </div>
                 <small class="text-muted">Last activity</small>
             </div>
         </div>
@@ -82,7 +390,7 @@
 <!-- Quick Actions -->
 <div class="row mb-4">
     <div class="col-12">
-        <div class="card">
+        <div class="quick-actions">
             <div class="card-header">
                 <h5 class="card-title mb-0">
                     <i class="bi bi-lightning me-2"></i>
@@ -92,13 +400,13 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <a href="{% url 'chat:send_message' %}" class="btn btn-primary btn-lg w-100">
+                        <a href="{% url 'chat:send_message' %}" class="action-btn w-100 d-block text-decoration-none">
                             <i class="bi bi-send me-2"></i>
                             Send Encrypted Message
                         </a>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <a href="{% url 'chat:view_messages' %}" class="btn btn-outline-primary btn-lg w-100">
+                        <a href="{% url 'chat:view_messages' %}" class="action-btn-outline w-100 d-block text-decoration-none">
                             <i class="bi bi-chat-dots me-2"></i>
                             View Messages
                         </a>
@@ -108,7 +416,7 @@
                 {% if not has_keys %}
                 <div class="row mt-3">
                     <div class="col-12">
-                        <div class="alert alert-warning" role="alert">
+                        <div class="warning-alert">
                             <i class="bi bi-exclamation-triangle me-2"></i>
                             <strong>Security Setup Required:</strong> You need to generate cryptographic keys to start sending encrypted messages.
                             <a href="{% url 'chat:generate_keys' %}" class="btn btn-warning btn-sm ms-3">
@@ -127,13 +435,13 @@
 <!-- Recent Messages -->
 <div class="row">
     <div class="col-12">
-        <div class="card">
+        <div class="message-list">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">
                     <i class="bi bi-clock-history me-2"></i>
                     Recent Messages
                 </h5>
-                <a href="{% url 'chat:view_messages' %}" class="btn btn-outline-primary btn-sm">
+                <a href="{% url 'chat:view_messages' %}" class="action-btn-outline btn-sm">
                     View All
                 </a>
             </div>
@@ -141,16 +449,16 @@
                 {% if recent_messages %}
                     <div class="list-group list-group-flush">
                         {% for message in recent_messages %}
-                        <div class="list-group-item message-card d-flex justify-content-between align-items-center">
+                        <div class="message-item d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
-                                <div class="me-3">
+                                <div class="message-icon {% if message.sender == user %}sent{% else %}received{% endif %}">
                                     {% if message.sender == user %}
-                                        <i class="bi bi-arrow-up-circle text-success" style="font-size: 1.5rem;"></i>
+                                        <i class="bi bi-arrow-up-circle"></i>
                                     {% else %}
-                                        <i class="bi bi-arrow-down-circle text-primary" style="font-size: 1.5rem;"></i>
+                                        <i class="bi bi-arrow-down-circle"></i>
                                     {% endif %}
                                 </div>
-                                <div>
+                                <div class="message-info">
                                     <h6 class="mb-1">
                                         {% if message.sender == user %}
                                             To: {{ message.recipient.username }}
@@ -158,17 +466,17 @@
                                             From: {{ message.sender.username }}
                                         {% endif %}
                                     </h6>
-                                    <small class="text-muted">
+                                    <div class="message-meta">
                                         {{ message.created_at|date:"M d, Y H:i" }} • 
-                                        <span class="badge bg-secondary">{{ message.get_message_type_display }}</span>
-                                    </small>
+                                        <span class="badge" style="background: var(--neon-purple); color: var(--dark-bg);">{{ message.get_message_type_display }}</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 {% if message.recipient == user and not message.read_at %}
                                     <span class="unread-indicator me-2">!</span>
                                 {% endif %}
-                                <a href="{% url 'chat:decrypt_message' message.id %}" class="btn btn-outline-primary btn-sm">
+                                <a href="{% url 'chat:decrypt_message' message.id %}" class="action-btn-outline btn-sm">
                                     <i class="bi bi-eye me-1"></i>
                                     View
                                 </a>
@@ -177,10 +485,10 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="text-center py-4">
-                        <i class="bi bi-chat-dots text-muted" style="font-size: 3rem;"></i>
-                        <p class="text-muted mt-2">No messages yet. Start by sending an encrypted message!</p>
-                        <a href="{% url 'chat:send_message' %}" class="btn btn-primary">
+                    <div class="empty-state">
+                        <i class="bi bi-chat-dots"></i>
+                        <p>No messages yet. Start by sending an encrypted message!</p>
+                        <a href="{% url 'chat:send_message' %}" class="action-btn">
                             <i class="bi bi-send me-2"></i>
                             Send First Message
                         </a>
@@ -194,7 +502,7 @@
 <!-- Security Status -->
 <div class="row mt-4">
     <div class="col-12">
-        <div class="card">
+        <div class="security-status">
             <div class="card-header">
                 <h5 class="card-title mb-0">
                     <i class="bi bi-shield-check me-2"></i>
@@ -204,45 +512,45 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <h6>Cryptographic Keys</h6>
+                        <h6 style="color: var(--neon-red); font-family: 'Orbitron', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Cryptographic Keys</h6>
                         <ul class="list-unstyled">
-                            <li class="mb-2">
+                            <li class="security-item {% if has_keys %}success{% else %}warning{% endif %}">
                                 {% if has_keys %}
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    <span class="text-success">RSA key pair generated</span>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    RSA key pair generated
                                 {% else %}
-                                    <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
-                                    <span class="text-warning">No cryptographic keys found</span>
+                                    <i class="bi bi-exclamation-triangle-fill"></i>
+                                    No cryptographic keys found
                                 {% endif %}
                             </li>
-                            <li class="mb-2">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <span class="text-muted">Key size: 2048 bits (RSA)</span>
+                            <li class="security-item info">
+                                <i class="bi bi-info-circle"></i>
+                                Key size: 2048 bits (RSA)
                             </li>
-                            <li class="mb-2">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <span class="text-muted">Encryption: AES-256 + RSA</span>
+                            <li class="security-item info">
+                                <i class="bi bi-info-circle"></i>
+                                Encryption: AES-256 + RSA
                             </li>
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <h6>Security Features</h6>
+                        <h6 style="color: var(--neon-orange); font-family: 'Orbitron', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Security Features</h6>
                         <ul class="list-unstyled">
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                <span class="text-success">End-to-end encryption</span>
+                            <li class="security-item success">
+                                <i class="bi bi-check-circle-fill"></i>
+                                End-to-end encryption
                             </li>
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                <span class="text-success">Digital signatures</span>
+                            <li class="security-item success">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Digital signatures
                             </li>
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                <span class="text-success">Secure key exchange</span>
+                            <li class="security-item success">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Secure key exchange
                             </li>
-                            <li class="mb-2">
-                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                <span class="text-success">Tamper-proof messages</span>
+                            <li class="security-item success">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Tamper-proof messages
                             </li>
                         </ul>
                     </div>
@@ -250,7 +558,7 @@
                 
                 {% if not has_keys %}
                 <div class="mt-3">
-                    <a href="{% url 'chat:generate_keys' %}" class="btn btn-success">
+                    <a href="{% url 'chat:generate_keys' %}" class="action-btn">
                         <i class="bi bi-key me-2"></i>
                         Generate Cryptographic Keys
                     </a>
