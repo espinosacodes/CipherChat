@@ -3,139 +3,354 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}CipherChat - Secure Communication{% endblock %}</title>
+    <title>{% block title %}CipherChat - Cyberpunk Secure Communication{% endblock %}</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts - Cyberpunk Style -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
         :root {
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --success-color: #198754;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --info-color: #0dcaf0;
-            --dark-color: #212529;
-            --light-color: #f8f9fa;
+            --neon-cyan: #00ffff;
+            --neon-pink: #ff00ff;
+            --neon-green: #00ff00;
+            --neon-orange: #ff6600;
+            --neon-purple: #9900ff;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+            --card-bg: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --text-muted: #888888;
+            --border-neon: #00ffff;
+            --glow-cyan: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+            --glow-pink: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff;
+            --glow-green: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+        }
+        
+        * {
+            box-sizing: border-box;
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 255, 0, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Matrix-style background animation */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                rgba(0, 255, 0, 0.02) 50%, 
+                transparent 100%);
+            animation: matrix-rain 20s linear infinite;
+            pointer-events: none;
+            z-index: -2;
+        }
+        
+        @keyframes matrix-rain {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
         
         .navbar {
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            background: rgba(10, 10, 10, 0.95) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid var(--neon-cyan);
+            box-shadow: var(--glow-cyan);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 1.8rem;
+            color: var(--neon-cyan) !important;
+            text-shadow: var(--glow-cyan);
+            letter-spacing: 3px;
+        }
+        
+        .navbar-brand:hover {
+            color: var(--neon-green) !important;
+            text-shadow: var(--glow-green);
+        }
+        
+        .nav-link {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            color: var(--text-primary) !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 10px;
+            padding: 8px 16px !important;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--neon-cyan) !important;
+            border-color: var(--neon-cyan);
+            box-shadow: var(--glow-cyan);
+            background: rgba(0, 255, 255, 0.1);
         }
         
         .main-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            margin: 20px 0;
+            background: rgba(26, 26, 26, 0.9);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 15px;
+            box-shadow: var(--glow-cyan);
+            margin: 30px 0;
             padding: 30px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .main-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-green));
+            animation: scan-line 3s linear infinite;
+        }
+        
+        @keyframes scan-line {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
         .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: var(--card-bg);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 10px;
+            box-shadow: var(--glow-cyan);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
         }
         
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan);
+            border-color: var(--neon-green);
+        }
+        
+        .card-header {
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
+            color: var(--dark-bg);
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--neon-cyan);
+        }
+        
+        .card-body {
+            color: var(--text-primary);
         }
         
         .btn {
-            border-radius: 10px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 5px;
             padding: 10px 20px;
-            font-weight: 500;
+            border: 2px solid;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
         }
         
         .btn-primary {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border: none;
+            background: transparent;
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: var(--glow-cyan);
         }
         
         .btn-primary:hover {
-            background: linear-gradient(45deg, #5a6fd8, #6a4190);
+            background: var(--neon-cyan);
+            color: var(--dark-bg);
+            box-shadow: 0 0 20px var(--neon-cyan);
             transform: translateY(-2px);
         }
         
+        .btn-success {
+            background: transparent;
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            box-shadow: var(--glow-green);
+        }
+        
+        .btn-success:hover {
+            background: var(--neon-green);
+            color: var(--dark-bg);
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+        
+        .btn-danger {
+            background: transparent;
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            box-shadow: var(--glow-pink);
+        }
+        
+        .btn-danger:hover {
+            background: var(--neon-pink);
+            color: var(--dark-bg);
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+        
         .form-control, .form-select {
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: var(--card-bg);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 5px;
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            transition: all 0.3s ease;
         }
         
         .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+            background: var(--card-bg);
+            border-color: var(--neon-green);
+            color: var(--text-primary);
+            box-shadow: var(--glow-green);
+            outline: none;
+        }
+        
+        .form-control::placeholder {
+            color: var(--text-muted);
         }
         
         .alert {
-            border-radius: 15px;
-            border: none;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+            background: var(--card-bg);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 10px;
+            color: var(--text-primary);
+            box-shadow: var(--glow-cyan);
         }
         
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--primary-color) !important;
+        .alert-success {
+            border-color: var(--neon-green);
+            box-shadow: var(--glow-green);
         }
         
-        .nav-link {
-            font-weight: 500;
-            color: var(--dark-color) !important;
-            transition: color 0.3s ease;
+        .alert-danger {
+            border-color: var(--neon-pink);
+            box-shadow: var(--glow-pink);
         }
         
-        .nav-link:hover {
-            color: var(--primary-color) !important;
+        .alert-warning {
+            border-color: var(--neon-orange);
+            box-shadow: 0 0 10px var(--neon-orange), 0 0 20px var(--neon-orange);
+        }
+        
+        .dropdown-menu {
+            background: var(--card-bg);
+            border: 2px solid var(--neon-cyan);
+            box-shadow: var(--glow-cyan);
+        }
+        
+        .dropdown-item {
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            color: var(--neon-cyan);
         }
         
         .footer {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            margin: 20px 0;
-            padding: 20px;
-            text-align: center;
+            background: rgba(10, 10, 10, 0.95);
+            border-top: 2px solid var(--neon-cyan);
+            box-shadow: var(--glow-cyan);
+            padding: 20px 0;
+            margin-top: 50px;
         }
         
         .security-badge {
-            background: linear-gradient(45deg, #28a745, #20c997);
-            color: white;
-            padding: 5px 15px;
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-cyan));
+            color: var(--dark-bg);
+            padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.8rem;
-            font-weight: 600;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: var(--glow-green);
         }
         
         .message-card {
-            border-left: 4px solid var(--primary-color);
+            border-left: 4px solid var(--neon-cyan);
             transition: all 0.3s ease;
         }
         
         .message-card:hover {
-            border-left-color: var(--success-color);
-            background-color: var(--light-color);
+            border-left-color: var(--neon-green);
+            box-shadow: var(--glow-green);
         }
         
         .unread-indicator {
-            background: var(--danger-color);
-            color: white;
+            background: var(--neon-pink);
+            color: var(--dark-bg);
             border-radius: 50%;
             width: 20px;
             height: 20px;
@@ -144,14 +359,86 @@
             justify-content: center;
             font-size: 0.7rem;
             font-weight: bold;
+            box-shadow: var(--glow-pink);
+        }
+        
+        /* Cyberpunk table styling */
+        .table {
+            color: var(--text-primary);
+            background: var(--card-bg);
+            border: 1px solid var(--neon-cyan);
+        }
+        
+        .table th {
+            background: linear-gradient(45deg, var(--neon-cyan), var(--neon-purple));
+            color: var(--dark-bg);
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-color: var(--neon-cyan);
+        }
+        
+        .table td {
+            border-color: rgba(0, 255, 255, 0.3);
+        }
+        
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--neon-cyan);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Glitch effect */
+        .glitch {
+            position: relative;
+            animation: glitch 2s infinite;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+            
+            .main-container {
+                margin: 15px 0;
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
         }
     </style>
     
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- Matrix background -->
+    <div class="matrix-bg"></div>
+    
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="{% url 'chat:dashboard' %}">
                 <i class="bi bi-shield-lock-fill me-2"></i>
@@ -252,7 +539,7 @@
                 <div class="col-md-6">
                     <h6 class="text-muted">
                         <i class="bi bi-shield-lock me-2"></i>
-                        CipherChat - End-to-End Encrypted Communication
+                        CipherChat - Cyberpunk Secure Communication
                     </h6>
                 </div>
                 <div class="col-md-6 text-end">
@@ -285,6 +572,75 @@
         function confirmAction(message) {
             return confirm(message || 'Are you sure you want to perform this action?');
         }
+        
+        // Add glitch effect to important elements
+        function addGlitchEffect() {
+            const elements = document.querySelectorAll('.navbar-brand, .security-badge');
+            elements.forEach(element => {
+                if (Math.random() < 0.1) {
+                    element.classList.add('glitch');
+                    setTimeout(() => {
+                        element.classList.remove('glitch');
+                    }, 2000);
+                }
+            });
+        }
+        
+        // Run glitch effect periodically
+        setInterval(addGlitchEffect, 10000);
+        
+        // Matrix rain effect
+        function createMatrixRain() {
+            const canvas = document.createElement('canvas');
+            canvas.style.position = 'fixed';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            canvas.style.pointerEvents = 'none';
+            canvas.style.zIndex = '-3';
+            canvas.style.opacity = '0.1';
+            
+            document.body.appendChild(canvas);
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}";
+            const matrixArray = matrix.split("");
+            
+            const fontSize = 10;
+            const columns = canvas.width / fontSize;
+            const drops = [];
+            
+            for (let x = 0; x < columns; x++) {
+                drops[x] = 1;
+            }
+            
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#0F0';
+                ctx.font = fontSize + 'px monospace';
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+            }
+            
+            setInterval(draw, 35);
+        }
+        
+        // Initialize matrix rain
+        createMatrixRain();
     </script>
     
     {% block extra_js %}{% endblock %}

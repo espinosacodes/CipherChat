@@ -1,0 +1,79 @@
+{
+  "messages": [
+    {
+      "sender": "testuser1",
+      "recipient": "testuser2",
+      "content": "Hello! This is our first encrypted message.",
+      "timestamp": "2025-08-17T01:20:00Z",
+      "type": "text"
+    },
+    {
+      "sender": "testuser2",
+      "recipient": "testuser1",
+      "content": "Hi! The encryption is working perfectly! 🔐",
+      "timestamp": "2025-08-17T01:21:00Z",
+      "type": "text"
+    },
+    {
+      "sender": "testuser3",
+      "recipient": "testuser1",
+      "content": "Can you share the meeting notes from yesterday?",
+      "timestamp": "2025-08-17T01:22:00Z",
+      "type": "text"
+    },
+    {
+      "sender": "testuser1",
+      "recipient": "testuser3",
+      "content": "Sure! I'll send them in the next message.",
+      "timestamp": "2025-08-17T01:23:00Z",
+      "type": "text"
+    },
+    {
+      "sender": "testuser4",
+      "recipient": "testuser5",
+      "content": "The new security protocol is ready for testing.",
+      "timestamp": "2025-08-17T01:24:00Z",
+      "type": "text"
+    },
+    {
+      "sender": "testuser5",
+      "recipient": "testuser4",
+      "content": "Excellent! Let's schedule a review session.",
+      "timestamp": "2025-08-17T01:25:00Z",
+      "type": "text"
+    },
+    {
+      "sender": "testuser2",
+      "recipient": "testuser3",
+      "content": "Don't forget to backup your encryption keys!",
+      "timestamp": "2025-08-17T01:26:00Z",
+      "type": "text"
+    },
+    {
+      "sender": "testuser3",
+      "recipient": "testuser2",
+      "content": "Thanks for the reminder! I'll do that right away.",
+      "timestamp": "2025-08-17T01:27:00Z",
+      "type": "text"
+    },
+    {
+      "sender": "testuser1",
+      "recipient": "testuser4",
+      "content": "Happy birthday! 🎉 Hope you have a great day!",
+      "timestamp": "2025-08-17T01:28:00Z",
+      "type": "text"
+    },
+    {
+      "sender": "testuser4",
+      "recipient": "testuser1",
+      "content": "Thank you! 🎂 The encryption makes it extra special!",
+      "timestamp": "2025-08-17T01:29:00Z",
+      "type": "text"
+    }
+  ],
+  "metadata": {
+    "created_at": "2025-08-17T01:20:00Z",
+    "version": "1.0",
+    "description": "Sample encrypted messages for CipherChat testing"
+  }
+}

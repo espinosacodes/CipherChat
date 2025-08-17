@@ -1,0 +1,12 @@
+{
+  "sender": "juan",
+  "recipient": "juan",
+  "encrypted_data": {
+    "encrypted_message": "n4kie/0e55xZFBcfL0E+U6tGN+O6tQJupOiZY6VqICk=",
+    "encrypted_key": "nJHyjAmDqzWvUFTWyL0Z23wsZQF2Hby+cBMx3FAArZ+p9FDr0xeDnJ+lZMtWDcpPVNoVNLc7SGKVaaCGDi0mCHEaG9/s5fTH5HT+yjvJgosHS6ftK7a2cCETS5GV9WqTrGKFQl4HfF9PYbk8UH/zhCf4GAXZ2d25h5yHNob/FZ6zpkUtBHPw8rsB+gVCTZWfA6G9MQf0Vh0KbKM0/Jci6jQK77tuuARuvyn50ZIqWmuuPzWgOtWMmGUB+GQlheHtprHKVFB/L48OXdlRBYAMI9vH2bEoLEGf1MXgtCDAeADWTI9TD0ZUGKyW71D6vSHE5o/X5tDxi1LtSgb0c9jknA==",
+    "iv": "hsuuFKJmiQSoa0oEKOKkeA=="
+  },
+  "signature": "ddZig7Cpbf8l+ReALW0PhSBXnkcPCpG3WF5MDYASoanUTE/M3R+q4y2+kEkFAL6vnd2/d3EvMvrsTqhBSmZOiVSIVD24Vknj+6qLqIIZZ2YynszGPLw+q3CgwGI2Mv8HO0hD8hurbs3Vme5oDmqs6ACJgkvVwiMul/8UMYr8AeMWFDeiXDPx5fkIC4W58ulbRsN64wVbhAsV0fNJkGc9E6Jc7mlgrBZPypk2tlc23nLPyHCuxgSZ/LeAMQd3Ct3q/I6kJfLeggeTfBQgLP0UgGZNNryGe3Aft9L5jI63hUkR/6B5EngZun1cwrONQiKKfgLlFXMqVO5dIS0f6BNeIg==",
+  "timestamp": 1755110379.5343962,
+  "message_type": "secure_message"
+}
