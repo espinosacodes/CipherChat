@@ -1,4 +1,4 @@
-https://cipherchat-qzui.onrender.com
+## Live Demo [Click here to view the app](https://cipherchat-qzui.onrender.com)
 
 # 🔐 CipherChat - Secure Communication System
 
