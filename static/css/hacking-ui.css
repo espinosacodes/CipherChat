@@ -177,7 +177,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Navigation */
 .navbar {
     background: rgba(0, 0, 0, 0.85) !important;
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(4px);
     border-bottom: 2px solid var(--primary-red);
     padding: 1rem 0;
     position: relative;
@@ -246,7 +246,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 0;
     margin: 20px 0;
     padding: 20px;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(3px);
     position: relative;
     overflow: hidden;
     box-shadow: 0 0 20px rgba(197, 0, 60, 0.2);
@@ -376,7 +376,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 15px;
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(2px);
 }
 
 .card::before {
@@ -474,7 +474,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 0;
     color: var(--text-primary);
     font-family: 'Share Tech Mono', 'VT323', monospace;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(1px);
 }
 
 .form-control:focus {
@@ -671,7 +671,7 @@ code {
     background: rgba(13, 13, 13, 0.9);
     border: 1px solid var(--primary-red);
     border-radius: 0;
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(4px);
 }
 
 .modal-header {
@@ -700,7 +700,7 @@ code {
     background: rgba(13, 13, 13, 0.9);
     border: 1px solid var(--primary-red);
     border-radius: 0;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(3px);
 }
 
 .dropdown-item {
@@ -738,7 +738,7 @@ code {
     border: 1px solid var(--primary-red);
     color: var(--text-primary);
     font-family: 'Share Tech Mono', 'VT323', monospace;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(2px);
 }
 
 .tooltip.bs-tooltip-top .tooltip-arrow::before {
@@ -889,7 +889,7 @@ code {
 /* Bootstrap Grid Translucent Override */
 .row {
     background: rgba(13, 13, 13, 0.3);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(2px);
     border-radius: 0;
     margin: 0;
     padding: 10px;
@@ -901,7 +901,7 @@ code {
 .col-lg, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12,
 .col-xl, .col-xl-1, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-10, .col-xl-11, .col-xl-12 {
     background: rgba(15, 15, 15, 0.4);
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(1px);
     border: 1px solid rgba(197, 0, 60, 0.2);
     border-radius: 0;
     margin: 5px;
