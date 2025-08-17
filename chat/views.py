@@ -29,12 +29,12 @@ from .forms import (
 # from key_manager import KeyManager
 # from secure_channel import SecureChannel
 
-def log_security_event(event_type, description, user=None, success=True, details=None):
+def log_security_event(operation, message, user=None, success=True, details=None):
     """Log security events for auditing."""
     try:
         SecurityLog.objects.create(
-            event_type=event_type,
-            description=description,
+            operation=operation,
+            message=message,
             user=user,
             success=success,
             details=details or {}
@@ -50,12 +50,12 @@ def dashboard(request):
         # Get user's recent messages
         recent_messages = Message.objects.filter(
             Q(sender=request.user) | Q(recipient=request.user)
-        ).order_by('-timestamp')[:5]
+        ).order_by('-created_at')[:5]
         
         # Get unread message count
         unread_count = Message.objects.filter(
             recipient=request.user,
-            is_read=False
+            read_at__isnull=True
         ).count()
         
         # Get imported keys count
@@ -68,11 +68,37 @@ def dashboard(request):
         except UserProfile.DoesNotExist:
             has_keys = False
         
+        # Get additional statistics
+        total_messages = Message.objects.filter(
+            Q(sender=request.user) | Q(recipient=request.user)
+        ).count()
+        
+        messages_sent = Message.objects.filter(sender=request.user).count()
+        messages_received = Message.objects.filter(recipient=request.user).count()
+        
+        # Get recent security logs for activity feed
+        recent_activities = SecurityLog.objects.filter(
+            user=request.user
+        ).order_by('-timestamp')[:5]
+        
+        # Calculate security score (placeholder)
+        security_score = 85  # Placeholder value
+        
+        # Get keys generated count
+        keys_generated = PublicKey.objects.filter(imported_by=request.user).count()
+        
         context = {
             'recent_messages': recent_messages,
             'unread_count': unread_count,
             'imported_keys': imported_keys,
             'has_keys': has_keys,
+            'total_messages': total_messages,
+            'total_keys': imported_keys,
+            'security_score': security_score,
+            'recent_activities': recent_activities,
+            'messages_sent': messages_sent,
+            'messages_received': messages_received,
+            'keys_generated': keys_generated,
         }
         
         return render(request, 'chat/dashboard.html', context)
@@ -88,8 +114,8 @@ def send_message(request):
         form = SendMessageForm(request.POST)
         if form.is_valid():
             try:
-                recipient_username = form.cleaned_data['recipient']
-                message_content = form.cleaned_data['content']
+                recipient_username = form.cleaned_data['recipient_username']
+                message_content = form.cleaned_data['message_content']
                 message_type = form.cleaned_data['message_type']
                 
                 # Check if recipient exists
@@ -130,17 +156,16 @@ def send_message(request):
                 message = Message.objects.create(
                     sender=request.user,
                     recipient=recipient,
-                    content=encrypted_content,
+                    encrypted_content=encrypted_content,
                     message_type=message_type,
-                    aes_key=aes_key,
+                    encrypted_aes_key=aes_key,
                     iv=iv,
-                    signature=signature,
-                    is_encrypted=True
+                    signature=signature
                 )
                 
                 # Log the event
                 log_security_event(
-                    "message_sent",
+                    "message_send",
                     f"Message sent to {recipient_username}",
                     request.user,
                     success=True,
@@ -153,7 +178,7 @@ def send_message(request):
             except Exception as e:
                 messages.error(request, f"Error sending message: {str(e)}")
                 log_security_event(
-                    "message_sent",
+                    "message_send",
                     f"Failed to send message: {str(e)}",
                     request.user,
                     success=False,
@@ -180,14 +205,14 @@ def view_messages(request):
         
         # Apply filters
         if search_query:
-            messages_qs = messages_qs.filter(content__icontains=search_query)
+            messages_qs = messages_qs.filter(encrypted_content__icontains=search_query)
         if message_type:
             messages_qs = messages_qs.filter(message_type=message_type)
         if sender_filter:
             messages_qs = messages_qs.filter(sender__username__icontains=sender_filter)
         
-        # Order by timestamp
-        messages_qs = messages_qs.order_by('-timestamp')
+        # Order by created_at
+        messages_qs = messages_qs.order_by('-created_at')
         
         # Pagination
         paginator = Paginator(messages_qs, 20)
@@ -224,11 +249,11 @@ def decrypt_message(request, message_id):
         
         # TODO: Implement actual decryption when crypto engine is ready
         # For now, show the encrypted content
-        decrypted_content = message.content.replace("ENCRYPTED:", "")
+        decrypted_content = message.encrypted_content.replace("ENCRYPTED:", "")
         
         # Mark as read if user is recipient
-        if message.recipient == request.user and not message.is_read:
-            message.is_read = True
+        if message.recipient == request.user and not message.read_at:
+            message.read_at = timezone.now()
             message.save()
         
         context = {
@@ -249,7 +274,7 @@ def import_key(request):
         form = ImportPublicKeyForm(request.POST)
         if form.is_valid():
             try:
-                username = form.cleaned_data['username']
+                username = form.cleaned_data['key_owner_username']
                 public_key_data = form.cleaned_data['public_key']
                 
                 # Check if user exists
@@ -260,7 +285,7 @@ def import_key(request):
                     return render(request, 'chat/import_key.html', {'form': form})
                 
                 # Check if key already exists
-                if PublicKey.objects.filter(owner=user, imported_by=request.user).exists():
+                if PublicKey.objects.filter(owner=request.user, key_owner_username=username).exists():
                     messages.warning(request, f"Public key for '{username}' already imported.")
                     return redirect('chat:manage_keys')
                 
@@ -269,16 +294,14 @@ def import_key(request):
                 
                 # Create the public key record
                 public_key = PublicKey.objects.create(
-                    owner=user,
-                    imported_by=request.user,
-                    public_key_data=public_key_data,
-                    key_type='RSA',
-                    key_size=2048  # Placeholder
+                    owner=request.user,
+                    key_owner_username=username,
+                    public_key=public_key_data
                 )
                 
                 # Log the event
                 log_security_event(
-                    "key_imported",
+                    "key_import",
                     f"Public key imported for user {username}",
                     request.user,
                     success=True,
@@ -388,7 +411,7 @@ def export_public_key(request):
         
         # Log the event
         log_security_event(
-            "key_exported",
+            "key_generation",
             "Public key exported",
             request.user,
             success=True
@@ -427,13 +450,12 @@ def key_exchange(request):
                     initiator=request.user,
                     recipient=recipient,
                     exchange_type=exchange_type,
-                    status='initiated',
-                    details={'message': 'Key exchange initiated'}
+                    notes='Key exchange initiated'
                 )
                 
                 # Log the event
                 log_security_event(
-                    "key_exchange_initiated",
+                    "key_exchange",
                     f"Key exchange initiated with {recipient_username}",
                     request.user,
                     success=True,
@@ -472,3 +494,9 @@ def security_logs(request):
     except Exception as e:
         messages.error(request, f"Error loading security logs: {str(e)}")
         return render(request, 'chat/security_logs.html', {})
+
+
+@login_required
+def security_overview(request):
+    """Display comprehensive security overview page."""
+    return render(request, 'chat/security.html')

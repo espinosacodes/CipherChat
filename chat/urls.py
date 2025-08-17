@@ -26,5 +26,6 @@ urlpatterns = [
     
     # Security and logs
     path('security/', views.security_logs, name='security_logs'),
+    path('security/overview/', views.security_overview, name='security_overview'),
 ]
 

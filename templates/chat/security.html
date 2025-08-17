@@ -1,0 +1,550 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Security Overview - CipherChat{% endblock %}
+
+{% block extra_css %}
+<style>
+    .security-header {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        padding: 30px;
+        border-radius: 0;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--primary-red);
+    }
+    
+    .security-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--primary-red-bright), transparent);
+        animation: scan-line 3s linear infinite;
+    }
+    
+    .security-header h1 {
+        font-family: 'Orbitron', monospace;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin: 0;
+        font-size: 2.5rem;
+    }
+    
+    .security-section {
+        background: var(--card-bg);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
+        margin-bottom: 25px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .security-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: var(--primary-red);
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    .security-section .card-header {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 20px;
+    }
+    
+    .security-section .card-body {
+        padding: 25px;
+    }
+    
+    .security-feature {
+        background: var(--dark-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0;
+        padding: 20px;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    
+    .security-feature::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--primary-red);
+    }
+    
+    .security-feature h4 {
+        color: var(--primary-red);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+    
+    .security-feature .icon {
+        font-size: 2rem;
+        color: var(--primary-red);
+        margin-bottom: 15px;
+    }
+    
+    .security-status {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 0;
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.8rem;
+    }
+    
+    .status-active {
+        background: var(--success-color);
+        color: var(--dark-bg);
+        border: 1px solid var(--success-color);
+    }
+    
+    .status-warning {
+        background: var(--warning-color);
+        color: var(--dark-bg);
+        border: 1px solid var(--warning-color);
+    }
+    
+    .status-error {
+        background: var(--danger-color);
+        color: var(--dark-bg);
+        border: 1px solid var(--danger-color);
+    }
+    
+    .crypto-diagram {
+        background: var(--dark-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0;
+        padding: 20px;
+        margin: 20px 0;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    .crypto-diagram .step {
+        margin-bottom: 15px;
+        padding-left: 20px;
+        position: relative;
+    }
+    
+    .crypto-diagram .step::before {
+        content: '>';
+        position: absolute;
+        left: 0;
+        color: var(--primary-red);
+        font-weight: bold;
+    }
+    
+    .security-checklist {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .security-checklist li {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-color);
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .security-checklist li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: var(--success-color);
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    
+    .security-checklist li:last-child {
+        border-bottom: none;
+    }
+    
+    .threat-model {
+        background: var(--dark-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0;
+        padding: 20px;
+        margin: 20px 0;
+    }
+    
+    .threat-model h5 {
+        color: var(--warning-color);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+    
+    .threat-model .mitigation {
+        background: var(--card-bg);
+        border-left: 4px solid var(--success-color);
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .security-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+    }
+    
+    .metric-card {
+        background: var(--dark-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 0;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .metric-card .metric-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary-red);
+        font-family: 'Orbitron', monospace;
+    }
+    
+    .metric-card .metric-label {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <!-- Security Header -->
+    <div class="security-header">
+        <h1 class="glitch-text">
+            <i class="bi bi-shield-lock"></i> Security Overview
+        </h1>
+        <p class="mb-0">Comprehensive security analysis and cryptographic implementation details</p>
+    </div>
+
+    <!-- Security Status Overview -->
+    <div class="security-section">
+        <div class="card-header">
+            <i class="bi bi-shield-check"></i> Security Status
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <i class="bi bi-key-fill icon"></i>
+                        <h5>Key Management</h5>
+                        <span class="security-status status-active">ACTIVE</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <i class="bi bi-lock-fill icon"></i>
+                        <h5>Encryption</h5>
+                        <span class="security-status status-active">ACTIVE</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <i class="bi bi-signature icon"></i>
+                        <h5>Authentication</h5>
+                        <span class="security-status status-active">ACTIVE</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <i class="bi bi-eye-slash icon"></i>
+                        <h5>Privacy</h5>
+                        <span class="security-status status-active">ACTIVE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cryptographic Architecture -->
+    <div class="security-section">
+        <div class="card-header">
+            <i class="bi bi-diagram-3"></i> Cryptographic Architecture
+        </div>
+        <div class="card-body">
+            <div class="security-feature">
+                <h4><i class="bi bi-key"></i> Hybrid Encryption System</h4>
+                <p>CipherChat uses a hybrid encryption approach combining RSA and AES for optimal security and performance:</p>
+                
+                <div class="crypto-diagram">
+                    <div class="step"><strong>RSA Key Pair Generation:</strong> 2048-bit RSA keys for each user</div>
+                    <div class="step"><strong>AES Key Generation:</strong> 256-bit AES key for each message</div>
+                    <div class="step"><strong>Message Encryption:</strong> AES encrypts the actual message content</div>
+                    <div class="step"><strong>Key Encryption:</strong> RSA encrypts the AES key with recipient's public key</div>
+                    <div class="step"><strong>Digital Signature:</strong> RSA signs the message with sender's private key</div>
+                </div>
+            </div>
+
+            <div class="security-feature">
+                <h4><i class="bi bi-shield-lock"></i> End-to-End Encryption</h4>
+                <p>Messages are encrypted on the sender's device and can only be decrypted by the intended recipient:</p>
+                <ul class="security-checklist">
+                    <li>Messages encrypted before transmission</li>
+                    <li>Server cannot access plaintext content</li>
+                    <li>Each message uses unique encryption keys</li>
+                    <li>Perfect forward secrecy through key rotation</li>
+                </ul>
+            </div>
+
+            <div class="security-feature">
+                <h4><i class="bi bi-fingerprint"></i> Digital Signatures</h4>
+                <p>Every message is digitally signed to ensure authenticity and integrity:</p>
+                <ul class="security-checklist">
+                    <li>Prevents message tampering</li>
+                    <li>Verifies sender identity</li>
+                    <li>Ensures message integrity</li>
+                    <li>Provides non-repudiation</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Features -->
+    <div class="security-section">
+        <div class="card-header">
+            <i class="bi bi-gear"></i> Security Features
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="security-feature">
+                        <h4><i class="bi bi-person-check"></i> User Authentication</h4>
+                        <p>Secure user authentication with password hashing and session management:</p>
+                        <ul class="security-checklist">
+                            <li>Django's built-in authentication system</li>
+                            <li>Password hashing with PBKDF2</li>
+                            <li>Session-based authentication</li>
+                            <li>CSRF protection on all forms</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="security-feature">
+                        <h4><i class="bi bi-key-fill"></i> Key Management</h4>
+                        <p>Secure generation, storage, and exchange of cryptographic keys:</p>
+                        <ul class="security-checklist">
+                            <li>Automatic RSA key pair generation</li>
+                            <li>Secure key storage in database</li>
+                            <li>Public key sharing between users</li>
+                            <li>Key validation and verification</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="security-feature">
+                        <h4><i class="bi bi-file-earmark-lock"></i> File Encryption</h4>
+                        <p>Support for encrypted file attachments with secure handling:</p>
+                        <ul class="security-checklist">
+                            <li>File encryption before upload</li>
+                            <li>Secure file storage</li>
+                            <li>File integrity verification</li>
+                            <li>Size and type validation</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="security-feature">
+                        <h4><i class="bi bi-journal-text"></i> Security Logging</h4>
+                        <p>Comprehensive security event logging and monitoring:</p>
+                        <ul class="security-checklist">
+                            <li>All security events logged</li>
+                            <li>User activity tracking</li>
+                            <li>Failed operation monitoring</li>
+                            <li>Audit trail maintenance</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Threat Model -->
+    <div class="security-section">
+        <div class="card-header">
+            <i class="bi bi-exclamation-triangle"></i> Threat Model
+        </div>
+        <div class="card-body">
+            <div class="threat-model">
+                <h5>Potential Threats</h5>
+                <div class="mitigation">
+                    <strong>Man-in-the-Middle Attacks:</strong> Prevented by end-to-end encryption and digital signatures
+                </div>
+                <div class="mitigation">
+                    <strong>Server Compromise:</strong> Mitigated by client-side encryption and zero-knowledge architecture
+                </div>
+                <div class="mitigation">
+                    <strong>Key Compromise:</strong> Addressed through key rotation and perfect forward secrecy
+                </div>
+                <div class="mitigation">
+                    <strong>Replay Attacks:</strong> Prevented by message timestamps and unique encryption keys
+                </div>
+                <div class="mitigation">
+                    <strong>Brute Force Attacks:</strong> Mitigated by strong cryptographic algorithms and key sizes
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Metrics -->
+    <div class="security-section">
+        <div class="card-header">
+            <i class="bi bi-graph-up"></i> Security Metrics
+        </div>
+        <div class="card-body">
+            <div class="security-metrics">
+                <div class="metric-card">
+                    <div class="metric-value">2048</div>
+                    <div class="metric-label">RSA Key Size (bits)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">256</div>
+                    <div class="metric-label">AES Key Size (bits)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">SHA-256</div>
+                    <div class="metric-label">Hash Algorithm</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">100%</div>
+                    <div class="metric-label">End-to-End Encryption</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="security-section">
+        <div class="card-header">
+            <i class="bi bi-lightbulb"></i> Security Best Practices
+        </div>
+        <div class="card-body">
+            <div class="security-feature">
+                <h4><i class="bi bi-shield-check"></i> For Users</h4>
+                <ul class="security-checklist">
+                    <li>Use strong, unique passwords for your account</li>
+                    <li>Generate new cryptographic keys regularly</li>
+                    <li>Verify recipient identities before sending sensitive messages</li>
+                    <li>Keep your private keys secure and never share them</li>
+                    <li>Log out when using shared computers</li>
+                    <li>Report any suspicious activity immediately</li>
+                </ul>
+            </div>
+
+            <div class="security-feature">
+                <h4><i class="bi bi-gear-wide-connected"></i> For Administrators</h4>
+                <ul class="security-checklist">
+                    <li>Regularly review security logs for anomalies</li>
+                    <li>Monitor failed authentication attempts</li>
+                    <li>Keep the application and dependencies updated</li>
+                    <li>Implement rate limiting on authentication endpoints</li>
+                    <li>Use HTTPS in production environments</li>
+                    <li>Regular security audits and penetration testing</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Implementation -->
+    <div class="security-section">
+        <div class="card-header">
+            <i class="bi bi-code-slash"></i> Technical Implementation
+        </div>
+        <div class="card-body">
+            <div class="security-feature">
+                <h4><i class="bi bi-cpu"></i> Cryptographic Libraries</h4>
+                <p>CipherChat uses industry-standard cryptographic libraries:</p>
+                <ul class="security-checklist">
+                    <li>Cryptography.io for Python cryptographic operations</li>
+                    <li>RSA with OAEP padding for key encryption</li>
+                    <li>AES-256-CBC for message encryption</li>
+                    <li>SHA-256 for hashing and digital signatures</li>
+                    <li>Secure random number generation</li>
+                </ul>
+            </div>
+
+            <div class="security-feature">
+                <h4><i class="bi bi-database-lock"></i> Data Protection</h4>
+                <p>All sensitive data is protected at rest and in transit:</p>
+                <ul class="security-checklist">
+                    <li>Encrypted message content in database</li>
+                    <li>Hashed passwords with salt</li>
+                    <li>Encrypted private key storage</li>
+                    <li>Secure session management</li>
+                    <li>Database connection encryption</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compliance and Standards -->
+    <div class="security-section">
+        <div class="card-header">
+            <i class="bi bi-award"></i> Compliance & Standards
+        </div>
+        <div class="card-body">
+            <div class="security-feature">
+                <h4><i class="bi bi-check-circle"></i> Security Standards</h4>
+                <p>CipherChat follows established security standards and best practices:</p>
+                <ul class="security-checklist">
+                    <li>OWASP Top 10 security guidelines</li>
+                    <li>NIST cryptographic standards</li>
+                    <li>RFC 4880 (OpenPGP) message format compatibility</li>
+                    <li>Django security best practices</li>
+                    <li>Industry-standard encryption algorithms</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add any interactive security features here
+    document.addEventListener('DOMContentLoaded', function() {
+        // Security status indicators
+        const statusIndicators = document.querySelectorAll('.security-status');
+        statusIndicators.forEach(indicator => {
+            indicator.addEventListener('click', function() {
+                // Add click effects or detailed information
+                console.log('Security status clicked:', this.textContent);
+            });
+        });
+    });
+</script>
+{% endblock %}

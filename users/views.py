@@ -2,7 +2,7 @@
 Django views for user management.
 """
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate, update_session_auth_hash
+from django.contrib.auth import login, authenticate, update_session_auth_hash, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
@@ -60,6 +60,22 @@ def user_login(request):
                 # Handle remember me functionality
                 if not form.cleaned_data.get('remember_me'):
                     request.session.set_expiry(0)
+                
+                # Log the login event
+                try:
+                    from chat.models import SecurityLog
+                    SecurityLog.objects.create(
+                        user=user,
+                        operation='login',
+                        log_level='info',
+                        message=f'User {username} logged in successfully',
+                        ip_address=request.META.get('REMOTE_ADDR'),
+                        user_agent=request.META.get('HTTP_USER_AGENT', ''),
+                        success=True
+                    )
+                except Exception as e:
+                    # If logging fails, continue with login
+                    pass
                 
                 messages.success(request, f"Welcome back, {username}!")
                 return redirect('chat:dashboard')
@@ -126,4 +142,39 @@ def delete_account(request):
             messages.error(request, f"Error deleting account: {str(e)}")
     
     return render(request, 'users/delete_account.html')
+
+
+def user_logout(request):
+    """Custom user logout view."""
+    from django.utils import timezone
+    
+    if request.user.is_authenticated:
+        username = request.user.username
+        
+        # Log the logout event before logging out
+        try:
+            from chat.models import SecurityLog
+            SecurityLog.objects.create(
+                user=request.user,
+                operation='logout',
+                log_level='info',
+                message=f'User {username} logged out successfully',
+                ip_address=request.META.get('REMOTE_ADDR'),
+                user_agent=request.META.get('HTTP_USER_AGENT', ''),
+                success=True
+            )
+        except Exception as e:
+            # If logging fails, continue with logout
+            pass
+        
+        logout(request)
+        messages.success(request, f"Goodbye, {username}! You have been successfully logged out.")
+    else:
+        messages.info(request, "You are not currently logged in.")
+    
+    context = {
+        'now': timezone.now(),
+    }
+    
+    return render(request, 'users/logout.html', context)
 
