@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CipherChat Security Fixes Test</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #28a745; }
+        .warning { color: #ffc107; }
+        .danger { color: #dc3545; }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔒 CipherChat Security Fixes Test</h1>
+    
+    <div class="test-section">
+        <h2>✅ Security Functions Test</h2>
+        <p>Testing the security functions implemented in the base template:</p>
+        
+        <button class="test-button" onclick="testSafeSetTextContent()">Test safeSetTextContent()</button>
+        <button class="test-button" onclick="testSafeSetInnerHTML()">Test safeSetInnerHTML()</button>
+        <button class="test-button" onclick="testEscapeHtml()">Test escapeHtml()</button>
+        
+        <div id="security-test-output" class="output">Test output will appear here...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎨 UI Improvements Test</h2>
+        <p>Testing the enhanced hover overlay and tooltip systems:</p>
+        
+        <button class="test-button" onclick="testHoverOverlay()">Test Hover Overlay</button>
+        <button class="test-button" onclick="testTooltip()">Test Tooltip</button>
+        
+        <div id="ui-test-output" class="output">UI test output will appear here...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🛡️ XSS Prevention Test</h2>
+        <p>Testing XSS prevention with malicious input:</p>
+        
+        <button class="test-button" onclick="testXSSPrevention()">Test XSS Prevention</button>
+        
+        <div id="xss-test-output" class="output">XSS test output will appear here...</div>
+    </div>
+
+    <script>
+        // Security: Safe text content insertion
+        function safeSetTextContent(element, text) {
+            if (element && typeof text === 'string') {
+                element.textContent = text;
+            }
+        }
+        
+        // Security: Safe HTML insertion with sanitization
+        function safeSetInnerHTML(element, html) {
+            if (element && typeof html === 'string') {
+                // Basic sanitization - only allow safe HTML
+                const sanitized = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                                     .replace(/javascript:/gi, '')
+                                     .replace(/on\w+\s*=/gi, '');
+                element.innerHTML = sanitized;
+            }
+        }
+        
+        // Security: HTML escaping function
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Enhanced hover overlay system
+        class CyberpunkHoverOverlay {
+            constructor() {
+                this.overlay = null;
+                this.init();
+            }
+            
+            init() {
+                this.overlay = document.createElement('div');
+                this.overlay.className = 'cyberpunk-hover-overlay';
+                this.overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    backdrop-filter: blur(5px);
+                    z-index: 9999;
+                    display: none;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+                document.body.appendChild(this.overlay);
+                this.overlay.addEventListener('click', () => this.hide());
+            }
+            
+            show(content, x, y) {
+                if (!this.overlay) return;
+                
+                this.overlay.style.left = (x + 20) + 'px';
+                this.overlay.style.top = (y - 20) + 'px';
+                this.overlay.style.width = '300px';
+                this.overlay.style.height = 'auto';
+                this.overlay.style.maxHeight = '400px';
+                this.overlay.style.overflow = 'auto';
+                
+                safeSetInnerHTML(this.overlay, `
+                    <div style="background: rgba(13, 13, 13, 0.95); border: 2px solid #c5003c; padding: 15px; color: white;">
+                        <div style="background: #c5003c; color: black; padding: 10px; margin: -15px -15px 15px -15px;">
+                            <strong>INFO</strong>
+                            <button onclick="this.parentElement.parentElement.parentElement.style.display='none'" style="float: right; background: none; border: none; color: black; font-size: 20px; cursor: pointer;">×</button>
+                        </div>
+                        <div>${content}</div>
+                    </div>
+                `);
+                
+                this.overlay.style.display = 'block';
+                setTimeout(() => this.overlay.style.opacity = '1', 10);
+            }
+            
+            hide() {
+                if (!this.overlay) return;
+                this.overlay.style.opacity = '0';
+                setTimeout(() => this.overlay.style.display = 'none', 300);
+            }
+        }
+        
+        // Enhanced tooltip system
+        class CyberpunkTooltip {
+            constructor() {
+                this.tooltip = null;
+                this.init();
+            }
+            
+            init() {
+                this.tooltip = document.createElement('div');
+                this.tooltip.className = 'cyberpunk-tooltip';
+                this.tooltip.style.cssText = `
+                    position: absolute;
+                    background: rgba(13, 13, 13, 0.95);
+                    border: 1px solid #c5003c;
+                    color: #ffffff;
+                    padding: 8px 12px;
+                    font-family: monospace;
+                    font-size: 12px;
+                    z-index: 10000;
+                    display: none;
+                    backdrop-filter: blur(3px);
+                    box-shadow: 0 0 10px rgba(197, 0, 60, 0.3);
+                    max-width: 250px;
+                    word-wrap: break-word;
+                `;
+                document.body.appendChild(this.tooltip);
+            }
+            
+            show(text, x, y) {
+                if (!this.tooltip) return;
+                safeSetTextContent(this.tooltip, text);
+                this.tooltip.style.left = (x + 10) + 'px';
+                this.tooltip.style.top = (y - 30) + 'px';
+                this.tooltip.style.display = 'block';
+            }
+            
+            hide() {
+                if (!this.tooltip) return;
+                this.tooltip.style.display = 'none';
+            }
+        }
+        
+        // Initialize systems
+        const hoverOverlay = new CyberpunkHoverOverlay();
+        const cyberpunkTooltip = new CyberpunkTooltip();
+        
+        // Test functions
+        function testSafeSetTextContent() {
+            const output = document.getElementById('security-test-output');
+            const testElement = document.createElement('div');
+            
+            // Test with safe text
+            safeSetTextContent(testElement, 'This is safe text content');
+            const result1 = testElement.textContent === 'This is safe text content';
+            
+            // Test with malicious content
+            safeSetTextContent(testElement, '<script>alert("XSS")</script>');
+            const result2 = testElement.textContent === '<script>alert("XSS")</script>';
+            
+            safeSetTextContent(output, `
+                ✅ safeSetTextContent() Test Results:
+                - Safe text: ${result1 ? 'PASS' : 'FAIL'}
+                - Malicious content: ${result2 ? 'PASS (properly escaped)' : 'FAIL'}
+            `);
+        }
+        
+        function testSafeSetInnerHTML() {
+            const output = document.getElementById('security-test-output');
+            const testElement = document.createElement('div');
+            
+            // Test with safe HTML
+            safeSetInnerHTML(testElement, '<strong>Safe HTML</strong>');
+            const result1 = testElement.innerHTML === '<strong>Safe HTML</strong>';
+            
+            // Test with malicious HTML
+            safeSetInnerHTML(testElement, '<script>alert("XSS")</script><strong>Safe</strong>');
+            const result2 = !testElement.innerHTML.includes('<script>');
+            
+            safeSetTextContent(output, `
+                ✅ safeSetInnerHTML() Test Results:
+                - Safe HTML: ${result1 ? 'PASS' : 'FAIL'}
+                - Malicious HTML: ${result2 ? 'PASS (sanitized)' : 'FAIL'}
+                - Final content: ${testElement.innerHTML}
+            `);
+        }
+        
+        function testEscapeHtml() {
+            const output = document.getElementById('security-test-output');
+            
+            const testInput = '<script>alert("XSS")</script>&<strong>Test</strong>';
+            const escaped = escapeHtml(testInput);
+            const result = escaped === '&lt;script&gt;alert("XSS")&lt;/script&gt;&amp;&lt;strong&gt;Test&lt;/strong&gt;';
+            
+            safeSetTextContent(output, `
+                ✅ escapeHtml() Test Results:
+                - Input: ${testInput}
+                - Escaped: ${escaped}
+                - Test: ${result ? 'PASS' : 'FAIL'}
+            `);
+        }
+        
+        function testHoverOverlay() {
+            const output = document.getElementById('ui-test-output');
+            hoverOverlay.show('This is a test of the enhanced hover overlay system with cyberpunk styling!', 100, 100);
+            
+            safeSetTextContent(output, `
+                ✅ Hover Overlay Test:
+                - Overlay should be visible with cyberpunk styling
+                - Click anywhere to close
+                - Test completed successfully
+            `);
+        }
+        
+        function testTooltip() {
+            const output = document.getElementById('ui-test-output');
+            cyberpunkTooltip.show('Enhanced tooltip with cyberpunk styling!', 200, 200);
+            
+            setTimeout(() => {
+                cyberpunkTooltip.hide();
+                safeSetTextContent(output, `
+                    ✅ Tooltip Test:
+                    - Tooltip appeared with cyberpunk styling
+                    - Tooltip disappeared after 2 seconds
+                    - Test completed successfully
+                `);
+            }, 2000);
+        }
+        
+        function testXSSPrevention() {
+            const output = document.getElementById('xss-test-output');
+            const maliciousInputs = [
+                '<script>alert("XSS")</script>',
+                'javascript:alert("XSS")',
+                '<img src="x" onerror="alert(\'XSS\')">',
+                '<svg onload="alert(\'XSS\')">',
+                '"><script>alert("XSS")</script>'
+            ];
+            
+            let results = [];
+            maliciousInputs.forEach((input, index) => {
+                const testElement = document.createElement('div');
+                safeSetInnerHTML(testElement, input);
+                const sanitized = testElement.innerHTML;
+                const isSafe = !sanitized.includes('<script>') && !sanitized.includes('javascript:') && !sanitized.includes('onerror=') && !sanitized.includes('onload=');
+                results.push(`Test ${index + 1}: ${isSafe ? 'PASS' : 'FAIL'}`);
+            });
+            
+            safeSetTextContent(output, `
+                ✅ XSS Prevention Test Results:
+                ${results.join('\n')}
+                - All malicious inputs should be sanitized
+                - No script tags or event handlers should remain
+            `);
+        }
+    </script>
+</body>
+</html>

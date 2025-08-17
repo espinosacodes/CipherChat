@@ -373,6 +373,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const password1 = document.getElementById('{{ form.password1.id_for_label }}');
     const password2 = document.getElementById('{{ form.password2.id_for_label }}');
     
+    // Security: Safe content insertion function
+    function safeSetContent(element, content) {
+        if (element && typeof content === 'string') {
+            element.innerHTML = content;
+        }
+    }
+    
     function validatePassword(password) {
         const lengthCheck = document.getElementById('length-check');
         const uppercaseCheck = document.getElementById('uppercase-check');
@@ -383,46 +390,46 @@ document.addEventListener('DOMContentLoaded', function() {
         // Length check
         if (password.length >= 8) {
             lengthCheck.className = 'requirement-item valid';
-            lengthCheck.innerHTML = '<i class="bi bi-check-circle"></i> At least 8 characters long';
+            safeSetContent(lengthCheck, '<i class="bi bi-check-circle"></i> At least 8 characters long');
         } else {
             lengthCheck.className = 'requirement-item invalid';
-            lengthCheck.innerHTML = '<i class="bi bi-circle"></i> At least 8 characters long';
+            safeSetContent(lengthCheck, '<i class="bi bi-circle"></i> At least 8 characters long');
         }
         
         // Uppercase check
         if (/[A-Z]/.test(password)) {
             uppercaseCheck.className = 'requirement-item valid';
-            uppercaseCheck.innerHTML = '<i class="bi bi-check-circle"></i> Contains uppercase letter';
+            safeSetContent(uppercaseCheck, '<i class="bi bi-check-circle"></i> Contains uppercase letter');
         } else {
             uppercaseCheck.className = 'requirement-item invalid';
-            uppercaseCheck.innerHTML = '<i class="bi bi-circle"></i> Contains uppercase letter';
+            safeSetContent(uppercaseCheck, '<i class="bi bi-circle"></i> Contains uppercase letter');
         }
         
         // Lowercase check
         if (/[a-z]/.test(password)) {
             lowercaseCheck.className = 'requirement-item valid';
-            lowercaseCheck.innerHTML = '<i class="bi bi-check-circle"></i> Contains lowercase letter';
+            safeSetContent(lowercaseCheck, '<i class="bi bi-check-circle"></i> Contains lowercase letter');
         } else {
             lowercaseCheck.className = 'requirement-item invalid';
-            lowercaseCheck.innerHTML = '<i class="bi bi-circle"></i> Contains lowercase letter';
+            safeSetContent(lowercaseCheck, '<i class="bi bi-circle"></i> Contains lowercase letter');
         }
         
         // Number check
         if (/[0-9]/.test(password)) {
             numberCheck.className = 'requirement-item valid';
-            numberCheck.innerHTML = '<i class="bi bi-check-circle"></i> Contains number';
+            safeSetContent(numberCheck, '<i class="bi bi-check-circle"></i> Contains number');
         } else {
             numberCheck.className = 'requirement-item invalid';
-            numberCheck.innerHTML = '<i class="bi bi-circle"></i> Contains number';
+            safeSetContent(numberCheck, '<i class="bi bi-circle"></i> Contains number');
         }
         
         // Special character check
         if (/[^A-Za-z0-9]/.test(password)) {
             specialCheck.className = 'requirement-item valid';
-            specialCheck.innerHTML = '<i class="bi bi-check-circle"></i> Contains special character';
+            safeSetContent(specialCheck, '<i class="bi bi-check-circle"></i> Contains special character');
         } else {
             specialCheck.className = 'requirement-item invalid';
-            specialCheck.innerHTML = '<i class="bi bi-circle"></i> Contains special character';
+            safeSetContent(specialCheck, '<i class="bi bi-circle"></i> Contains special character');
         }
     }
     

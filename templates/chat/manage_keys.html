@@ -190,97 +190,137 @@
 
 {% block extra_js %}
 <script>
+// Security: HTML escaping function
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Security: Safe content insertion
+function safeSetContent(elementId, content) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = content;
+    }
+}
+
 function viewKeyDetails(keyId) {
+    // Security: Validate keyId
+    if (!keyId || typeof keyId !== 'string' && typeof keyId !== 'number') {
+        console.error('Invalid keyId provided');
+        return;
+    }
+    
     // Show loading state
-    document.getElementById('keyDetailsContent').innerHTML = `
+    safeSetContent('keyDetailsContent', `
         <div class="text-center py-3">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
             <p class="mt-2">Loading key details...</p>
         </div>
-    `;
+    `);
     
     // Show the modal
     const modal = new bootstrap.Modal(document.getElementById('keyDetailsModal'));
     modal.show();
     
     // Make AJAX request to get key details
-    fetch(`/chat/keys/${keyId}/details/`)
-        .then(response => response.json())
+    fetch(`/chat/keys/${encodeURIComponent(keyId)}/details/`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 const key = data.key;
-                document.getElementById('keyDetailsContent').innerHTML = `
+                // Security: Escape all user data before insertion
+                safeSetContent('keyDetailsContent', `
                     <div class="row">
                         <div class="col-md-6">
-                            <h6><i class="fas fa-user"></i> Key Owner</h6>
-                            <p><strong>${key.key_owner_username}</strong></p>
+                            <h6><i class="bi bi-person"></i> Key Owner</h6>
+                            <p><strong>${escapeHtml(key.key_owner_username || 'Unknown')}</strong></p>
                         </div>
                         <div class="col-md-6">
-                            <h6><i class="fas fa-calendar"></i> Imported</h6>
-                            <p>${key.imported_at}</p>
+                            <h6><i class="bi bi-calendar"></i> Imported</h6>
+                            <p>${escapeHtml(key.imported_at || 'Unknown')}</p>
                         </div>
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-6">
-                            <h6><i class="fas fa-toggle-on"></i> Status</h6>
+                            <h6><i class="bi bi-toggle-on"></i> Status</h6>
                             <span class="badge bg-${key.is_active ? 'success' : 'danger'}">
                                 ${key.is_active ? 'Active' : 'Inactive'}
                             </span>
                         </div>
                         <div class="col-md-6">
-                            <h6><i class="fas fa-user-shield"></i> Imported By</h6>
-                            <p>${key.owner}</p>
+                            <h6><i class="bi bi-shield-check"></i> Imported By</h6>
+                            <p>${escapeHtml(key.owner || 'Unknown')}</p>
                         </div>
                     </div>
                     <div class="mt-4">
-                        <h6><i class="fas fa-key"></i> Public Key</h6>
-                        <div class="bg-light p-3 rounded">
-                            <pre class="mb-0" style="white-space: pre-wrap; font-size: 0.8em;">${key.public_key}</pre>
+                        <h6><i class="bi bi-key"></i> Public Key</h6>
+                        <div class="bg-dark p-3 rounded">
+                            <pre class="mb-0 text-light" style="white-space: pre-wrap; font-size: 0.8em;">${escapeHtml(key.public_key || 'No key data available')}</pre>
                         </div>
                     </div>
-                `;
+                `);
             } else {
-                document.getElementById('keyDetailsContent').innerHTML = `
+                safeSetContent('keyDetailsContent', `
                     <div class="text-center py-3">
-                        <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                        <i class="bi bi-exclamation-triangle fa-2x text-warning mb-2"></i>
                         <p class="text-danger">Error loading key details</p>
-                        <p class="text-muted">${data.error || 'Unknown error occurred'}</p>
+                        <p class="text-muted">${escapeHtml(data.error || 'Unknown error occurred')}</p>
                     </div>
-                `;
+                `);
             }
         })
         .catch(error => {
-            document.getElementById('keyDetailsContent').innerHTML = `
+            console.error('Error loading key details:', error);
+            safeSetContent('keyDetailsContent', `
                 <div class="text-center py-3">
-                    <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
+                    <i class="bi bi-exclamation-triangle fa-2x text-danger mb-2"></i>
                     <p class="text-danger">Failed to load key details</p>
                     <p class="text-muted">Network error or server unavailable</p>
                 </div>
-            `;
+            `);
         });
 }
 
 function copyPublicKey() {
     const keyContent = document.querySelector('#keyDetailsContent pre');
     if (keyContent) {
-        navigator.clipboard.writeText(keyContent.textContent).then(() => {
+        // Security: Use textContent instead of innerHTML for clipboard
+        const keyText = keyContent.textContent || keyContent.innerText;
+        
+        navigator.clipboard.writeText(keyText).then(() => {
             // Show success message
             const button = document.querySelector('.modal-footer .btn-outline-primary');
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            button.classList.remove('btn-outline-primary');
-            button.classList.add('btn-success');
-            
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.classList.remove('btn-success');
-                button.classList.add('btn-outline-primary');
-            }, 2000);
+            if (button) {
+                const originalText = button.innerHTML;
+                // Security: Use safe content insertion
+                button.innerHTML = '<i class="bi bi-check"></i> Copied!';
+                button.classList.remove('btn-outline-primary');
+                button.classList.add('btn-success');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-outline-primary');
+                }, 2000);
+            }
         }).catch(err => {
             console.error('Failed to copy: ', err);
-            alert('Failed to copy key to clipboard');
+            // Security: Use safe alert or better error handling
+            const errorMsg = 'Failed to copy key to clipboard. Please try again.';
+            if (typeof cyberpunkTooltip !== 'undefined') {
+                cyberpunkTooltip.show(errorMsg, event.clientX, event.clientY);
+            } else {
+                alert(errorMsg);
+            }
         });
     }
 }

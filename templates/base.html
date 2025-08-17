@@ -84,7 +84,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color:#55EAD4;
+            color: rgba(255, 255, 255, 0.95);
         }
         
         .navbar {
@@ -488,9 +488,31 @@
         
         /* Dropdown styling */
         .dropdown-menu {
-            background: var(--panel-bg);
-            border: 1px solid var(--primary-red);
+            background: rgba(13, 13, 13, 0.98);
+            border: 2px solid var(--primary-red);
             border-radius: 0;
+            z-index: 10001 !important;
+            position: absolute !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 25px rgba(197, 0, 60, 0.4);
+            min-width: 220px;
+            margin-top: 5px;
+        }
+        
+        .dropdown-menu.show {
+            display: block !important;
+            animation: dropdown-fade-in 0.2s ease-in;
+        }
+        
+        @keyframes dropdown-fade-in {
+            from { 
+                opacity: 0; 
+                transform: translateY(-10px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
         }
         
         .dropdown-item {
@@ -720,7 +742,7 @@
     
     <!-- Custom JS -->
     <script>
-        // Suppress deprecation warnings
+        // Security: Suppress deprecation warnings safely
         const originalWarn = console.warn;
         console.warn = function(...args) {
             if (args[0] && typeof args[0] === 'string' && args[0].includes('Components object is deprecated')) {
@@ -728,6 +750,137 @@
             }
             originalWarn.apply(console, args);
         };
+        
+        // Security: Safe text content insertion
+        function safeSetTextContent(element, text) {
+            if (element && typeof text === 'string') {
+                element.textContent = text;
+            }
+        }
+        
+        // Security: Safe HTML insertion with sanitization
+        function safeSetInnerHTML(element, html) {
+            if (element && typeof html === 'string') {
+                // Basic sanitization - only allow safe HTML
+                const sanitized = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                                     .replace(/javascript:/gi, '')
+                                     .replace(/on\w+\s*=/gi, '');
+                element.innerHTML = sanitized;
+            }
+        }
+        
+        // Enhanced hover overlay system
+        class CyberpunkHoverOverlay {
+            constructor() {
+                this.overlay = null;
+                this.init();
+            }
+            
+            init() {
+                // Create overlay element
+                this.overlay = document.createElement('div');
+                this.overlay.className = 'cyberpunk-hover-overlay';
+                this.overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    backdrop-filter: blur(5px);
+                    z-index: 9999;
+                    display: none;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+                document.body.appendChild(this.overlay);
+                
+                // Add close functionality
+                this.overlay.addEventListener('click', () => this.hide());
+            }
+            
+            show(content, x, y) {
+                if (!this.overlay) return;
+                
+                // Position the overlay near the mouse
+                this.overlay.style.left = (x + 20) + 'px';
+                this.overlay.style.top = (y - 20) + 'px';
+                this.overlay.style.width = '300px';
+                this.overlay.style.height = 'auto';
+                this.overlay.style.maxHeight = '400px';
+                this.overlay.style.overflow = 'auto';
+                
+                // Set content with cyberpunk styling
+                safeSetInnerHTML(this.overlay, `
+                    <div class="cyberpunk-overlay-content">
+                        <div class="cyberpunk-overlay-header">
+                            <span class="cyberpunk-overlay-title">INFO</span>
+                            <button class="cyberpunk-overlay-close" onclick="this.parentElement.parentElement.parentElement.style.display='none'">×</button>
+                        </div>
+                        <div class="cyberpunk-overlay-body">
+                            ${content}
+                        </div>
+                    </div>
+                `);
+                
+                this.overlay.style.display = 'block';
+                setTimeout(() => this.overlay.style.opacity = '1', 10);
+            }
+            
+            hide() {
+                if (!this.overlay) return;
+                this.overlay.style.opacity = '0';
+                setTimeout(() => this.overlay.style.display = 'none', 300);
+            }
+        }
+        
+        // Initialize hover overlay system
+        const hoverOverlay = new CyberpunkHoverOverlay();
+        
+        // Enhanced tooltip system
+        class CyberpunkTooltip {
+            constructor() {
+                this.tooltip = null;
+                this.init();
+            }
+            
+            init() {
+                this.tooltip = document.createElement('div');
+                this.tooltip.className = 'cyberpunk-tooltip';
+                this.tooltip.style.cssText = `
+                    position: absolute;
+                    background: rgba(13, 13, 13, 0.95);
+                    border: 1px solid #c5003c;
+                    color: #ffffff;
+                    padding: 8px 12px;
+                    font-family: 'Share Tech Mono', monospace;
+                    font-size: 12px;
+                    z-index: 10000;
+                    display: none;
+                    backdrop-filter: blur(3px);
+                    box-shadow: 0 0 10px rgba(197, 0, 60, 0.3);
+                    max-width: 250px;
+                    word-wrap: break-word;
+                `;
+                document.body.appendChild(this.tooltip);
+            }
+            
+            show(text, x, y) {
+                if (!this.tooltip) return;
+                safeSetTextContent(this.tooltip, text);
+                this.tooltip.style.left = (x + 10) + 'px';
+                this.tooltip.style.top = (y - 30) + 'px';
+                this.tooltip.style.display = 'block';
+            }
+            
+            hide() {
+                if (!this.tooltip) return;
+                this.tooltip.style.display = 'none';
+            }
+        }
+        
+        // Initialize tooltip system
+        const cyberpunkTooltip = new CyberpunkTooltip();
         
         // Add glitch effect to elements with glitch-text class
         document.addEventListener('DOMContentLoaded', function() {
@@ -741,78 +894,96 @@
                 });
             });
             
-                    // Add subtle glitch to buttons on hover
-        const buttons = document.querySelectorAll('.btn');
-        buttons.forEach(button => {
-            button.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateX(-1px)';
+            // Add subtle glitch to buttons on hover
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(-1px)';
+                });
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                });
             });
-            button.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateX(0)';
+            
+            // Enhanced hover effects for cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function(e) {
+                    // Show enhanced tooltip
+                    const title = this.querySelector('.card-header')?.textContent || 'Card';
+                    cyberpunkTooltip.show(`Enhanced view: ${title}`, e.clientX, e.clientY);
+                });
+                card.addEventListener('mouseleave', function() {
+                    cyberpunkTooltip.hide();
+                });
             });
-        });
-        
-        // Generate additional binary columns dynamically
-        function generateBinaryColumn() {
-            const binaryRain = document.querySelector('.binary-rain');
-            const column = document.createElement('div');
-            column.className = 'binary-column';
-            column.style.left = Math.random() * 100 + '%';
-            column.style.animationDuration = (Math.random() * 10 + 5) + 's';
-            column.style.animationDelay = Math.random() * 5 + 's';
             
-            let binaryContent = '';
-            for (let i = 0; i < 30; i++) {
-                binaryContent += Math.random() > 0.5 ? '10101010' : '01010101';
-                binaryContent += '<br>';
-            }
-            column.innerHTML = binaryContent;
-            
-            binaryRain.appendChild(column);
-            
-            // Remove column after animation completes
-            setTimeout(() => {
-                if (column.parentNode) {
-                    column.parentNode.removeChild(column);
+            // Generate additional binary columns dynamically (SECURE)
+            function generateBinaryColumn() {
+                const binaryRain = document.querySelector('.binary-rain');
+                if (!binaryRain) return;
+                
+                const column = document.createElement('div');
+                column.className = 'binary-column';
+                column.style.left = Math.random() * 100 + '%';
+                column.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                column.style.animationDelay = Math.random() * 5 + 's';
+                
+                let binaryContent = '';
+                for (let i = 0; i < 30; i++) {
+                    binaryContent += Math.random() > 0.5 ? '10101010' : '01010101';
+                    binaryContent += '<br>';
                 }
-            }, 15000);
-        }
-        
-        // Generate additional crypto keys dynamically
-        function generateCryptoKey() {
-            const cryptoKeys = document.querySelector('.crypto-keys');
-            const key = document.createElement('div');
-            key.className = 'crypto-key';
-            key.style.left = Math.random() * 100 + '%';
-            key.style.animationDuration = (Math.random() * 15 + 10) + 's';
-            key.style.animationDelay = Math.random() * 5 + 's';
-            
-            const cryptoAlgorithms = ['RSA-2048', 'SHA-256', 'AES-256', 'ECC-384', 'ChaCha20', 'Poly1305', 'Argon2', 'Scrypt', 'PBKDF2', 'HMAC', 'Blowfish', 'Twofish', 'Serpent', 'Camellia', 'GOST'];
-            let keyContent = '';
-            for (let i = 0; i < 20; i++) {
-                keyContent += cryptoAlgorithms[Math.floor(Math.random() * cryptoAlgorithms.length)];
-                keyContent += '<br>';
+                safeSetInnerHTML(column, binaryContent);
+                
+                binaryRain.appendChild(column);
+                
+                // Remove column after animation completes
+                setTimeout(() => {
+                    if (column.parentNode) {
+                        column.parentNode.removeChild(column);
+                    }
+                }, 15000);
             }
-            key.innerHTML = keyContent;
             
-            cryptoKeys.appendChild(key);
-            
-            // Remove key after animation completes
-            setTimeout(() => {
-                if (key.parentNode) {
-                    key.parentNode.removeChild(key);
+            // Generate additional crypto keys dynamically (SECURE)
+            function generateCryptoKey() {
+                const cryptoKeys = document.querySelector('.crypto-keys');
+                if (!cryptoKeys) return;
+                
+                const key = document.createElement('div');
+                key.className = 'crypto-key';
+                key.style.left = Math.random() * 100 + '%';
+                key.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                key.style.animationDelay = Math.random() * 5 + 's';
+                
+                const cryptoAlgorithms = ['RSA-2048', 'SHA-256', 'AES-256', 'ECC-384', 'ChaCha20', 'Poly1305', 'Argon2', 'Scrypt', 'PBKDF2', 'HMAC'];
+                let keyContent = '';
+                for (let i = 0; i < 20; i++) {
+                    keyContent += cryptoAlgorithms[Math.floor(Math.random() * cryptoAlgorithms.length)];
+                    keyContent += '<br>';
                 }
-            }, 25000);
-        }
-        
-        // Generate new elements periodically
-        setInterval(generateBinaryColumn, 3000);
-        setInterval(generateCryptoKey, 5000);
-        
-        // Generate additional main container binary columns
-        function generateMainContainerBinary() {
-            const mainContainerBinary = document.querySelector('.main-container-binary');
-            if (mainContainerBinary) {
+                safeSetInnerHTML(key, keyContent);
+                
+                cryptoKeys.appendChild(key);
+                
+                // Remove key after animation completes
+                setTimeout(() => {
+                    if (key.parentNode) {
+                        key.parentNode.removeChild(key);
+                    }
+                }, 25000);
+            }
+            
+            // Generate new elements periodically
+            setInterval(generateBinaryColumn, 3000);
+            setInterval(generateCryptoKey, 5000);
+            
+            // Generate additional main container binary columns (SECURE)
+            function generateMainContainerBinary() {
+                const mainContainerBinary = document.querySelector('.main-container-binary');
+                if (!mainContainerBinary) return;
+                
                 const column = document.createElement('div');
                 column.className = 'main-container-binary-column';
                 column.style.left = Math.random() * 100 + '%';
@@ -824,7 +995,7 @@
                     binaryContent += Math.random() > 0.5 ? '10101010' : '01010101';
                     binaryContent += '<br>';
                 }
-                column.innerHTML = binaryContent;
+                safeSetInnerHTML(column, binaryContent);
                 
                 mainContainerBinary.appendChild(column);
                 
@@ -835,12 +1006,12 @@
                     }
                 }, 10000);
             }
-        }
-        
-        // Generate additional main container crypto keys
-        function generateMainContainerCrypto() {
-            const mainContainerCrypto = document.querySelector('.main-container-crypto');
-            if (mainContainerCrypto) {
+            
+            // Generate additional main container crypto keys (SECURE)
+            function generateMainContainerCrypto() {
+                const mainContainerCrypto = document.querySelector('.main-container-crypto');
+                if (!mainContainerCrypto) return;
+                
                 const key = document.createElement('div');
                 key.className = 'main-container-crypto-key';
                 key.style.left = Math.random() * 100 + '%';
@@ -853,7 +1024,7 @@
                     keyContent += cryptoAlgorithms[Math.floor(Math.random() * cryptoAlgorithms.length)];
                     keyContent += '<br>';
                 }
-                key.innerHTML = keyContent;
+                safeSetInnerHTML(key, keyContent);
                 
                 mainContainerCrypto.appendChild(key);
                 
@@ -864,11 +1035,72 @@
                     }
                 }, 20000);
             }
-        }
-        
-        // Generate new main container elements periodically
+            
+                    // Generate new main container elements periodically
         setInterval(generateMainContainerBinary, 4000);
         setInterval(generateMainContainerCrypto, 6000);
+        
+        // Enhanced dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure dropdowns are properly positioned and visible
+            const dropdowns = document.querySelectorAll('.dropdown-menu');
+            dropdowns.forEach(dropdown => {
+                // Set high z-index to ensure visibility
+                dropdown.style.zIndex = '10001';
+                dropdown.style.position = 'absolute';
+                
+                // Add cyberpunk styling
+                if (!dropdown.classList.contains('cyberpunk-dropdown')) {
+                    dropdown.classList.add('cyberpunk-dropdown');
+                }
+            });
+            
+            // Enhanced dropdown toggle behavior
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const dropdownMenu = this.nextElementSibling;
+                    if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
+                        // Close all other dropdowns
+                        document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                            if (menu !== dropdownMenu) {
+                                menu.classList.remove('show');
+                            }
+                        });
+                        
+                        // Toggle current dropdown
+                        dropdownMenu.classList.toggle('show');
+                        
+                        // Ensure proper positioning
+                        if (dropdownMenu.classList.contains('show')) {
+                            dropdownMenu.style.zIndex = '10001';
+                            dropdownMenu.style.position = 'absolute';
+                        }
+                    }
+                });
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                }
+            });
+            
+            // Close dropdowns on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                }
+            });
+        });
         });
     </script>
     {% block extra_js %}{% endblock %}

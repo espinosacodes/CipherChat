@@ -697,20 +697,62 @@ code {
 
 /* Dropdown Styling */
 .dropdown-menu {
-    background: rgba(13, 13, 13, 0.9);
+    background: rgba(13, 13, 13, 0.95);
     border: 1px solid var(--primary-red);
     border-radius: 0;
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(5px);
+    z-index: 10001 !important;
+    position: absolute !important;
+    box-shadow: 0 0 20px rgba(197, 0, 60, 0.3);
+    min-width: 200px;
+    margin-top: 5px;
+}
+
+.dropdown-menu.show {
+    display: block !important;
+    animation: dropdown-fade-in 0.2s ease-in;
+}
+
+@keyframes dropdown-fade-in {
+    from { 
+        opacity: 0; 
+        transform: translateY(-10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 
 .dropdown-item {
     color: var(--text-primary);
     font-family: 'Share Tech Mono', 'VT323', monospace;
+    padding: 10px 15px;
+    border-bottom: 1px solid rgba(197, 0, 60, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
 }
 
 .dropdown-item:hover {
-    background: rgba(197, 0, 60, 0.1);
+    background: rgba(197, 0, 60, 0.15);
     color: var(--primary-red);
+    transform: translateX(5px);
+    box-shadow: 0 0 10px rgba(197, 0, 60, 0.2);
+}
+
+.dropdown-item:active {
+    background: rgba(197, 0, 60, 0.25);
+    color: var(--dark-bg);
+}
+
+.dropdown-item i {
+    margin-right: 8px;
+    width: 16px;
+    text-align: center;
 }
 
 /* Pagination */
@@ -767,6 +809,231 @@ code {
     8% { transform: translateX(-1px); }
     10% { transform: translateX(1px); }
     12% { transform: translateX(0); }
+}
+
+/* Enhanced Cyberpunk Hover Overlay System */
+.cyberpunk-hover-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.cyberpunk-overlay-content {
+    background: rgba(13, 13, 13, 0.95);
+    border: 2px solid var(--primary-red);
+    border-radius: 0;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(197, 0, 60, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.cyberpunk-overlay-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+    animation: scan-line 3s linear infinite;
+}
+
+.cyberpunk-overlay-header {
+    background: var(--primary-red);
+    color: var(--dark-bg);
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--primary-red);
+}
+
+.cyberpunk-overlay-title {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
+}
+
+.cyberpunk-overlay-close {
+    background: none;
+    border: none;
+    color: var(--dark-bg);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.cyberpunk-overlay-close:hover {
+    background: rgba(0, 0, 0, 0.2);
+    transform: scale(1.1);
+}
+
+.cyberpunk-overlay-body {
+    padding: 15px;
+    color: var(--text-primary);
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+    line-height: 1.5;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.cyberpunk-overlay-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cyberpunk-overlay-body::-webkit-scrollbar-track {
+    background: rgba(15, 15, 15, 0.5);
+}
+
+.cyberpunk-overlay-body::-webkit-scrollbar-thumb {
+    background: var(--primary-red);
+}
+
+.cyberpunk-overlay-body::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-red-bright);
+}
+
+/* Enhanced Cyberpunk Tooltip */
+.cyberpunk-tooltip {
+    position: absolute;
+    background: rgba(13, 13, 13, 0.95);
+    border: 1px solid var(--primary-red);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+    font-size: 12px;
+    z-index: 10000;
+    display: none;
+    backdrop-filter: blur(3px);
+    box-shadow: 0 0 10px rgba(197, 0, 60, 0.3);
+    max-width: 250px;
+    word-wrap: break-word;
+    border-radius: 0;
+    animation: tooltip-fade-in 0.2s ease-in;
+}
+
+.cyberpunk-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 10px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid var(--primary-red);
+}
+
+@keyframes tooltip-fade-in {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Enhanced Hover Effects */
+.card:hover .cyberpunk-tooltip,
+.btn:hover .cyberpunk-tooltip,
+.nav-link:hover .cyberpunk-tooltip {
+    display: block;
+}
+
+/* Interactive Hover States */
+.card.interactive-hover {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.card.interactive-hover:hover {
+    transform: translateY(-5px) scale(1.02);
+    border-color: var(--primary-red-bright);
+    box-shadow: 0 0 20px rgba(197, 0, 60, 0.4);
+}
+
+.btn.interactive-hover {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn.interactive-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(197, 0, 60, 0.3);
+}
+
+/* Security-focused hover indicators */
+.security-indicator {
+    position: relative;
+}
+
+.security-indicator::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    background: var(--primary-red);
+    border-radius: 50%;
+    animation: security-pulse 2s ease-in-out infinite;
+}
+
+@keyframes security-pulse {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Enhanced form field hover effects */
+.form-control:focus {
+    background: rgba(15, 15, 15, 0.8);
+    border-color: var(--primary-red-bright);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 0.2rem rgba(197, 0, 60, 0.25);
+    transform: translateY(-1px);
+    transition: all 0.3s ease;
+}
+
+/* Security status indicators */
+.security-status {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 0;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.security-status.secure {
+    background: rgba(197, 0, 60, 0.2);
+    color: var(--primary-red);
+    border: 1px solid var(--primary-red);
+}
+
+.security-status.warning {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid #ffc107;
+}
+
+.security-status.danger {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    border: 1px solid #dc3545;
 }
 
 /* Cyberpunk Background Animations */
@@ -875,9 +1142,44 @@ code {
 }
 
 /* Ensure content is above background animations */
-.navbar, .main-container, .card, .modal, .dropdown-menu {
+.navbar, .main-container, .card, .modal {
     position: relative;
     z-index: 10;
+}
+
+/* Dropdown menu should be above everything */
+.dropdown-menu {
+    position: absolute !important;
+    z-index: 10001 !important;
+}
+
+/* Ensure dropdown containers are properly positioned */
+.dropdown {
+    position: relative !important;
+}
+
+/* Cyberpunk dropdown styling */
+.cyberpunk-dropdown {
+    background: rgba(13, 13, 13, 0.98) !important;
+    border: 2px solid var(--primary-red) !important;
+    border-radius: 0 !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 0 25px rgba(197, 0, 60, 0.4) !important;
+    z-index: 10001 !important;
+    position: absolute !important;
+    min-width: 220px !important;
+    margin-top: 5px !important;
+}
+
+.cyberpunk-dropdown::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+    animation: scan-line 3s linear infinite;
 }
 
 /* Performance optimization for background animations */

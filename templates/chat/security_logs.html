@@ -214,13 +214,26 @@
 
 {% block extra_js %}
 <script>
+// Security: HTML escaping function
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 function viewLogDetails(logId) {
+    // Security: Validate logId
+    if (!logId || typeof logId !== 'string' && typeof logId !== 'number') {
+        console.error('Invalid logId provided');
+        return;
+    }
+    
     // This would typically make an AJAX call to get log details
-    // For now, show a placeholder
+    // For now, show a placeholder with proper escaping
     document.getElementById('logDetailsContent').innerHTML = `
         <div class="text-center py-3">
-            <i class="fas fa-shield-alt fa-2x text-muted mb-2"></i>
-            <p>Security log details for log ID: ${logId}</p>
+            <i class="bi bi-shield-check fa-2x text-muted mb-2"></i>
+            <p>Security log details for log ID: ${escapeHtml(logId.toString())}</p>
             <p class="text-muted">This would show the actual log details and metadata.</p>
         </div>
     `;
