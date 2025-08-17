@@ -1,0 +1,2 @@
+# Chat Django app
+

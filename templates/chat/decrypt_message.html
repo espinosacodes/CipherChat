@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}View Message - CipherChat{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-envelope-open"></i> Message Details
+                        </h4>
+                        <a href="{% url 'chat:view_messages' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Back to Messages
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Message Header -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>From:</strong> {{ message.sender.username }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>To:</strong> {{ message.recipient.username }}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Date:</strong> {{ message.timestamp|date:"F d, Y H:i:s" }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Type:</strong> 
+                            <span class="badge bg-secondary">{{ message.message_type }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Security Status -->
+                    <div class="alert {% if message.is_encrypted %}alert-success{% else %}alert-warning{% endif %} mb-3">
+                        <i class="fas {% if message.is_encrypted %}fa-lock{% else %}fa-unlock{% endif %}"></i>
+                        <strong>
+                            {% if message.is_encrypted %}
+                                Message is encrypted and secure
+                            {% else %}
+                                Message is not encrypted
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <!-- Message Content -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                {% if message.is_encrypted %}
+                                    <i class="fas fa-lock text-success"></i> Encrypted Content
+                                {% else %}
+                                    <i class="fas fa-unlock text-warning"></i> Message Content
+                                {% endif %}
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            {% if message.is_encrypted %}
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Encrypted Data:</strong></label>
+                                    <div class="bg-light p-3 rounded">
+                                        <code class="text-muted">{{ message.content|truncatechars:200 }}</code>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Decrypted Content:</strong></label>
+                                    <div class="bg-success bg-opacity-10 p-3 rounded border border-success">
+                                        <p class="mb-0">{{ decrypted_content }}</p>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="bg-light p-3 rounded">
+                                    <p class="mb-0">{{ message.content }}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Cryptographic Details (if encrypted) -->
+                    {% if message.is_encrypted %}
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-key"></i> Cryptographic Information
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label"><strong>AES Key:</strong></label>
+                                    <div class="bg-light p-2 rounded">
+                                        <code class="text-muted">{{ message.aes_key|truncatechars:50 }}</code>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"><strong>IV:</strong></label>
+                                    <div class="bg-light p-2 rounded">
+                                        <code class="text-muted">{{ message.iv|truncatechars:50 }}</code>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <label class="form-label"><strong>Digital Signature:</strong></label>
+                                <div class="bg-light p-2 rounded">
+                                    <code class="text-muted">{{ message.signature|truncatechars:100 }}</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Message Status -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-info-circle"></i> Message Status
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>Read Status:</strong>
+                                    {% if message.is_read %}
+                                        <span class="badge bg-success">Read</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Unread</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Message ID:</strong>
+                                    <code>{{ message.id }}</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            {% if message.sender == request.user %}
+                                <a href="{% url 'chat:send_message' %}" class="btn btn-primary">
+                                    <i class="fas fa-reply"></i> Reply
+                                </a>
+                            {% else %}
+                                <a href="{% url 'chat:send_message' %}" class="btn btn-primary">
+                                    <i class="fas fa-reply"></i> Reply
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <a href="{% url 'chat:view_messages' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-list"></i> All Messages
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

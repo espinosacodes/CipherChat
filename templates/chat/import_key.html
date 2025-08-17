@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Import Public Key - CipherChat{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-upload"></i> Import Public Key
+                        </h4>
+                        <a href="{% url 'chat:manage_keys' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Back to Keys
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Import a Public Key:</strong> To send encrypted messages to another user, you need to import their public key.
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'chat:manage_keys' %}" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Import Key
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-question-circle"></i> How to Import a Public Key
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-user"></i> Step 1: Get the Username</h6>
+                            <p class="text-muted">
+                                Ask the user for their exact username in CipherChat. This must match exactly.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-key"></i> Step 2: Get the Public Key</h6>
+                            <p class="text-muted">
+                                Ask the user to export their public key and share it with you. It should look like:
+                            </p>
+                            <div class="bg-light p-2 rounded">
+                                <code class="text-muted small">
+                                    -----BEGIN PUBLIC KEY-----<br>
+                                    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A...<br>
+                                    -----END PUBLIC KEY-----
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-upload"></i> Step 3: Import</h6>
+                            <p class="text-muted">
+                                Enter the username and paste the public key data above, then click Import.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-check"></i> Step 4: Verify</h6>
+                            <p class="text-muted">
+                                The key will be validated and stored. You can then send encrypted messages to that user.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Notes -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shield-alt"></i> Security Notes
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Important:</strong> Only import public keys from users you trust and through secure channels.
+                    </div>
+                    
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success"></i> Public keys are safe to share - they cannot be used to decrypt messages</li>
+                        <li><i class="fas fa-check text-success"></i> Verify the username matches the person you're communicating with</li>
+                        <li><i class="fas fa-check text-success"></i> Use secure channels (not public forums) to exchange public keys</li>
+                        <li><i class="fas fa-check text-success"></i> You can always remove imported keys if needed</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

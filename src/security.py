@@ -384,3 +384,4 @@ class SecureFileManager:
 
 # Global security auditor instance
 security_auditor = SecurityAuditor()
+

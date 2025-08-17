@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}View Messages - CipherChat{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-envelope"></i> Messages</h2>
+                <a href="{% url 'chat:send_message' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Send New Message
+                </a>
+            </div>
+
+            <!-- Search and Filter Form -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="search" class="form-label">Search Messages</label>
+                            <input type="text" class="form-control" id="search" name="search" 
+                                   value="{{ search_query }}" placeholder="Search in message content...">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="message_type" class="form-label">Message Type</label>
+                            <select class="form-select" id="message_type" name="message_type">
+                                <option value="">All Types</option>
+                                <option value="text" {% if message_type == 'text' %}selected{% endif %}>Text</option>
+                                <option value="file" {% if message_type == 'file' %}selected{% endif %}>File</option>
+                                <option value="image" {% if message_type == 'image' %}selected{% endif %}>Image</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="sender" class="form-label">Sender</label>
+                            <select class="form-select" id="sender" name="sender">
+                                <option value="">All Senders</option>
+                                {% for user in all_users %}
+                                <option value="{{ user.username }}" {% if sender_filter == user.username %}selected{% endif %}>
+                                    {{ user.username }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">&nbsp;</label>
+                            <div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search"></i> Filter
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Messages List -->
+            {% if page_obj %}
+                <div class="row">
+                    {% for message in page_obj %}
+                    <div class="col-12 mb-3">
+                        <div class="card {% if message.recipient == request.user and not message.is_read %}border-primary{% endif %}">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    {% if message.sender == request.user %}
+                                        <span class="badge bg-success">Sent</span>
+                                        <strong>To: {{ message.recipient.username }}</strong>
+                                    {% else %}
+                                        <span class="badge bg-info">Received</span>
+                                        <strong>From: {{ message.sender.username }}</strong>
+                                        {% if not message.is_read %}
+                                            <span class="badge bg-warning">Unread</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <div class="text-muted">
+                                    <small>{{ message.timestamp|date:"M d, Y H:i" }}</small>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <p class="card-text">
+                                            {% if message.is_encrypted %}
+                                                <i class="fas fa-lock text-success"></i>
+                                                <span class="text-muted">{{ message.content|truncatechars:100 }}</span>
+                                            {% else %}
+                                                <i class="fas fa-unlock text-warning"></i>
+                                                {{ message.content|truncatechars:100 }}
+                                            {% endif %}
+                                        </p>
+                                        <div class="mt-2">
+                                            <span class="badge bg-secondary">{{ message.message_type }}</span>
+                                            {% if message.is_encrypted %}
+                                                <span class="badge bg-success">Encrypted</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <a href="{% url 'chat:decrypt_message' message.id %}" 
+                                           class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="Messages pagination">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <h4 class="text-muted">No messages found</h4>
+                    <p class="text-muted">
+                        {% if search_query or message_type or sender_filter %}
+                            Try adjusting your search criteria.
+                        {% else %}
+                            You haven't sent or received any messages yet.
+                        {% endif %}
+                    </p>
+                    <a href="{% url 'chat:send_message' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Send Your First Message
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

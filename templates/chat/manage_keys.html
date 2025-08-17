@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Manage Keys - CipherChat{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-key"></i> Cryptographic Key Management</h2>
+            
+            <!-- User's Keys Status -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-shield"></i> Your Cryptographic Keys
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if has_keys %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            <strong>Keys Generated:</strong> You have cryptographic keys ready for secure communication.
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Generated:</strong> {{ user_profile.keys_generated_at|date:"F d, Y H:i" }}
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'chat:export_public_key' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-download"></i> Export Public Key
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>No Keys Generated:</strong> You need to generate cryptographic keys to send encrypted messages.
+                        </div>
+                        <a href="{% url 'chat:generate_keys' %}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Generate New Keys
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Import Public Key -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-upload"></i> Import Public Key
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">
+                        Import another user's public key to send them encrypted messages.
+                    </p>
+                    <a href="{% url 'chat:import_key' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-upload"></i> Import Public Key
+                    </a>
+                </div>
+            </div>
+
+            <!-- Key Exchange -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exchange-alt"></i> Key Exchange
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">
+                        Initiate a secure key exchange with another user.
+                    </p>
+                    <a href="{% url 'chat:key_exchange' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-exchange-alt"></i> Initiate Key Exchange
+                    </a>
+                </div>
+            </div>
+
+            <!-- Imported Public Keys -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-key"></i> Imported Public Keys
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if imported_keys %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Key Type</th>
+                                        <th>Key Size</th>
+                                        <th>Imported</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for key in imported_keys %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ key.owner.username }}</strong>
+                                            {% if key.owner.first_name or key.owner.last_name %}
+                                                <br>
+                                                <small class="text-muted">
+                                                    {{ key.owner.first_name }} {{ key.owner.last_name }}
+                                                </small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">{{ key.key_type }}</span>
+                                        </td>
+                                        <td>{{ key.key_size }} bits</td>
+                                        <td>{{ key.imported_at|date:"M d, Y" }}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-secondary" 
+                                                    onclick="viewKeyDetails({{ key.id }})">
+                                                <i class="fas fa-eye"></i> View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-3">
+                            <i class="fas fa-key fa-2x text-muted mb-2"></i>
+                            <p class="text-muted">No public keys imported yet.</p>
+                            <a href="{% url 'chat:import_key' %}" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Import Your First Key
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Security Information -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shield-alt"></i> Security Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-lock"></i> How It Works</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> RSA + AES hybrid encryption</li>
+                                <li><i class="fas fa-check text-success"></i> Digital signatures for authenticity</li>
+                                <li><i class="fas fa-check text-success"></i> Secure key exchange protocols</li>
+                                <li><i class="fas fa-check text-success"></i> End-to-end encryption</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-info-circle"></i> Key Management</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Generate your own key pair</li>
+                                <li><i class="fas fa-check text-success"></i> Import others' public keys</li>
+                                <li><i class="fas fa-check text-success"></i> Export your public key</li>
+                                <li><i class="fas fa-check text-success"></i> Secure key exchange</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Key Details Modal -->
+<div class="modal fade" id="keyDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Public Key Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="keyDetailsContent">
+                <!-- Content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function viewKeyDetails(keyId) {
+    // This would typically make an AJAX call to get key details
+    // For now, show a placeholder
+    document.getElementById('keyDetailsContent').innerHTML = `
+        <div class="text-center py-3">
+            <i class="fas fa-key fa-2x text-muted mb-2"></i>
+            <p>Key details for key ID: ${keyId}</p>
+            <p class="text-muted">This would show the actual public key data and metadata.</p>
+        </div>
+    `;
+    
+    new bootstrap.Modal(document.getElementById('keyDetailsModal')).show();
+}
+</script>
+{% endblock %}

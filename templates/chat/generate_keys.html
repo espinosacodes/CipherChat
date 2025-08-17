@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Generate Keys - CipherChat{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-key"></i> Generate Cryptographic Keys
+                        </h4>
+                        <a href="{% url 'chat:manage_keys' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Back to Keys
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Generate Your Keys:</strong> Create a new RSA key pair for secure communication. This process may take a few moments.
+                    </div>
+
+                    <div class="text-center py-4">
+                        <i class="fas fa-key fa-3x text-primary mb-3"></i>
+                        <h5>Ready to Generate Keys?</h5>
+                        <p class="text-muted">
+                            This will create a new RSA key pair (public and private keys) for your account.
+                        </p>
+                        
+                        <form method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-magic"></i> Generate New Keys
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Important:</strong> 
+                        <ul class="mb-0 mt-2">
+                            <li>Key generation may take several seconds depending on your system</li>
+                            <li>Your private key will be stored securely and encrypted</li>
+                            <li>You can export your public key to share with others</li>
+                            <li>Keep your private key secure - never share it with anyone</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Information -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> About Your Keys
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-lock"></i> Public Key</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Safe to share with anyone</li>
+                                <li><i class="fas fa-check text-success"></i> Used by others to encrypt messages to you</li>
+                                <li><i class="fas fa-check text-success"></i> Cannot be used to decrypt messages</li>
+                                <li><i class="fas fa-check text-success"></i> Can be exported and shared</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-user-secret"></i> Private Key</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Never share with anyone</li>
+                                <li><i class="fas fa-check text-success"></i> Used to decrypt messages sent to you</li>
+                                <li><i class="fas fa-check text-success"></i> Used to sign your messages</li>
+                                <li><i class="fas fa-check text-success"></i> Stored securely and encrypted</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Features -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shield-alt"></i> Security Features
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-lock"></i> Encryption</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> RSA-2048 bit encryption</li>
+                                <li><i class="fas fa-check text-success"></i> AES-256 for message content</li>
+                                <li><i class="fas fa-check text-success"></i> Hybrid encryption system</li>
+                                <li><i class="fas fa-check text-success"></i> End-to-end security</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-signature"></i> Authentication</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Digital signatures</li>
+                                <li><i class="fas fa-check text-success"></i> Message integrity verification</li>
+                                <li><i class="fas fa-check text-success"></i> Sender authentication</li>
+                                <li><i class="fas fa-check text-success"></i> Tamper detection</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

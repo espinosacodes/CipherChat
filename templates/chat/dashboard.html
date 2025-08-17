@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - CipherChat{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2 mb-0">
+                <i class="bi bi-house-door me-2"></i>
+                Welcome back, {{ user.username }}!
+            </h1>
+            <div class="security-badge">
+                <i class="bi bi-shield-check me-1"></i>
+                Secure Session
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Status Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="bi bi-chat-dots text-primary" style="font-size: 2rem;"></i>
+                <h5 class="card-title mt-2">Messages</h5>
+                <p class="card-text display-6 text-primary">{{ unread_count }}</p>
+                <small class="text-muted">Unread messages</small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="bi bi-key text-success" style="font-size: 2rem;"></i>
+                <h5 class="card-title mt-2">Keys</h5>
+                <p class="card-text display-6 text-success">{{ imported_keys_count }}</p>
+                <small class="text-muted">Imported public keys</small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="bi bi-shield-lock text-info" style="font-size: 2rem;"></i>
+                <h5 class="card-title mt-2">Security</h5>
+                <p class="card-text display-6 text-info">
+                    {% if has_keys %}
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                    {% else %}
+                        <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                    {% endif %}
+                </p>
+                <small class="text-muted">
+                    {% if has_keys %}
+                        Keys generated
+                    {% else %}
+                        Keys needed
+                    {% endif %}
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-center h-100">
+            <div class="card-body">
+                <i class="bi bi-clock text-warning" style="font-size: 2rem;"></i>
+                <h5 class="card-title mt-2">Activity</h5>
+                <p class="card-text display-6 text-warning">
+                    {{ profile.last_activity|date:"H:i" }}
+                </p>
+                <small class="text-muted">Last activity</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-lightning me-2"></i>
+                    Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <a href="{% url 'chat:send_message' %}" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-send me-2"></i>
+                            Send Encrypted Message
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <a href="{% url 'chat:view_messages' %}" class="btn btn-outline-primary btn-lg w-100">
+                            <i class="bi bi-chat-dots me-2"></i>
+                            View Messages
+                        </a>
+                    </div>
+                </div>
+                
+                {% if not has_keys %}
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Security Setup Required:</strong> You need to generate cryptographic keys to start sending encrypted messages.
+                            <a href="{% url 'chat:generate_keys' %}" class="btn btn-warning btn-sm ms-3">
+                                <i class="bi bi-key me-1"></i>
+                                Generate Keys
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Messages -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-clock-history me-2"></i>
+                    Recent Messages
+                </h5>
+                <a href="{% url 'chat:view_messages' %}" class="btn btn-outline-primary btn-sm">
+                    View All
+                </a>
+            </div>
+            <div class="card-body">
+                {% if recent_messages %}
+                    <div class="list-group list-group-flush">
+                        {% for message in recent_messages %}
+                        <div class="list-group-item message-card d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    {% if message.sender == user %}
+                                        <i class="bi bi-arrow-up-circle text-success" style="font-size: 1.5rem;"></i>
+                                    {% else %}
+                                        <i class="bi bi-arrow-down-circle text-primary" style="font-size: 1.5rem;"></i>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">
+                                        {% if message.sender == user %}
+                                            To: {{ message.recipient.username }}
+                                        {% else %}
+                                            From: {{ message.sender.username }}
+                                        {% endif %}
+                                    </h6>
+                                    <small class="text-muted">
+                                        {{ message.created_at|date:"M d, Y H:i" }} • 
+                                        <span class="badge bg-secondary">{{ message.get_message_type_display }}</span>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                {% if message.recipient == user and not message.read_at %}
+                                    <span class="unread-indicator me-2">!</span>
+                                {% endif %}
+                                <a href="{% url 'chat:decrypt_message' message.id %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-eye me-1"></i>
+                                    View
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-chat-dots text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">No messages yet. Start by sending an encrypted message!</p>
+                        <a href="{% url 'chat:send_message' %}" class="btn btn-primary">
+                            <i class="bi bi-send me-2"></i>
+                            Send First Message
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Security Status -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-shield-check me-2"></i>
+                    Security Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Cryptographic Keys</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                {% if has_keys %}
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    <span class="text-success">RSA key pair generated</span>
+                                {% else %}
+                                    <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                                    <span class="text-warning">No cryptographic keys found</span>
+                                {% endif %}
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <span class="text-muted">Key size: 2048 bits (RSA)</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <span class="text-muted">Encryption: AES-256 + RSA</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Security Features</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span class="text-success">End-to-end encryption</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span class="text-success">Digital signatures</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span class="text-success">Secure key exchange</span>
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span class="text-success">Tamper-proof messages</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                {% if not has_keys %}
+                <div class="mt-3">
+                    <a href="{% url 'chat:generate_keys' %}" class="btn btn-success">
+                        <i class="bi bi-key me-2"></i>
+                        Generate Cryptographic Keys
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

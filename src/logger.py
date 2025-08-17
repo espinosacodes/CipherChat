@@ -136,3 +136,4 @@ class CipherChatLogger:
 
 # Global logger instance
 logger = CipherChatLogger()
+

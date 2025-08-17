@@ -105,3 +105,4 @@ class CipherChatConfig:
 
 # Global configuration instance
 config = CipherChatConfig.from_env()
+

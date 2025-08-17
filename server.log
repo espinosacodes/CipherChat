@@ -1,0 +1,23 @@
+nohup: ignoring input
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+August 17, 2025 - 01:01:40
+Django version 4.2.11, using settings 'cipherchat_web.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+
+[17/Aug/2025 01:01:49] "GET / HTTP/1.1" 302 0
+[17/Aug/2025 01:02:01] "GET /admin/ HTTP/1.1" 302 0
+/mnt/c/Users/Usuario/Desktop/CipherChat/chat/views.py changed, reloading.
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+August 17, 2025 - 01:02:17
+Django version 4.2.11, using settings 'cipherchat_web.settings'
+Starting development server at http://0.0.0.0:8000/
+Quit the server with CONTROL-C.
+
+[17/Aug/2025 01:07:14] "GET / HTTP/1.1" 200 17932

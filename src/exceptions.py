@@ -75,3 +75,4 @@ class SecurityError(CipherChatError):
     def __init__(self, message: str, security_event: str = None):
         super().__init__(message, "SECURITY_ERROR")
         self.security_event = security_event
+

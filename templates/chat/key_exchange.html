@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Key Exchange - CipherChat{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-exchange-alt"></i> Initiate Key Exchange
+                        </h4>
+                        <a href="{% url 'chat:manage_keys' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-arrow-left"></i> Back to Keys
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Secure Key Exchange:</strong> Initiate a secure key exchange protocol with another user to establish encrypted communication.
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'chat:manage_keys' %}" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-exchange-alt"></i> Initiate Exchange
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Key Exchange Process -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-cogs"></i> How Key Exchange Works
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-user-plus"></i> Step 1: Initiate</h6>
+                            <p class="text-muted">
+                                You initiate a key exchange with the selected user. The system will generate a secure exchange request.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-bell"></i> Step 2: Notification</h6>
+                            <p class="text-muted">
+                                The recipient will be notified of your key exchange request and can accept or decline it.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-handshake"></i> Step 3: Agreement</h6>
+                            <p class="text-muted">
+                                Once both parties agree, the system will securely exchange public keys and establish encrypted communication.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-lock"></i> Step 4: Secure Communication</h6>
+                            <p class="text-muted">
+                                After successful exchange, you can send encrypted messages to each other using the exchanged keys.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exchange Types -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list"></i> Exchange Types
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <h6 class="card-title text-primary">
+                                        <i class="fas fa-key"></i> Standard Exchange
+                                    </h6>
+                                    <p class="card-text text-muted">
+                                        Basic public key exchange for secure messaging. Suitable for most communication needs.
+                                    </p>
+                                    <small class="text-muted">Default option for general use</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <h6 class="card-title text-success">
+                                        <i class="fas fa-shield-alt"></i> Enhanced Exchange
+                                    </h6>
+                                    <p class="card-text text-muted">
+                                        Advanced key exchange with additional verification steps and enhanced security protocols.
+                                    </p>
+                                    <small class="text-muted">Recommended for sensitive communications</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Benefits -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shield-alt"></i> Security Benefits
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-lock"></i> Encryption</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> End-to-end encryption</li>
+                                <li><i class="fas fa-check text-success"></i> RSA + AES hybrid encryption</li>
+                                <li><i class="fas fa-check text-success"></i> Forward secrecy</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-user-check"></i> Authentication</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Digital signatures</li>
+                                <li><i class="fas fa-check text-success"></i> Identity verification</li>
+                                <li><i class="fas fa-check text-success"></i> Tamper detection</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

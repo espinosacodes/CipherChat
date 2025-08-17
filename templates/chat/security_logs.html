@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Security Logs - CipherChat{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-shield-alt"></i> Security Logs</h2>
+                <a href="{% url 'chat:dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <strong>Security Audit Trail:</strong> This page shows all security-related events for your account, including key operations, message activities, and authentication events.
+            </div>
+
+            <!-- Security Logs Table -->
+            {% if page_obj %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list"></i> Security Events
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Event Type</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for log in page_obj %}
+                                    <tr>
+                                        <td>
+                                            <small>{{ log.timestamp|date:"M d, Y H:i:s" }}</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{% if log.event_type == 'message_sent' %}success{% elif log.event_type == 'key_imported' %}info{% elif log.event_type == 'keys_generated' %}primary{% else %}secondary{% endif %}">
+                                                {{ log.event_type|title|replace:"_":" " }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <strong>{{ log.description }}</strong>
+                                        </td>
+                                        <td>
+                                            {% if log.success %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check"></i> Success
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-times"></i> Failed
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if log.details %}
+                                                <button class="btn btn-sm btn-outline-secondary" 
+                                                        onclick="viewLogDetails({{ log.id }})">
+                                                    <i class="fas fa-eye"></i> View
+                                                </button>
+                                            {% else %}
+                                                <span class="text-muted">No details</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="Security logs pagination" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-shield-alt fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No security logs found</h4>
+                        <p class="text-muted">
+                            Security logs will appear here as you use the application's security features.
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Security Information -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> About Security Logging
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-list"></i> What Gets Logged</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Key generation and import operations</li>
+                                <li><i class="fas fa-check text-success"></i> Message encryption and sending</li>
+                                <li><i class="fas fa-check text-success"></i> Key exchange attempts</li>
+                                <li><i class="fas fa-check text-success"></i> Authentication events</li>
+                                <li><i class="fas fa-check text-success"></i> Security policy violations</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-shield-alt"></i> Security Benefits</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success"></i> Audit trail for compliance</li>
+                                <li><i class="fas fa-check text-success"></i> Detect suspicious activities</li>
+                                <li><i class="fas fa-check text-success"></i> Monitor key usage</li>
+                                <li><i class="fas fa-check text-success"></i> Troubleshoot issues</li>
+                                <li><i class="fas fa-check text-success"></i> Maintain security posture</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Log Details Modal -->
+<div class="modal fade" id="logDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Security Log Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="logDetailsContent">
+                <!-- Content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function viewLogDetails(logId) {
+    // This would typically make an AJAX call to get log details
+    // For now, show a placeholder
+    document.getElementById('logDetailsContent').innerHTML = `
+        <div class="text-center py-3">
+            <i class="fas fa-shield-alt fa-2x text-muted mb-2"></i>
+            <p>Security log details for log ID: ${logId}</p>
+            <p class="text-muted">This would show the actual log details and metadata.</p>
+        </div>
+    `;
+    
+    new bootstrap.Modal(document.getElementById('logDetailsModal')).show();
+}
+</script>
+{% endblock %}
