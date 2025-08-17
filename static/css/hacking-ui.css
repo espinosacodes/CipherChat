@@ -786,3 +786,36 @@ code {
     will-change: transform;
     transform: translateZ(0);
 }
+
+/* Bootstrap Grid Translucent Override */
+.row {
+    background: rgba(13, 13, 13, 0.3);
+    backdrop-filter: blur(5px);
+    border-radius: 0;
+    margin: 0;
+    padding: 10px;
+}
+
+.col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12,
+.col-sm, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12,
+.col-md, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12,
+.col-lg, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12,
+.col-xl, .col-xl-1, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-10, .col-xl-11, .col-xl-12 {
+    background: rgba(15, 15, 15, 0.4);
+    backdrop-filter: blur(3px);
+    border: 1px solid rgba(197, 0, 60, 0.2);
+    border-radius: 0;
+    margin: 5px;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.col:hover, .col-1:hover, .col-2:hover, .col-3:hover, .col-4:hover, .col-5:hover, .col-6:hover, .col-7:hover, .col-8:hover, .col-9:hover, .col-10:hover, .col-11:hover, .col-12:hover,
+.col-sm:hover, .col-sm-1:hover, .col-sm-2:hover, .col-sm-3:hover, .col-sm-4:hover, .col-sm-5:hover, .col-sm-6:hover, .col-sm-7:hover, .col-sm-8:hover, .col-sm-9:hover, .col-sm-10:hover, .col-sm-11:hover, .col-sm-12:hover,
+.col-md:hover, .col-md-1:hover, .col-md-2:hover, .col-md-3:hover, .col-md-4:hover, .col-md-5:hover, .col-md-6:hover, .col-md-7:hover, .col-md-8:hover, .col-md-9:hover, .col-md-10:hover, .col-md-11:hover, .col-md-12:hover,
+.col-lg:hover, .col-lg-1:hover, .col-lg-2:hover, .col-lg-3:hover, .col-lg-4:hover, .col-lg-5:hover, .col-lg-6:hover, .col-lg-7:hover, .col-lg-8:hover, .col-lg-9:hover, .col-lg-10:hover, .col-lg-11:hover, .col-lg-12:hover,
+.col-xl:hover, .col-xl-1:hover, .col-xl-2:hover, .col-xl-3:hover, .col-xl-4:hover, .col-xl-5:hover, .col-xl-6:hover, .col-xl-7:hover, .col-xl-8:hover, .col-xl-9:hover, .col-xl-10:hover, .col-xl-11:hover, .col-xl-12:hover {
+    background: rgba(15, 15, 15, 0.6);
+    border-color: rgba(197, 0, 60, 0.4);
+    box-shadow: 0 0 15px rgba(197, 0, 60, 0.2);
+}
