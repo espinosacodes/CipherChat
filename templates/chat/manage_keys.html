@@ -102,18 +102,12 @@
                                     {% for key in imported_keys %}
                                     <tr>
                                         <td>
-                                            <strong>{{ key.owner.username }}</strong>
-                                            {% if key.owner.first_name or key.owner.last_name %}
-                                                <br>
-                                                <small class="text-muted">
-                                                    {{ key.owner.first_name }} {{ key.owner.last_name }}
-                                                </small>
-                                            {% endif %}
+                                            <strong>{{ key.key_owner_username }}</strong>
                                         </td>
                                         <td>
-                                            <span class="badge bg-info">{{ key.key_type }}</span>
+                                            <span class="badge bg-info">RSA</span>
                                         </td>
-                                        <td>{{ key.key_size }} bits</td>
+                                        <td>2048 bits</td>
                                         <td>{{ key.imported_at|date:"M d, Y" }}</td>
                                         <td>
                                             <button class="btn btn-sm btn-outline-secondary" 

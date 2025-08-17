@@ -59,7 +59,7 @@ def dashboard(request):
         ).count()
         
         # Get imported keys count
-        imported_keys = PublicKey.objects.filter(imported_by=request.user).count()
+        imported_keys = PublicKey.objects.filter(owner=request.user).count()
         
         # Check if user has generated keys
         try:
@@ -85,7 +85,7 @@ def dashboard(request):
         security_score = 85  # Placeholder value
         
         # Get keys generated count
-        keys_generated = PublicKey.objects.filter(imported_by=request.user).count()
+        keys_generated = PublicKey.objects.filter(owner=request.user).count()
         
         context = {
             'recent_messages': recent_messages,
@@ -338,7 +338,7 @@ def manage_keys(request):
             user_profile = None
         
         # Get imported public keys
-        imported_keys = PublicKey.objects.filter(imported_by=request.user)
+        imported_keys = PublicKey.objects.filter(owner=request.user)
         
         context = {
             'user_profile': user_profile,
@@ -369,7 +369,7 @@ def generate_keys(request):
         # Update profile
         user_profile.public_key = placeholder_public_key
         user_profile.private_key = placeholder_private_key
-        user_profile.keys_generated_at = timezone.now()
+        user_profile.key_created_at = timezone.now()
         user_profile.save()
         
         # Log the event
