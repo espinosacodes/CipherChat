@@ -3,175 +3,424 @@
 
 {% block title %}View Messages - CipherChat{% endblock %}
 
-{% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2><i class="fas fa-envelope"></i> Messages</h2>
-                <a href="{% url 'chat:send_message' %}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Send New Message
-                </a>
-            </div>
+{% block extra_css %}
+<style>
+    .messages-header {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        padding: 20px;
+        border-radius: 0;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--primary-red);
+    }
+    
+    .messages-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--primary-red-bright), transparent);
+        animation: scan-line 4s linear infinite;
+    }
+    
+    .messages-header h2 {
+        font-family: 'Orbitron', monospace;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 0;
+    }
+    
+    .filter-panel {
+        background: var(--card-bg);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
+        margin-bottom: 20px;
+    }
+    
+    .filter-panel .card-header {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .message-card {
+        background: var(--card-bg);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .message-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: var(--primary-red);
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    .message-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--primary-red-bright);
+        box-shadow: 0 0 10px rgba(197, 0, 60, 0.3);
+    }
+    
+    .message-card.unread {
+        border-left: 4px solid var(--primary-red);
+    }
+    
+    .message-card .card-header {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .message-badge {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        margin-right: 5px;
+    }
+    
+    .message-badge.sent {
+        background: var(--primary-red);
+    }
+    
+    .message-badge.received {
+        background: var(--accent-cyan);
+        color: var(--dark-bg);
+    }
+    
+    .message-badge.unread {
+        background: var(--primary-red-bright);
+    }
+    
+    .message-content {
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        color: var(--text-primary);
+        margin: 10px 0;
+    }
+    
+    .message-meta {
+        color: var(--text-muted);
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+    }
+    
+    .message-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .action-btn {
+        background: transparent;
+        border: 1px solid var(--primary-red);
+        color: var(--primary-red);
+        padding: 8px 16px;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        font-size: 0.8rem;
+    }
+    
+    .action-btn:hover {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        text-decoration: none;
+        animation: btn-glitch 0.2s ease-in-out;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        background: var(--card-bg);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--primary-red);
+        margin-bottom: 20px;
+    }
+    
+    .empty-state h4 {
+        color: var(--primary-red);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+    
+    .empty-state p {
+        color: var(--text-muted);
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        margin-bottom: 20px;
+    }
+    
+    .pagination-container {
+        margin-top: 30px;
+        text-align: center;
+    }
+    
+    .glitch-text {
+        animation: glitch-text 3s infinite;
+    }
+    
+    @keyframes glitch-text {
+        0%, 100% { transform: translateX(0); }
+        2% { transform: translateX(-1px); }
+        4% { transform: translateX(1px); }
+        6% { transform: translateX(0); }
+        8% { transform: translateX(-1px); }
+        10% { transform: translateX(1px); }
+        12% { transform: translateX(0); }
+    }
+</style>
+{% endblock %}
 
-            <!-- Search and Filter Form -->
-            <div class="card mb-4">
+{% block content %}
+<div class="main-container">
+    <!-- Messages Header -->
+    <div class="messages-header">
+        <h2 class="glitch-text">
+            <i class="bi bi-envelope"></i> Message Terminal
+        </h2>
+        <p class="mb-0">Secure communication logs - {{ page_obj.paginator.count }} total messages</p>
+    </div>
+
+    <!-- Search and Filter Form -->
+    <div class="filter-panel">
+        <div class="card-header">
+            <i class="bi bi-search"></i> Search & Filter
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="search" class="form-label">Search Messages</label>
+                    <input type="text" class="form-control" id="search" name="search" 
+                           value="{{ search_query }}" placeholder="Search in message content...">
+                </div>
+                <div class="col-md-3">
+                    <label for="message_type" class="form-label">Message Type</label>
+                    <select class="form-select" id="message_type" name="message_type">
+                        <option value="">All Types</option>
+                        <option value="text" {% if message_type == 'text' %}selected{% endif %}>Text</option>
+                        <option value="file" {% if message_type == 'file' %}selected{% endif %}>File</option>
+                        <option value="image" {% if message_type == 'image' %}selected{% endif %}>Image</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="sender" class="form-label">Sender</label>
+                    <select class="form-select" id="sender" name="sender">
+                        <option value="">All Senders</option>
+                        {% for user in all_users %}
+                        <option value="{{ user.username }}" {% if sender_filter == user.username %}selected{% endif %}>
+                            {{ user.username }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">&nbsp;</label>
+                    <div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search"></i> Filter
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-lightning"></i> Quick Actions
+                </div>
                 <div class="card-body">
-                    <form method="get" class="row g-3">
-                        <div class="col-md-4">
-                            <label for="search" class="form-label">Search Messages</label>
-                            <input type="text" class="form-control" id="search" name="search" 
-                                   value="{{ search_query }}" placeholder="Search in message content...">
-                        </div>
-                        <div class="col-md-3">
-                            <label for="message_type" class="form-label">Message Type</label>
-                            <select class="form-select" id="message_type" name="message_type">
-                                <option value="">All Types</option>
-                                <option value="text" {% if message_type == 'text' %}selected{% endif %}>Text</option>
-                                <option value="file" {% if message_type == 'file' %}selected{% endif %}>File</option>
-                                <option value="image" {% if message_type == 'image' %}selected{% endif %}>Image</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="sender" class="form-label">Sender</label>
-                            <select class="form-select" id="sender" name="sender">
-                                <option value="">All Senders</option>
-                                {% for user in all_users %}
-                                <option value="{{ user.username }}" {% if sender_filter == user.username %}selected{% endif %}>
-                                    {{ user.username }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label">&nbsp;</label>
-                            <div>
-                                <button type="submit" class="btn btn-primary w-100">
-                                    <i class="fas fa-search"></i> Filter
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    <div class="row">
+                                                 <div class="col-md-3">
+                             <a href="{% url 'chat:send_message' %}" class="action-btn w-100">
+                                 <i class="bi bi-send"></i> Send New Message
+                             </a>
+                         </div>
+                         <div class="col-md-3">
+                             <a href="{% url 'chat:manage_keys' %}" class="action-btn w-100">
+                                 <i class="bi bi-key"></i> Manage Keys
+                             </a>
+                         </div>
+                         <div class="col-md-3">
+                             <a href="{% url 'chat:security_logs' %}" class="action-btn w-100">
+                                 <i class="bi bi-shield-check"></i> Security Logs
+                             </a>
+                         </div>
+                         <div class="col-md-3">
+                             <a href="{% url 'chat:dashboard' %}" class="action-btn w-100">
+                                 <i class="bi bi-speedometer2"></i> Dashboard
+                             </a>
+                         </div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Messages List -->
-            {% if page_obj %}
-                <div class="row">
-                    {% for message in page_obj %}
-                    <div class="col-12 mb-3">
-                        <div class="card {% if message.recipient == request.user and not message.is_read %}border-primary{% endif %}">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <div>
-                                    {% if message.sender == request.user %}
-                                        <span class="badge bg-success">Sent</span>
-                                        <strong>To: {{ message.recipient.username }}</strong>
+    <!-- Messages List -->
+    {% if page_obj %}
+        <div class="row">
+            {% for message in page_obj %}
+            <div class="col-12 mb-3">
+                <div class="message-card {% if message.recipient == request.user and not message.is_read %}unread{% endif %}">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            {% if message.sender == request.user %}
+                                <span class="message-badge sent">SENT</span>
+                                <strong>To: {{ message.recipient.username }}</strong>
+                            {% else %}
+                                <span class="message-badge received">RECEIVED</span>
+                                <strong>From: {{ message.sender.username }}</strong>
+                                {% if not message.is_read %}
+                                    <span class="message-badge unread">UNREAD</span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="message-meta">
+                            {{ message.timestamp|date:"M d, Y H:i" }}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="message-content">
+                                    {% if message.is_encrypted %}
+                                        <i class="bi bi-shield-lock text-primary"></i>
+                                        <span class="text-muted">{{ message.content|truncatechars:100 }}</span>
                                     {% else %}
-                                        <span class="badge bg-info">Received</span>
-                                        <strong>From: {{ message.sender.username }}</strong>
-                                        {% if not message.is_read %}
-                                            <span class="badge bg-warning">Unread</span>
-                                        {% endif %}
+                                        <i class="bi bi-shield text-warning"></i>
+                                        {{ message.content|truncatechars:100 }}
                                     {% endif %}
                                 </div>
-                                <div class="text-muted">
-                                    <small>{{ message.timestamp|date:"M d, Y H:i" }}</small>
+                                <div class="mt-2">
+                                    <span class="message-badge">{{ message.message_type|upper }}</span>
+                                    {% if message.is_encrypted %}
+                                        <span class="message-badge">ENCRYPTED</span>
+                                    {% endif %}
                                 </div>
                             </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <p class="card-text">
-                                            {% if message.is_encrypted %}
-                                                <i class="fas fa-lock text-success"></i>
-                                                <span class="text-muted">{{ message.content|truncatechars:100 }}</span>
-                                            {% else %}
-                                                <i class="fas fa-unlock text-warning"></i>
-                                                {{ message.content|truncatechars:100 }}
-                                            {% endif %}
-                                        </p>
-                                        <div class="mt-2">
-                                            <span class="badge bg-secondary">{{ message.message_type }}</span>
-                                            {% if message.is_encrypted %}
-                                                <span class="badge bg-success">Encrypted</span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 text-end">
-                                        <a href="{% url 'chat:decrypt_message' message.id %}" 
-                                           class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye"></i> View
+                            <div class="col-md-4 text-end">
+                                <div class="message-actions">
+                                                                         <a href="{% url 'chat:decrypt_message' message.id %}" class="action-btn">
+                                         <i class="bi bi-eye"></i> View
+                                     </a>
+                                    {% if message.sender == request.user %}
+                                        <a href="#" class="action-btn" onclick="deleteMessage({{ message.id }})">
+                                            <i class="bi bi-trash"></i> Delete
                                         </a>
-                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
-
-                <!-- Pagination -->
-                {% if page_obj.has_other_pages %}
-                <nav aria-label="Messages pagination">
-                    <ul class="pagination justify-content-center">
-                        {% if page_obj.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">
-                                    <i class="fas fa-angle-double-left"></i>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">
-                                    <i class="fas fa-angle-left"></i>
-                                </a>
-                            </li>
-                        {% endif %}
-
-                        {% for num in page_obj.paginator.page_range %}
-                            {% if page_obj.number == num %}
-                                <li class="page-item active">
-                                    <span class="page-link">{{ num }}</span>
-                                </li>
-                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">{{ num }}</a>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-
-                        {% if page_obj.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">
-                                    <i class="fas fa-angle-right"></i>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">
-                                    <i class="fas fa-angle-double-right"></i>
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-                {% endif %}
-
-            {% else %}
-                <div class="text-center py-5">
-                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                    <h4 class="text-muted">No messages found</h4>
-                    <p class="text-muted">
-                        {% if search_query or message_type or sender_filter %}
-                            Try adjusting your search criteria.
-                        {% else %}
-                            You haven't sent or received any messages yet.
-                        {% endif %}
-                    </p>
-                    <a href="{% url 'chat:send_message' %}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Send Your First Message
-                    </a>
-                </div>
-            {% endif %}
+            </div>
+            {% endfor %}
         </div>
-    </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-container">
+            <nav aria-label="Message pagination">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">
+                                <i class="bi bi-chevron-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if message_type %}&message_type={{ message_type }}{% endif %}{% if sender_filter %}&sender={{ sender_filter }}{% endif %}">
+                                <i class="bi bi-chevron-double-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h4>No Messages Found</h4>
+            <p>No messages match your current filters. Try adjusting your search criteria or send a new message.</p>
+                         <a href="{% url 'chat:send_message' %}" class="btn btn-primary">
+                 <i class="bi bi-send"></i> Send First Message
+             </a>
+        </div>
+    {% endif %}
 </div>
+
+<script>
+function deleteMessage(messageId) {
+    if (confirm('Are you sure you want to delete this message? This action cannot be undone.')) {
+        // Add delete functionality here
+        console.log('Deleting message:', messageId);
+    }
+}
+</script>
 {% endblock %}

@@ -10,11 +10,10 @@
     }
     
     .register-card {
-        background: rgba(26, 26, 26, 0.95);
-        border: 2px solid var(--neon-red);
-        border-radius: 15px;
-        box-shadow: var(--glow-red);
-        backdrop-filter: blur(20px);
+        background: var(--panel-bg);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
+        backdrop-filter: blur(10px);
         position: relative;
         overflow: hidden;
     }
@@ -25,66 +24,68 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--neon-red), var(--neon-orange), var(--neon-yellow), var(--neon-pink));
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
         animation: scan-line 4s linear infinite;
     }
     
     .register-header {
-        background: linear-gradient(45deg, var(--neon-red), var(--neon-orange));
-        color: var(--dark-bg);
-        padding: 30px 20px;
+        background: var(--dark-bg);
+        color: var(--primary-red);
+        padding: 20px;
         text-align: center;
         position: relative;
+        border-bottom: 2px solid var(--primary-red);
     }
     
     .register-header h3 {
         font-family: 'Orbitron', monospace;
         font-weight: 900;
-        font-size: 2rem;
+        font-size: 1.2rem;
         text-transform: uppercase;
-        letter-spacing: 3px;
+        letter-spacing: 2px;
         margin: 0;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        color: var(--primary-red);
     }
     
     .register-header p {
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 500;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        font-weight: 400;
         margin: 10px 0 0 0;
         opacity: 0.9;
+        color: var(--text-secondary);
     }
     
     .form-label {
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 600;
-        color: var(--neon-red);
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        font-weight: 700;
+        color: var(--primary-red);
         text-transform: uppercase;
         letter-spacing: 1px;
         margin-bottom: 8px;
     }
     
     .form-control {
-        background: rgba(10, 10, 10, 0.8);
-        border: 2px solid var(--neon-red);
+        background: var(--card-bg);
+        border: 1px solid var(--primary-red);
         color: var(--text-primary);
-        font-family: 'Rajdhani', sans-serif;
-        font-size: 1.1rem;
-        padding: 12px 15px;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        font-size: 1rem;
+        padding: 10px 12px;
         transition: all 0.3s ease;
     }
     
     .form-control:focus {
-        background: rgba(10, 10, 10, 0.9);
-        border-color: var(--neon-orange);
-        box-shadow: var(--glow-orange);
+        background: var(--card-bg);
+        border-color: var(--primary-red-bright);
+        box-shadow: 0 0 0 0.2rem rgba(197, 0, 60, 0.25);
         color: var(--text-primary);
     }
     
     .form-text {
         color: var(--text-muted);
-        font-family: 'Rajdhani', sans-serif;
-        font-size: 0.9rem;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        font-size: 0.8rem;
     }
     
     .form-text ul {
@@ -97,370 +98,348 @@
         color: var(--text-secondary);
     }
     
-    .register-btn {
-        background: linear-gradient(45deg, var(--neon-purple), var(--neon-pink));
-        border: none;
+    .btn-register {
+        background: var(--primary-red);
+        border: 1px solid var(--primary-red);
         color: var(--dark-bg);
-        font-family: 'Orbitron', monospace;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
         font-weight: 700;
-        font-size: 1.1rem;
         text-transform: uppercase;
-        letter-spacing: 2px;
-        padding: 15px 30px;
-        border-radius: 8px;
-        box-shadow: var(--glow-pink);
+        letter-spacing: 1px;
+        padding: 12px 24px;
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
     }
     
-    .register-btn::before {
+    .btn-register:hover {
+        background: var(--primary-red-bright);
+        border-color: var(--primary-red-bright);
+        color: var(--dark-bg);
+        animation: btn-glitch 0.2s ease-in-out;
+    }
+    
+    .security-info {
+        background: var(--card-bg);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
+        margin-top: 20px;
+    }
+    
+    .security-info .card-header {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .security-feature {
+        background: var(--panel-bg);
+        border: 1px solid var(--primary-red);
+        padding: 15px;
+        margin: 10px 0;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .security-feature::before {
         content: '';
         position: absolute;
         top: 0;
-        left: -100%;
-        width: 100%;
+        left: 0;
+        width: 3px;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        transition: left 0.5s;
+        background: var(--primary-red);
     }
     
-    .register-btn:hover::before {
-        left: 100%;
+    .security-feature:hover {
+        background: rgba(197, 0, 60, 0.1);
     }
     
-    .register-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 0 30px var(--neon-purple), 0 0 60px var(--neon-purple);
-    }
-    
-    .login-link-btn {
-        background: transparent;
-        border: 2px solid var(--neon-red);
-        color: var(--neon-red);
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        padding: 10px 20px;
-        border-radius: 5px;
-        box-shadow: var(--glow-red);
-        transition: all 0.3s ease;
-    }
-    
-    .login-link-btn:hover {
-        background: var(--neon-red);
-        color: var(--dark-bg);
-        box-shadow: 0 0 20px var(--neon-red);
-        transform: translateY(-2px);
-    }
-    
-    .info-card {
-        background: rgba(10, 10, 10, 0.8);
-        border: 1px solid var(--neon-orange);
-        border-radius: 10px;
-        box-shadow: var(--glow-orange);
-        margin-top: 30px;
-    }
-    
-    .info-card .card-header {
-        background: linear-gradient(45deg, var(--neon-orange), var(--neon-red));
-        color: var(--dark-bg);
-        font-family: 'Orbitron', monospace;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        border-bottom: 1px solid var(--neon-orange);
-    }
-    
-    .info-item {
-        color: var(--text-secondary);
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 500;
-        margin: 8px 0;
-    }
-    
-    .info-item i {
+    .security-feature i {
+        color: var(--primary-red);
         margin-right: 10px;
-        font-size: 1.1rem;
     }
     
-    .info-item.success {
-        color: var(--neon-orange);
+    .password-requirements {
+        background: var(--panel-bg);
+        border: 1px solid var(--primary-red);
+        padding: 15px;
+        margin: 15px 0;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
     }
     
-    .info-item.warning {
-        color: var(--neon-orange);
-    }
-    
-    .privacy-card {
-        background: rgba(10, 10, 10, 0.8);
-        border: 1px solid var(--neon-red);
-        border-radius: 10px;
-        box-shadow: var(--glow-red);
-        margin-top: 30px;
-    }
-    
-    .privacy-card h6 {
-        color: var(--neon-red);
+    .password-requirements h6 {
+        color: var(--primary-red);
         font-family: 'Orbitron', monospace;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
     
-    .privacy-text {
-        color: var(--text-secondary);
-        font-family: 'Rajdhani', sans-serif;
-        font-size: 0.9rem;
-        line-height: 1.6;
+    .requirement-item {
+        margin: 5px 0;
+        font-size: 0.8rem;
     }
     
-    .error-message {
-        background: rgba(255, 0, 255, 0.1);
-        border: 1px solid var(--neon-pink);
-        color: var(--neon-pink);
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 15px;
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 500;
-        box-shadow: var(--glow-pink);
+    .requirement-item.valid {
+        color: var(--primary-red);
     }
     
-    .hologram-effect {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(45deg, 
-            transparent 30%, 
-            rgba(153, 0, 255, 0.1) 50%, 
-            transparent 70%);
-        animation: hologram-scan 3s ease-in-out infinite;
-        pointer-events: none;
-        z-index: -1;
+    .requirement-item.invalid {
+        color: var(--text-muted);
     }
     
-    @keyframes hologram-scan {
-        0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-        50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    .glitch-text {
+        animation: glitch-text 3s infinite;
+    }
+    
+    @keyframes glitch-text {
+        0%, 100% { transform: translateX(0); }
+        2% { transform: translateX(-1px); }
+        4% { transform: translateX(1px); }
+        6% { transform: translateX(0); }
+        8% { transform: translateX(-1px); }
+        10% { transform: translateX(1px); }
+        12% { transform: translateX(0); }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row justify-content-center register-container">
-    <div class="col-md-8 col-lg-6">
-        <div class="register-card">
-            <div class="hologram-effect"></div>
-            
-            <div class="register-header">
-                <h3>
-                    <i class="bi bi-person-plus me-2"></i>
-                    Join the Network
-                </h3>
-                <p>Create your secure CipherChat account</p>
-            </div>
-            
-            <div class="card-body p-4">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
-                                <i class="bi bi-person me-1"></i>
-                                First Name
-                            </label>
-                            {{ form.first_name }}
-                            {% if form.first_name.errors %}
-                                <div class="error-message">
-                                    {% for error in form.first_name.errors %}
-                                        <i class="bi bi-exclamation-triangle me-1"></i>
-                                        {{ error }}
-                                    {% endfor %}
+<div class="main-container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="register-card">
+                <div class="register-header">
+                    <h3 class="glitch-text">
+                        <i class="bi bi-person-plus"></i> Create Account
+                    </h3>
+                    <p>Join the secure communication network</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.username.id_for_label }}" class="form-label">
+                                        <i class="bi bi-person"></i> Username
+                                    </label>
+                                    {{ form.username }}
+                                    {% if form.username.errors %}
+                                        <div class="alert alert-danger mt-2">
+                                            {% for error in form.username.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-text">
+                                        Choose a unique username for your account.
+                                    </div>
                                 </div>
-                            {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                                        <i class="bi bi-envelope"></i> Email
+                                    </label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="alert alert-danger mt-2">
+                                            {% for error in form.email.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-text">
+                                        Enter a valid email address.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="col-md-6 mb-4">
-                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
-                                <i class="bi bi-person me-1"></i>
-                                Last Name
-                            </label>
-                            {{ form.last_name }}
-                            {% if form.last_name.errors %}
-                                <div class="error-message">
-                                    {% for error in form.last_name.errors %}
-                                        <i class="bi bi-exclamation-triangle me-1"></i>
-                                        {{ error }}
-                                    {% endfor %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                        <i class="bi bi-key"></i> Password
+                                    </label>
+                                    {{ form.password1 }}
+                                    {% if form.password1.errors %}
+                                        <div class="alert alert-danger mt-2">
+                                            {% for error in form.password1.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
-                            {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                        <i class="bi bi-key-fill"></i> Confirm Password
+                                    </label>
+                                    {{ form.password2 }}
+                                    {% if form.password2.errors %}
+                                        <div class="alert alert-danger mt-2">
+                                            {% for error in form.password2.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">
-                            <i class="bi bi-at me-1"></i>
-                            Username
-                        </label>
-                        {{ form.username }}
-                        {% if form.username.errors %}
-                            <div class="error-message">
-                                {% for error in form.username.errors %}
-                                    <i class="bi bi-exclamation-triangle me-1"></i>
-                                    {{ error }}
-                                {% endfor %}
+                        
+                        <!-- Password Requirements -->
+                        <div class="password-requirements">
+                            <h6><i class="bi bi-shield-check"></i> Password Requirements</h6>
+                            <div class="requirement-item" id="length-check">
+                                <i class="bi bi-circle"></i> At least 8 characters long
                             </div>
-                        {% endif %}
-                        <div class="form-text">Choose a unique username for your account.</div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="{{ form.email.id_for_label }}" class="form-label">
-                            <i class="bi bi-envelope me-1"></i>
-                            Email Address
-                        </label>
-                        {{ form.email }}
-                        {% if form.email.errors %}
-                            <div class="error-message">
-                                {% for error in form.email.errors %}
-                                    <i class="bi bi-exclamation-triangle me-1"></i>
-                                    {{ error }}
-                                {% endfor %}
+                            <div class="requirement-item" id="uppercase-check">
+                                <i class="bi bi-circle"></i> Contains uppercase letter
                             </div>
-                        {% endif %}
-                        <div class="form-text">We'll never share your email with anyone else.</div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="{{ form.password1.id_for_label }}" class="form-label">
-                            <i class="bi bi-lock me-1"></i>
-                            Password
-                        </label>
-                        {{ form.password1 }}
-                        {% if form.password1.errors %}
-                            <div class="error-message">
-                                {% for error in form.password1.errors %}
-                                    <i class="bi bi-exclamation-triangle me-1"></i>
-                                    {{ error }}
-                                {% endfor %}
+                            <div class="requirement-item" id="lowercase-check">
+                                <i class="bi bi-circle"></i> Contains lowercase letter
                             </div>
-                        {% endif %}
-                        <div class="form-text">
-                            <ul class="mb-0">
-                                <li>Your password must contain at least 8 characters.</li>
-                                <li>Your password can't be too similar to your other personal information.</li>
-                                <li>Your password can't be a commonly used password.</li>
-                                <li>Your password can't be entirely numeric.</li>
-                            </ul>
+                            <div class="requirement-item" id="number-check">
+                                <i class="bi bi-circle"></i> Contains number
+                            </div>
+                            <div class="requirement-item" id="special-check">
+                                <i class="bi bi-circle"></i> Contains special character
+                            </div>
                         </div>
-                    </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-register">
+                                <i class="bi bi-person-plus"></i> Create Account
+                            </button>
+                        </div>
+                    </form>
                     
-                    <div class="mb-4">
-                        <label for="{{ form.password2.id_for_label }}" class="form-label">
-                            <i class="bi bi-lock-fill me-1"></i>
-                            Confirm Password
-                        </label>
-                        {{ form.password2 }}
-                        {% if form.password2.errors %}
-                            <div class="error-message">
-                                {% for error in form.password2.errors %}
-                                    <i class="bi bi-exclamation-triangle me-1"></i>
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                        <div class="form-text">Enter the same password as before, for verification.</div>
-                    </div>
-                    
-                    <div class="d-grid mb-4">
-                        <button type="submit" class="register-btn">
-                            <i class="bi bi-person-plus me-2"></i>
-                            Create Account
-                        </button>
-                    </div>
-                </form>
-                
-                <hr class="my-4" style="border-color: var(--neon-purple);">
-                
-                <div class="text-center">
-                    <p class="text-muted mb-3" style="font-family: 'Rajdhani', sans-serif; font-weight: 500;">
-                        Already have an account?
-                    </p>
-                    <a href="{% url 'users:login' %}" class="login-link-btn">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>
-                        Sign In
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Security Information -->
-        <div class="info-card">
-            <div class="card-header">
-                <h6 class="card-title mb-0">
-                    <i class="bi bi-shield-check me-2"></i>
-                    What Happens Next?
-                </h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6 style="color: var(--neon-orange); font-family: 'Orbitron', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Account Creation</h6>
-                        <ul class="list-unstyled">
-                            <li class="info-item success">
-                                <i class="bi bi-check-circle"></i>
-                                Secure account setup
-                            </li>
-                            <li class="info-item success">
-                                <i class="bi bi-check-circle"></i>
-                                Automatic login
-                            </li>
-                            <li class="info-item success">
-                                <i class="bi bi-check-circle"></i>
-                                Access to dashboard
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <h6 style="color: var(--neon-orange); font-family: 'Orbitron', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Security Setup</h6>
-                        <ul class="list-unstyled">
-                            <li class="info-item warning">
-                                <i class="bi bi-exclamation-triangle"></i>
-                                Generate cryptographic keys
-                            </li>
-                            <li class="info-item warning">
-                                <i class="bi bi-exclamation-triangle"></i>
-                                Import recipient keys
-                            </li>
-                            <li class="info-item warning">
-                                <i class="bi bi-exclamation-triangle"></i>
-                                Start encrypted messaging
-                            </li>
-                        </ul>
+                    <div class="text-center mt-3">
+                                             <p class="text-muted">
+                         Already have an account? 
+                         <a href="{% url 'users:login' %}" class="text-primary">Login here</a>
+                     </p>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Privacy Notice -->
-        <div class="privacy-card p-4">
-            <h6 class="text-center">
-                <i class="bi bi-shield-lock me-2"></i>
-                Privacy & Security
-            </h6>
-            <p class="privacy-text text-center mb-0">
-                CipherChat uses end-to-end encryption to ensure your messages are private and secure. 
-                Your cryptographic keys are stored locally and never transmitted to our servers.
-            </p>
+            
+            <!-- Security Information -->
+            <div class="security-info">
+                <div class="card-header">
+                    <i class="bi bi-shield-check"></i> Security Features
+                </div>
+                <div class="card-body">
+                    <div class="security-feature">
+                        <i class="bi bi-shield-lock"></i>
+                        <strong>End-to-End Encryption</strong><br>
+                        <small>All communications are encrypted with RSA-2048 + AES-256</small>
+                    </div>
+                    <div class="security-feature">
+                        <i class="bi bi-key"></i>
+                        <strong>Secure Key Exchange</strong><br>
+                        <small>Cryptographic keys are exchanged securely</small>
+                    </div>
+                    <div class="security-feature">
+                        <i class="bi bi-check-circle"></i>
+                        <strong>Digital Signatures</strong><br>
+                        <small>Message authenticity is verified with digital signatures</small>
+                    </div>
+                    <div class="security-feature">
+                        <i class="bi bi-clock"></i>
+                        <strong>Perfect Forward Secrecy</strong><br>
+                        <small>Each message uses unique encryption keys</small>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+// Password validation
+document.addEventListener('DOMContentLoaded', function() {
+    const password1 = document.getElementById('{{ form.password1.id_for_label }}');
+    const password2 = document.getElementById('{{ form.password2.id_for_label }}');
+    
+    function validatePassword(password) {
+        const lengthCheck = document.getElementById('length-check');
+        const uppercaseCheck = document.getElementById('uppercase-check');
+        const lowercaseCheck = document.getElementById('lowercase-check');
+        const numberCheck = document.getElementById('number-check');
+        const specialCheck = document.getElementById('special-check');
+        
+        // Length check
+        if (password.length >= 8) {
+            lengthCheck.className = 'requirement-item valid';
+            lengthCheck.innerHTML = '<i class="bi bi-check-circle"></i> At least 8 characters long';
+        } else {
+            lengthCheck.className = 'requirement-item invalid';
+            lengthCheck.innerHTML = '<i class="bi bi-circle"></i> At least 8 characters long';
+        }
+        
+        // Uppercase check
+        if (/[A-Z]/.test(password)) {
+            uppercaseCheck.className = 'requirement-item valid';
+            uppercaseCheck.innerHTML = '<i class="bi bi-check-circle"></i> Contains uppercase letter';
+        } else {
+            uppercaseCheck.className = 'requirement-item invalid';
+            uppercaseCheck.innerHTML = '<i class="bi bi-circle"></i> Contains uppercase letter';
+        }
+        
+        // Lowercase check
+        if (/[a-z]/.test(password)) {
+            lowercaseCheck.className = 'requirement-item valid';
+            lowercaseCheck.innerHTML = '<i class="bi bi-check-circle"></i> Contains lowercase letter';
+        } else {
+            lowercaseCheck.className = 'requirement-item invalid';
+            lowercaseCheck.innerHTML = '<i class="bi bi-circle"></i> Contains lowercase letter';
+        }
+        
+        // Number check
+        if (/[0-9]/.test(password)) {
+            numberCheck.className = 'requirement-item valid';
+            numberCheck.innerHTML = '<i class="bi bi-check-circle"></i> Contains number';
+        } else {
+            numberCheck.className = 'requirement-item invalid';
+            numberCheck.innerHTML = '<i class="bi bi-circle"></i> Contains number';
+        }
+        
+        // Special character check
+        if (/[^A-Za-z0-9]/.test(password)) {
+            specialCheck.className = 'requirement-item valid';
+            specialCheck.innerHTML = '<i class="bi bi-check-circle"></i> Contains special character';
+        } else {
+            specialCheck.className = 'requirement-item invalid';
+            specialCheck.innerHTML = '<i class="bi bi-circle"></i> Contains special character';
+        }
+    }
+    
+    if (password1) {
+        password1.addEventListener('input', function() {
+            validatePassword(this.value);
+        });
+    }
+    
+    if (password2) {
+        password2.addEventListener('input', function() {
+            if (password1 && this.value !== password1.value) {
+                this.setCustomValidity('Passwords do not match');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    }
+});
+</script>
 {% endblock %}
 

@@ -10,11 +10,10 @@
     }
     
     .login-card {
-        background: rgba(26, 26, 26, 0.95);
-        border: 2px solid var(--neon-red);
-        border-radius: 15px;
-        box-shadow: var(--glow-red);
-        backdrop-filter: blur(20px);
+        background: var(--panel-bg);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
+        backdrop-filter: blur(10px);
         position: relative;
         overflow: hidden;
     }
@@ -25,312 +24,249 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--neon-red), var(--neon-orange), var(--neon-yellow), var(--neon-pink));
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
         animation: scan-line 4s linear infinite;
     }
     
     .login-header {
-        background: linear-gradient(45deg, var(--neon-red), var(--neon-orange));
-        color: var(--dark-bg);
-        padding: 30px 20px;
+        background: var(--dark-bg);
+        color: var(--primary-red);
+        padding: 20px;
         text-align: center;
         position: relative;
+        border-bottom: 2px solid var(--primary-red);
     }
     
     .login-header h3 {
         font-family: 'Orbitron', monospace;
         font-weight: 900;
-        font-size: 2rem;
+        font-size: 1.2rem;
         text-transform: uppercase;
-        letter-spacing: 3px;
+        letter-spacing: 2px;
         margin: 0;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        color: var(--primary-red);
     }
     
     .login-header p {
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 500;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        font-weight: 400;
         margin: 10px 0 0 0;
         opacity: 0.9;
+        color: var(--text-secondary);
     }
     
     .form-label {
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 600;
-        color: var(--neon-red);
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        font-weight: 700;
+        color: var(--primary-red);
         text-transform: uppercase;
         letter-spacing: 1px;
         margin-bottom: 8px;
     }
     
     .form-control {
-        background: rgba(10, 10, 10, 0.8);
-        border: 2px solid var(--neon-red);
+        background: var(--card-bg);
+        border: 1px solid var(--primary-red);
         color: var(--text-primary);
-        font-family: 'Rajdhani', sans-serif;
-        font-size: 1.1rem;
-        padding: 12px 15px;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        font-size: 1rem;
+        padding: 10px 12px;
         transition: all 0.3s ease;
     }
     
     .form-control:focus {
-        background: rgba(10, 10, 10, 0.9);
-        border-color: var(--neon-orange);
-        box-shadow: var(--glow-orange);
+        background: var(--card-bg);
+        border-color: var(--primary-red-bright);
+        box-shadow: 0 0 0 0.2rem rgba(197, 0, 60, 0.25);
         color: var(--text-primary);
     }
     
     .form-check-input {
         background-color: var(--card-bg);
-        border: 2px solid var(--neon-red);
-        border-radius: 3px;
+        border: 2px solid var(--primary-red);
+        border-radius: 0;
     }
     
     .form-check-input:checked {
-        background-color: var(--neon-red);
-        border-color: var(--neon-red);
-        box-shadow: var(--glow-red);
+        background-color: var(--primary-red);
+        border-color: var(--primary-red);
     }
     
     .form-check-label {
         color: var(--text-secondary);
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 500;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        font-weight: 400;
     }
     
-    .login-btn {
-        background: linear-gradient(45deg, var(--neon-red), var(--neon-orange));
-        border: none;
+    .btn-login {
+        background: var(--primary-red);
+        border: 1px solid var(--primary-red);
         color: var(--dark-bg);
-        font-family: 'Orbitron', monospace;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
         font-weight: 700;
-        font-size: 1.1rem;
         text-transform: uppercase;
-        letter-spacing: 2px;
-        padding: 15px 30px;
-        border-radius: 8px;
-        box-shadow: var(--glow-red);
+        letter-spacing: 1px;
+        padding: 12px 24px;
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
     }
     
-    .login-btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        transition: left 0.5s;
-    }
-    
-    .login-btn:hover::before {
-        left: 100%;
-    }
-    
-    .login-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 0 30px var(--neon-red), 0 0 60px var(--neon-red);
-    }
-    
-    .register-btn {
-        background: transparent;
-        border: 2px solid var(--neon-orange);
-        color: var(--neon-orange);
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        padding: 10px 20px;
-        border-radius: 5px;
-        box-shadow: var(--glow-orange);
-        transition: all 0.3s ease;
-    }
-    
-    .register-btn:hover {
-        background: var(--neon-orange);
+    .btn-login:hover {
+        background: var(--primary-red-bright);
+        border-color: var(--primary-red-bright);
         color: var(--dark-bg);
-        box-shadow: 0 0 20px var(--neon-orange);
-        transform: translateY(-2px);
+        animation: btn-glitch 0.2s ease-in-out;
     }
     
-    .security-features {
-        background: rgba(10, 10, 10, 0.8);
-        border: 1px solid var(--neon-orange);
-        border-radius: 10px;
-        box-shadow: var(--glow-orange);
-        margin-top: 30px;
+    .security-info {
+        background: var(--card-bg);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
+        margin-top: 20px;
     }
     
-    .security-features h6 {
-        color: var(--neon-orange);
+    .security-info .card-header {
+        background: var(--primary-red);
+        color: var(--dark-bg);
         font-family: 'Orbitron', monospace;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
-        margin-bottom: 15px;
     }
     
-    .feature-item {
-        color: var(--text-secondary);
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 500;
-        margin: 5px 0;
+    .security-feature {
+        background: var(--panel-bg);
+        border: 1px solid var(--primary-red);
+        padding: 15px;
+        margin: 10px 0;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        position: relative;
+        overflow: hidden;
     }
     
-    .feature-item i {
-        color: var(--neon-orange);
-        margin-right: 8px;
-    }
-    
-    .hologram-effect {
+    .security-feature::before {
+        content: '';
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
+        top: 0;
+        left: 0;
+        width: 3px;
         height: 100%;
-        background: linear-gradient(45deg, 
-            transparent 30%, 
-            rgba(255, 0, 0, 0.1) 50%, 
-            transparent 70%);
-        animation: hologram-scan 3s ease-in-out infinite;
-        pointer-events: none;
-        z-index: -1;
+        background: var(--primary-red);
     }
     
-    @keyframes hologram-scan {
-        0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-        50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    .security-feature:hover {
+        background: rgba(197, 0, 60, 0.1);
     }
     
-    .error-message {
-        background: rgba(255, 0, 255, 0.1);
-        border: 1px solid var(--neon-pink);
-        color: var(--neon-pink);
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 15px;
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 500;
-        box-shadow: var(--glow-pink);
+    .security-feature i {
+        color: var(--primary-red);
+        margin-right: 10px;
+    }
+    
+    .glitch-text {
+        animation: glitch-text 3s infinite;
+    }
+    
+    @keyframes glitch-text {
+        0%, 100% { transform: translateX(0); }
+        2% { transform: translateX(-1px); }
+        4% { transform: translateX(1px); }
+        6% { transform: translateX(0); }
+        8% { transform: translateX(-1px); }
+        10% { transform: translateX(1px); }
+        12% { transform: translateX(0); }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row justify-content-center login-container">
-    <div class="col-md-6 col-lg-5">
-        <div class="login-card">
-            <div class="hologram-effect"></div>
+<div class="main-container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="login-card">
+                <div class="login-header">
+                    <h3 class="glitch-text">
+                        <i class="bi bi-shield-lock"></i> Access Terminal
+                    </h3>
+                    <p>Enter your credentials to access the secure network</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="bi bi-person"></i> Username
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in form.username.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">
+                                <i class="bi bi-key"></i> Password
+                            </label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in form.password.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                            <label class="form-check-label" for="remember">
+                                Remember this session
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-login">
+                                <i class="bi bi-box-arrow-in-right"></i> Authenticate
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                                                 <p class="text-muted">
+                             Don't have an account? 
+                             <a href="{% url 'users:register' %}" class="text-primary">Register here</a>
+                         </p>
+                    </div>
+                </div>
+            </div>
             
-            <div class="login-header">
-                <h3>
-                    <i class="bi bi-shield-lock me-2"></i>
-                    CipherChat
-                </h3>
-                <p>Cyberpunk Secure Communication</p>
-            </div>
-            
-            <div class="card-body p-4">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="mb-4">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">
-                            <i class="bi bi-person me-1"></i>
-                            Username
-                        </label>
-                        {{ form.username }}
-                        {% if form.username.errors %}
-                            <div class="error-message">
-                                {% for error in form.username.errors %}
-                                    <i class="bi bi-exclamation-triangle me-1"></i>
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label for="{{ form.password.id_for_label }}" class="form-label">
-                            <i class="bi bi-lock me-1"></i>
-                            Password
-                        </label>
-                        {{ form.password }}
-                        {% if form.password.errors %}
-                            <div class="error-message">
-                                {% for error in form.password.errors %}
-                                    <i class="bi bi-exclamation-triangle me-1"></i>
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-4 form-check">
-                        {{ form.remember_me }}
-                        <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">
-                            Remember me
-                        </label>
-                    </div>
-                    
-                    <div class="d-grid mb-4">
-                        <button type="submit" class="login-btn">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>
-                            Access System
-                        </button>
-                    </div>
-                </form>
-                
-                <hr class="my-4" style="border-color: var(--neon-red);">
-                
-                <div class="text-center">
-                    <p class="text-muted mb-3" style="font-family: 'Rajdhani', sans-serif; font-weight: 500;">
-                        New to the network?
-                    </p>
-                    <a href="{% url 'users:register' %}" class="register-btn">
-                        <i class="bi bi-person-plus me-2"></i>
-                        Create Account
-                    </a>
+            <!-- Security Information -->
+            <div class="security-info">
+                <div class="card-header">
+                    <i class="bi bi-shield-check"></i> Security Features
                 </div>
-            </div>
-        </div>
-        
-        <!-- Security Features Info -->
-        <div class="security-features p-4">
-            <h6 class="text-center">
-                <i class="bi bi-shield-check me-2"></i>
-                Security Features
-            </h6>
-            <div class="row">
-                <div class="col-6">
-                    <div class="feature-item">
-                        <i class="bi bi-check-circle"></i>
-                        RSA + AES Encryption
+                <div class="card-body">
+                    <div class="security-feature">
+                        <i class="bi bi-shield-lock"></i>
+                        <strong>End-to-End Encryption</strong><br>
+                        <small>All communications are encrypted with RSA-2048 + AES-256</small>
                     </div>
-                </div>
-                <div class="col-6">
-                    <div class="feature-item">
-                        <i class="bi bi-check-circle"></i>
-                        Digital Signatures
+                    <div class="security-feature">
+                        <i class="bi bi-key"></i>
+                        <strong>Secure Key Exchange</strong><br>
+                        <small>Cryptographic keys are exchanged securely</small>
                     </div>
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-6">
-                    <div class="feature-item">
+                    <div class="security-feature">
                         <i class="bi bi-check-circle"></i>
-                        End-to-End Security
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="feature-item">
-                        <i class="bi bi-check-circle"></i>
-                        Tamper-Proof Messages
+                        <strong>Digital Signatures</strong><br>
+                        <small>Message authenticity is verified with digital signatures</small>
                     </div>
                 </div>
             </div>

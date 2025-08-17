@@ -2,187 +2,291 @@
 
 {% block title %}Send Message - CipherChat{% endblock %}
 
+{% block extra_css %}
+<style>
+    .message-form {
+        background: var(--card-bg);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
+        margin-bottom: 20px;
+    }
+    
+    .message-form .card-header {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .form-label {
+        color: var(--primary-red);
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+    
+    .form-control, .form-select {
+        background: var(--panel-bg);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
+        color: var(--text-primary);
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        padding: 12px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        background: var(--panel-bg);
+        border-color: var(--primary-red-bright);
+        color: var(--text-primary);
+        box-shadow: 0 0 0 0.2rem rgba(197, 0, 60, 0.25);
+    }
+    
+    .form-text {
+        color: var(--text-muted);
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        font-size: 0.8rem;
+    }
+    
+    .encryption-info {
+        background: var(--card-bg);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
+    }
+    
+    .encryption-info .card-header {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .encryption-step {
+        background: var(--panel-bg);
+        border: 1px solid var(--primary-red);
+        padding: 15px;
+        margin: 10px 0;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .encryption-step::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--primary-red);
+    }
+    
+    .encryption-step:hover {
+        background: rgba(197, 0, 60, 0.1);
+    }
+    
+    .step-number {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        margin-right: 10px;
+        font-size: 0.8rem;
+    }
+    
+    .security-badge {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+    }
+    
+    .glitch-text {
+        animation: glitch-text 3s infinite;
+    }
+    
+    @keyframes glitch-text {
+        0%, 100% { transform: translateX(0); }
+        2% { transform: translateX(-1px); }
+        4% { transform: translateX(1px); }
+        6% { transform: translateX(0); }
+        8% { transform: translateX(-1px); }
+        10% { transform: translateX(1px); }
+        12% { transform: translateX(0); }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title mb-0">
-                    <i class="bi bi-send text-primary me-2"></i>
-                    Send Encrypted Message
-                </h4>
-                <p class="text-muted mt-2 mb-0">Your message will be encrypted with RSA + AES encryption</p>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.recipient_username.id_for_label }}" class="form-label">
-                            <i class="bi bi-person me-1"></i>
-                            Recipient Username
-                        </label>
-                        {{ form.recipient_username }}
-                        {% if form.recipient_username.errors %}
-                            <div class="invalid-feedback d-block">
-                                {% for error in form.recipient_username.errors %}
-                                    {{ error }}
-                                {% endfor %}
+<div class="main-container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <!-- Message Form -->
+            <div class="message-form">
+                <div class="card-header">
+                    <i class="bi bi-send"></i> Encrypt & Send Message
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.recipient_username.id_for_label }}" class="form-label">
+                                <i class="bi bi-person"></i> Recipient Username
+                            </label>
+                            {{ form.recipient_username }}
+                            {% if form.recipient_username.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in form.recipient_username.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">
+                                Enter the username of the person you want to send a message to.
                             </div>
-                        {% endif %}
-                        <div class="form-text">
-                            Enter the username of the person you want to send a message to.
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.message_type.id_for_label }}" class="form-label">
+                                <i class="bi bi-tag"></i> Message Type
+                            </label>
+                            {{ form.message_type }}
+                            {% if form.message_type.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in form.message_type.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">
+                                Select the type of message you're sending.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.message_content.id_for_label }}" class="form-label">
+                                <i class="bi bi-chat-text"></i> Message Content
+                            </label>
+                            {{ form.message_content }}
+                            {% if form.message_content.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {% for error in form.message_content.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">
+                                Type your message here. Maximum {{ form.message_content.field.validators.0.limit_value }} characters.
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-shield-lock"></i> Encrypt & Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Encryption Process Info -->
+            <div class="encryption-info">
+                <div class="card-header">
+                    <i class="bi bi-info-circle"></i> Encryption Process
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Message Encryption</h6>
+                            <div class="encryption-step">
+                                <span class="step-number">1</span>
+                                Generate random AES-256 key
+                            </div>
+                            <div class="encryption-step">
+                                <span class="step-number">2</span>
+                                Encrypt message with AES key
+                            </div>
+                            <div class="encryption-step">
+                                <span class="step-number">3</span>
+                                Encrypt AES key with recipient's RSA public key
+                            </div>
+                            <div class="encryption-step">
+                                <span class="step-number">4</span>
+                                Sign message with your private key
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary">Security Features</h6>
+                            <div class="encryption-step">
+                                <i class="bi bi-shield-check text-primary"></i>
+                                <strong>End-to-End Encryption</strong><br>
+                                <small>Only you and the recipient can read messages</small>
+                            </div>
+                            <div class="encryption-step">
+                                <i class="bi bi-key text-primary"></i>
+                                <strong>RSA-2048 + AES-256</strong><br>
+                                <small>Military-grade encryption standards</small>
+                            </div>
+                            <div class="encryption-step">
+                                <i class="bi bi-check-circle text-primary"></i>
+                                <strong>Digital Signatures</strong><br>
+                                <small>Verify message authenticity and integrity</small>
+                            </div>
+                            <div class="encryption-step">
+                                <i class="bi bi-clock text-primary"></i>
+                                <strong>Perfect Forward Secrecy</strong><br>
+                                <small>Each message uses unique encryption keys</small>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="{{ form.message_type.id_for_label }}" class="form-label">
-                            <i class="bi bi-tag me-1"></i>
-                            Message Type
-                        </label>
-                        {{ form.message_type }}
-                        {% if form.message_type.errors %}
-                            <div class="invalid-feedback d-block">
-                                {% for error in form.message_type.errors %}
-                                    {{ error }}
-                                {% endfor %}
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="bi bi-lightbulb"></i>
+                                <strong>Security Tip:</strong> 
+                                Your message will be automatically encrypted before transmission. 
+                                The recipient will need your public key to decrypt the message.
                             </div>
-                        {% endif %}
-                        <div class="form-text">
-                            Select the type of message you're sending.
                         </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.message_content.id_for_label }}" class="form-label">
-                            <i class="bi bi-chat-text me-1"></i>
-                            Message Content
-                        </label>
-                        {{ form.message_content }}
-                        {% if form.message_content.errors %}
-                            <div class="invalid-feedback d-block">
-                                {% for error in form.message_content.errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                        <div class="form-text">
-                            Type your message here. Maximum {{ form.message_content.field.validators.0.limit_value }} characters.
+                </div>
+            </div>
+            
+            <!-- Security Status -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <i class="bi bi-shield-check"></i> Security Status
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="security-badge">RSA-2048</div>
+                            <small class="text-muted">Key Strength</small>
                         </div>
-                    </div>
-                    
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-shield-lock me-2"></i>
-                            Encrypt & Send Message
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
-        <!-- Encryption Process Info -->
-        <div class="card mt-4">
-            <div class="card-header">
-                <h6 class="card-title mb-0">
-                    <i class="bi bi-info-circle text-info me-2"></i>
-                    How Encryption Works
-                </h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6>Message Encryption</h6>
-                        <ol class="text-muted">
-                            <li>Generate random AES-256 key</li>
-                            <li>Encrypt message with AES key</li>
-                            <li>Encrypt AES key with recipient's RSA public key</li>
-                            <li>Sign message with your private key</li>
-                        </ol>
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Security Features</h6>
-                        <ul class="text-muted">
-                            <li>End-to-end encryption</li>
-                            <li>Digital signatures</li>
-                            <li>Tamper-proof verification</li>
-                            <li>Forward secrecy</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Requirements Check -->
-        <div class="card mt-4">
-            <div class="card-header">
-                <h6 class="card-title mb-0">
-                    <i class="bi bi-check-circle text-success me-2"></i>
-                    Requirements Check
-                </h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6>Your Setup</h6>
-                        <ul class="list-unstyled">
-                            <li class="mb-2">
-                                {% if user.profile.public_key and user.profile.private_key %}
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    <span class="text-success">Cryptographic keys generated</span>
-                                {% else %}
-                                    <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
-                                    <span class="text-warning">Keys not generated</span>
-                                {% endif %}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Recipient Setup</h6>
-                        <ul class="list-unstyled">
-                            <li class="mb-2">
-                                <i class="bi bi-info-circle text-info me-2"></i>
-                                <span class="text-muted">Recipient must have an account</span>
-                            </li>
-                            <li class="mb-2">
-                                <i class="bi bi-info-circle text-info me-2"></i>
-                                <span class="text-muted">You need their public key</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                
-                {% if not user.profile.public_key or not user.profile.private_key %}
-                <div class="mt-3">
-                    <div class="alert alert-warning" role="alert">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        <strong>Action Required:</strong> You need to generate cryptographic keys before sending encrypted messages.
-                        <a href="{% url 'chat:generate_keys' %}" class="btn btn-warning btn-sm ms-3">
-                            <i class="bi bi-key me-1"></i>
-                            Generate Keys
-                        </a>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        
-        <!-- Quick Actions -->
-        <div class="card mt-4">
-            <div class="card-body text-center">
-                <h6 class="card-title">Quick Actions</h6>
-                <div class="row">
-                    <div class="col-md-6 mb-2">
-                        <a href="{% url 'chat:manage_keys' %}" class="btn btn-outline-primary btn-sm w-100">
-                            <i class="bi bi-key me-1"></i>
-                            Manage Keys
-                        </a>
-                    </div>
-                    <div class="col-md-6 mb-2">
-                        <a href="{% url 'chat:view_messages' %}" class="btn btn-outline-secondary btn-sm w-100">
-                            <i class="bi bi-chat-dots me-1"></i>
-                            View Messages
-                        </a>
+                        <div class="col-md-4 text-center">
+                            <div class="security-badge">AES-256</div>
+                            <small class="text-muted">Encryption</small>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="security-badge">SHA-256</div>
+                            <small class="text-muted">Hashing</small>
+                        </div>
                     </div>
                 </div>
             </div>

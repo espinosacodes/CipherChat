@@ -5,13 +5,14 @@
 {% block extra_css %}
 <style>
     .dashboard-header {
-        background: linear-gradient(45deg, var(--neon-red), var(--neon-orange));
+        background: var(--primary-red);
         color: var(--dark-bg);
         padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 30px;
+        border-radius: 0;
+        margin-bottom: 20px;
         position: relative;
         overflow: hidden;
+        border: 1px solid var(--primary-red);
     }
     
     .dashboard-header::before {
@@ -20,29 +21,28 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, var(--neon-red), var(--neon-orange), var(--neon-yellow));
-        animation: scan-line 3s linear infinite;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--primary-red-bright), transparent);
+        animation: scan-line 4s linear infinite;
     }
     
     .dashboard-header h1 {
         font-family: 'Orbitron', monospace;
         font-weight: 900;
-        font-size: 2.5rem;
+        font-size: 1.5rem;
         text-transform: uppercase;
-        letter-spacing: 3px;
+        letter-spacing: 2px;
         margin: 0;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
     
     .status-card {
         background: var(--card-bg);
-        border: 2px solid var(--neon-red);
-        border-radius: 15px;
-        box-shadow: var(--glow-red);
+        border: 2px solid var(--primary-red);
+        border-radius: 0;
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
+        margin-bottom: 20px;
     }
     
     .status-card::before {
@@ -52,13 +52,14 @@
         left: 0;
         width: 100%;
         height: 3px;
-        background: linear-gradient(90deg, var(--neon-red), var(--neon-orange));
+        background: var(--primary-red);
+        animation: pulse 2s ease-in-out infinite;
     }
     
     .status-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 0 30px var(--neon-red), 0 0 60px var(--neon-red);
-        border-color: var(--neon-orange);
+        transform: translateY(-5px);
+        border-color: var(--primary-red-bright);
+        box-shadow: 0 0 15px rgba(197, 0, 60, 0.3);
     }
     
     .status-card .card-body {
@@ -69,20 +70,19 @@
     .status-icon {
         font-size: 3rem;
         margin-bottom: 15px;
-        text-shadow: var(--glow-red);
+        color: var(--primary-red);
     }
     
     .status-number {
         font-family: 'Orbitron', monospace;
         font-weight: 900;
         font-size: 2.5rem;
-        color: var(--neon-red);
-        text-shadow: var(--glow-red);
+        color: var(--primary-red);
         margin: 10px 0;
     }
     
     .status-label {
-        font-family: 'Rajdhani', sans-serif;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
         font-weight: 600;
         color: var(--text-secondary);
         text-transform: uppercase;
@@ -92,478 +92,370 @@
     
     .quick-actions {
         background: var(--card-bg);
-        border: 2px solid var(--neon-orange);
-        border-radius: 15px;
-        box-shadow: var(--glow-orange);
+        border: 2px solid var(--primary-red);
+        border-radius: 0;
         margin-bottom: 30px;
     }
     
     .quick-actions .card-header {
-        background: linear-gradient(45deg, var(--neon-orange), var(--neon-red));
+        background: var(--primary-red);
         color: var(--dark-bg);
         font-family: 'Orbitron', monospace;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 2px;
-        border-bottom: 2px solid var(--neon-orange);
+        letter-spacing: 1px;
     }
     
     .action-btn {
-        background: linear-gradient(45deg, var(--neon-red), var(--neon-orange));
-        border: none;
-        color: var(--dark-bg);
-        font-family: 'Orbitron', monospace;
-        font-weight: 700;
-        font-size: 1.1rem;
+        background: transparent;
+        border: 1px solid var(--primary-red);
+        color: var(--primary-red);
+        padding: 15px;
+        margin: 10px;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
         text-transform: uppercase;
         letter-spacing: 1px;
-        padding: 15px 25px;
-        border-radius: 8px;
-        box-shadow: var(--glow-red);
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
     }
     
-    .action-btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-        transition: left 0.5s;
-    }
-    
-    .action-btn:hover::before {
-        left: 100%;
-    }
-    
     .action-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 0 30px var(--neon-red), 0 0 60px var(--neon-red);
-    }
-    
-    .action-btn-outline {
-        background: transparent;
-        border: 2px solid var(--neon-orange);
-        color: var(--neon-orange);
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        padding: 15px 25px;
-        border-radius: 8px;
-        box-shadow: var(--glow-orange);
-        transition: all 0.3s ease;
-    }
-    
-    .action-btn-outline:hover {
-        background: var(--neon-orange);
+        background: var(--primary-red);
         color: var(--dark-bg);
-        box-shadow: 0 0 30px var(--neon-orange);
-        transform: translateY(-3px);
+        text-decoration: none;
+        animation: btn-glitch 0.2s ease-in-out;
     }
     
-    .message-list {
+    .action-btn i {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        display: block;
+    }
+    
+    .recent-activity {
         background: var(--card-bg);
-        border: 2px solid var(--neon-purple);
-        border-radius: 15px;
-        box-shadow: var(--glow-pink);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
     }
     
-    .message-list .card-header {
-        background: linear-gradient(45deg, var(--neon-purple), var(--neon-pink));
+    .recent-activity .card-header {
+        background: var(--primary-red);
         color: var(--dark-bg);
         font-family: 'Orbitron', monospace;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 2px;
-        border-bottom: 2px solid var(--neon-purple);
+        letter-spacing: 1px;
     }
     
-    .message-item {
-        background: rgba(10, 10, 10, 0.5);
-        border: 1px solid var(--neon-red);
-        border-radius: 8px;
-        margin-bottom: 10px;
+    .activity-item {
+        background: var(--panel-bg);
+        border: 1px solid var(--primary-red);
         padding: 15px;
-        transition: all 0.3s ease;
+        margin: 10px 0;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+        position: relative;
+        overflow: hidden;
     }
     
-    .message-item:hover {
-        background: rgba(255, 0, 0, 0.1);
-        border-color: var(--neon-orange);
-        box-shadow: var(--glow-orange);
-        transform: translateX(5px);
+    .activity-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--primary-red);
     }
     
-    .message-icon {
-        font-size: 1.8rem;
-        margin-right: 15px;
+    .activity-item:hover {
+        background: rgba(197, 0, 60, 0.1);
     }
     
-    .message-icon.sent {
-        color: var(--neon-orange);
-        text-shadow: var(--glow-orange);
-    }
-    
-    .message-icon.received {
-        color: var(--neon-red);
-        text-shadow: var(--glow-red);
-    }
-    
-    .message-info h6 {
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin: 0;
-    }
-    
-    .message-meta {
-        font-family: 'Rajdhani', sans-serif;
-        font-size: 0.9rem;
+    .activity-time {
         color: var(--text-muted);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+    }
+    
+    .activity-type {
+        color: var(--primary-red);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     
     .security-status {
         background: var(--card-bg);
-        border: 2px solid var(--neon-orange);
-        border-radius: 15px;
-        box-shadow: 0 0 10px var(--neon-orange), 0 0 20px var(--neon-orange);
+        border: 1px solid var(--primary-red);
+        border-radius: 0;
+        margin-bottom: 20px;
     }
     
     .security-status .card-header {
-        background: linear-gradient(45deg, var(--neon-orange), var(--neon-pink));
+        background: var(--primary-red);
         color: var(--dark-bg);
         font-family: 'Orbitron', monospace;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 2px;
-        border-bottom: 2px solid var(--neon-orange);
+        letter-spacing: 1px;
     }
     
-    .security-item {
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 500;
-        margin: 8px 0;
-        padding: 5px 0;
+    .security-indicator {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        padding: 10px;
+        background: var(--panel-bg);
+        border: 1px solid var(--primary-red);
     }
     
-    .security-item i {
-        margin-right: 10px;
-        font-size: 1.1rem;
+    .security-indicator i {
+        font-size: 1.5rem;
+        margin-right: 15px;
+        color: var(--primary-red);
     }
     
-    .security-item.success {
-        color: var(--neon-orange);
+    .security-text {
+        flex: 1;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
     }
     
-    .security-item.warning {
-        color: var(--neon-orange);
+    .security-status-badge {
+        background: var(--primary-red);
+        color: var(--dark-bg);
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
     }
     
-    .security-item.info {
-        color: var(--text-muted);
+    .matrix-bg {
+        position: relative;
+        overflow: hidden;
     }
     
-    .warning-alert {
-        background: rgba(255, 102, 0, 0.1);
-        border: 2px solid var(--neon-orange);
-        color: var(--neon-orange);
-        border-radius: 10px;
-        padding: 15px;
-        margin: 20px 0;
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 500;
-        box-shadow: 0 0 10px var(--neon-orange), 0 0 20px var(--neon-orange);
+    .matrix-bg::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            linear-gradient(90deg, transparent 0%, rgba(197, 0, 60, 0.02) 50%, transparent 100%);
+        animation: matrix-flow 10s linear infinite;
+        pointer-events: none;
+        z-index: -1;
     }
     
-    .empty-state {
-        text-align: center;
-        padding: 40px 20px;
+    @keyframes matrix-flow {
+        0% { transform: translateX(-100%) translateY(-100%); }
+        100% { transform: translateX(100%) translateY(100%); }
     }
     
-    .empty-state i {
-        font-size: 4rem;
-        color: var(--text-muted);
-        margin-bottom: 20px;
+    .glitch-text {
+        animation: glitch-text 3s infinite;
     }
     
-    .empty-state p {
-        font-family: 'Rajdhani', sans-serif;
-        font-size: 1.1rem;
-        color: var(--text-muted);
-        margin-bottom: 20px;
-    }
-    
-    .pulse-animation {
-        animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.5; }
-        100% { opacity: 1; }
+    @keyframes glitch-text {
+        0%, 100% { transform: translateX(0); }
+        2% { transform: translateX(-1px); }
+        4% { transform: translateX(1px); }
+        6% { transform: translateX(0); }
+        8% { transform: translateX(-1px); }
+        10% { transform: translateX(1px); }
+        12% { transform: translateX(0); }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="dashboard-header">
-            <h1>
-                <i class="bi bi-house-door me-2"></i>
-                Welcome back, {{ user.username }}!
-            </h1>
-            <div class="security-badge mt-2">
-                <i class="bi bi-shield-check me-1"></i>
-                Secure Session Active
-            </div>
-        </div>
+<div class="main-container matrix-bg">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h1 class="glitch-text">
+            <i class="bi bi-speedometer2"></i> Command Center
+        </h1>
+        <p class="mb-0">Welcome back, {{ user.username }}. System status: OPERATIONAL</p>
     </div>
-</div>
 
-<!-- Status Cards -->
-<div class="row mb-4">
-    <div class="col-md-3 mb-3">
-        <div class="status-card">
-            <div class="card-body">
-                <i class="bi bi-chat-dots status-icon" style="color: var(--neon-red);"></i>
-                <h5 class="status-label">Messages</h5>
-                <div class="status-number">{{ unread_count }}</div>
-                <small class="text-muted">Unread messages</small>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-3">
-        <div class="status-card">
-            <div class="card-body">
-                <i class="bi bi-key status-icon" style="color: var(--neon-orange);"></i>
-                <h5 class="status-label">Keys</h5>
-                <div class="status-number">{{ imported_keys_count }}</div>
-                <small class="text-muted">Imported public keys</small>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-3">
-        <div class="status-card">
-            <div class="card-body">
-                <i class="bi bi-shield-lock status-icon" style="color: var(--neon-purple);"></i>
-                <h5 class="status-label">Security</h5>
-                <div class="status-number">
-                    {% if has_keys %}
-                        <i class="bi bi-check-circle-fill" style="color: var(--neon-orange);"></i>
-                    {% else %}
-                        <i class="bi bi-exclamation-triangle-fill pulse-animation" style="color: var(--neon-orange);"></i>
-                    {% endif %}
+    <!-- Status Cards -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="status-card">
+                <div class="card-body">
+                    <div class="status-icon">
+                        <i class="bi bi-envelope"></i>
+                    </div>
+                    <div class="status-number">{{ total_messages }}</div>
+                    <div class="status-label">Total Messages</div>
                 </div>
-                <small class="text-muted">
-                    {% if has_keys %}
-                        Keys generated
-                    {% else %}
-                        Keys needed
-                    {% endif %}
-                </small>
             </div>
         </div>
-    </div>
-    
-    <div class="col-md-3 mb-3">
-        <div class="status-card">
-            <div class="card-body">
-                <i class="bi bi-clock status-icon" style="color: var(--neon-pink);"></i>
-                <h5 class="status-label">Activity</h5>
-                <div class="status-number" style="font-size: 1.8rem;">
-                    {{ profile.last_activity|date:"H:i" }}
+        <div class="col-md-3">
+            <div class="status-card">
+                <div class="card-body">
+                    <div class="status-icon">
+                        <i class="bi bi-key"></i>
+                    </div>
+                    <div class="status-number">{{ total_keys }}</div>
+                    <div class="status-label">Active Keys</div>
                 </div>
-                <small class="text-muted">Last activity</small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="status-card">
+                <div class="card-body">
+                    <div class="status-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <div class="status-number">{{ security_score }}</div>
+                    <div class="status-label">Security Score</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="status-card">
+                <div class="card-body">
+                    <div class="status-icon">
+                        <i class="bi bi-clock"></i>
+                    </div>
+                    <div class="status-number">{{ session_time }}</div>
+                    <div class="status-label">Session Time</div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Quick Actions -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="quick-actions">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-lightning me-2"></i>
-                    Quick Actions
-                </h5>
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <div class="card-header">
+            <i class="bi bi-lightning"></i> Quick Actions
+        </div>
+        <div class="card-body">
+            <div class="row">
+                                 <div class="col-md-3">
+                     <a href="{% url 'chat:send_message' %}" class="action-btn">
+                         <i class="bi bi-send"></i>
+                         Send Message
+                     </a>
+                 </div>
+                 <div class="col-md-3">
+                     <a href="{% url 'chat:view_messages' %}" class="action-btn">
+                         <i class="bi bi-envelope-open"></i>
+                         View Messages
+                     </a>
+                 </div>
+                 <div class="col-md-3">
+                     <a href="{% url 'chat:manage_keys' %}" class="action-btn">
+                         <i class="bi bi-key-fill"></i>
+                         Manage Keys
+                     </a>
+                 </div>
+                 <div class="col-md-3">
+                     <a href="{% url 'chat:security_logs' %}" class="action-btn">
+                         <i class="bi bi-shield-lock"></i>
+                         Security Logs
+                     </a>
+                 </div>
             </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <a href="{% url 'chat:send_message' %}" class="action-btn w-100 d-block text-decoration-none">
-                            <i class="bi bi-send me-2"></i>
-                            Send Encrypted Message
-                        </a>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <a href="{% url 'chat:view_messages' %}" class="action-btn-outline w-100 d-block text-decoration-none">
-                            <i class="bi bi-chat-dots me-2"></i>
-                            View Messages
-                        </a>
-                    </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Security Status -->
+        <div class="col-md-6">
+            <div class="security-status">
+                <div class="card-header">
+                    <i class="bi bi-shield-check"></i> Security Status
                 </div>
-                
-                {% if not has_keys %}
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <div class="warning-alert">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            <strong>Security Setup Required:</strong> You need to generate cryptographic keys to start sending encrypted messages.
-                            <a href="{% url 'chat:generate_keys' %}" class="btn btn-warning btn-sm ms-3">
-                                <i class="bi bi-key me-1"></i>
-                                Generate Keys
-                            </a>
+                <div class="card-body">
+                    <div class="security-indicator">
+                        <i class="bi bi-check-circle"></i>
+                        <div class="security-text">
+                            <strong>Encryption</strong><br>
+                            <small>RSA + AES Active</small>
                         </div>
+                        <span class="security-status-badge">SECURE</span>
+                    </div>
+                    <div class="security-indicator">
+                        <i class="bi bi-check-circle"></i>
+                        <div class="security-text">
+                            <strong>Key Management</strong><br>
+                            <small>{{ total_keys }} Keys Active</small>
+                        </div>
+                        <span class="security-status-badge">ACTIVE</span>
+                    </div>
+                    <div class="security-indicator">
+                        <i class="bi bi-check-circle"></i>
+                        <div class="security-text">
+                            <strong>Session Security</strong><br>
+                            <small>HTTPS + Token Auth</small>
+                        </div>
+                        <span class="security-status-badge">SECURE</span>
                     </div>
                 </div>
-                {% endif %}
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Recent Messages -->
-<div class="row">
-    <div class="col-12">
-        <div class="message-list">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-clock-history me-2"></i>
-                    Recent Messages
-                </h5>
-                <a href="{% url 'chat:view_messages' %}" class="action-btn-outline btn-sm">
-                    View All
-                </a>
-            </div>
-            <div class="card-body">
-                {% if recent_messages %}
-                    <div class="list-group list-group-flush">
-                        {% for message in recent_messages %}
-                        <div class="message-item d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <div class="message-icon {% if message.sender == user %}sent{% else %}received{% endif %}">
-                                    {% if message.sender == user %}
-                                        <i class="bi bi-arrow-up-circle"></i>
-                                    {% else %}
-                                        <i class="bi bi-arrow-down-circle"></i>
-                                    {% endif %}
-                                </div>
-                                <div class="message-info">
-                                    <h6 class="mb-1">
-                                        {% if message.sender == user %}
-                                            To: {{ message.recipient.username }}
-                                        {% else %}
-                                            From: {{ message.sender.username }}
-                                        {% endif %}
-                                    </h6>
-                                    <div class="message-meta">
-                                        {{ message.created_at|date:"M d, Y H:i" }} • 
-                                        <span class="badge" style="background: var(--neon-purple); color: var(--dark-bg);">{{ message.get_message_type_display }}</span>
-                                    </div>
-                                </div>
+        <!-- Recent Activity -->
+        <div class="col-md-6">
+            <div class="recent-activity">
+                <div class="card-header">
+                    <i class="bi bi-activity"></i> Recent Activity
+                </div>
+                <div class="card-body">
+                    {% if recent_activities %}
+                        {% for activity in recent_activities %}
+                            <div class="activity-item">
+                                <div class="activity-type">{{ activity.type }}</div>
+                                <div class="activity-text">{{ activity.description }}</div>
+                                <div class="activity-time">{{ activity.timestamp }}</div>
                             </div>
-                            <div class="d-flex align-items-center">
-                                {% if message.recipient == user and not message.read_at %}
-                                    <span class="unread-indicator me-2">!</span>
-                                {% endif %}
-                                <a href="{% url 'chat:decrypt_message' message.id %}" class="action-btn-outline btn-sm">
-                                    <i class="bi bi-eye me-1"></i>
-                                    View
-                                </a>
-                            </div>
-                        </div>
                         {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-state">
-                        <i class="bi bi-chat-dots"></i>
-                        <p>No messages yet. Start by sending an encrypted message!</p>
-                        <a href="{% url 'chat:send_message' %}" class="action-btn">
-                            <i class="bi bi-send me-2"></i>
-                            Send First Message
-                        </a>
-                    </div>
-                {% endif %}
+                    {% else %}
+                        <div class="activity-item">
+                            <div class="activity-type">No Recent Activity</div>
+                            <div class="activity-text">System is idle</div>
+                            <div class="activity-time">Current time</div>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Security Status -->
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="security-status">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-shield-check me-2"></i>
-                    Security Status
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6 style="color: var(--neon-red); font-family: 'Orbitron', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Cryptographic Keys</h6>
-                        <ul class="list-unstyled">
-                            <li class="security-item {% if has_keys %}success{% else %}warning{% endif %}">
-                                {% if has_keys %}
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    RSA key pair generated
-                                {% else %}
-                                    <i class="bi bi-exclamation-triangle-fill"></i>
-                                    No cryptographic keys found
-                                {% endif %}
-                            </li>
-                            <li class="security-item info">
-                                <i class="bi bi-info-circle"></i>
-                                Key size: 2048 bits (RSA)
-                            </li>
-                            <li class="security-item info">
-                                <i class="bi bi-info-circle"></i>
-                                Encryption: AES-256 + RSA
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <h6 style="color: var(--neon-orange); font-family: 'Orbitron', monospace; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Security Features</h6>
-                        <ul class="list-unstyled">
-                            <li class="security-item success">
-                                <i class="bi bi-check-circle-fill"></i>
-                                End-to-end encryption
-                            </li>
-                            <li class="security-item success">
-                                <i class="bi bi-check-circle-fill"></i>
-                                Digital signatures
-                            </li>
-                            <li class="security-item success">
-                                <i class="bi bi-check-circle-fill"></i>
-                                Secure key exchange
-                            </li>
-                            <li class="security-item success">
-                                <i class="bi bi-check-circle-fill"></i>
-                                Tamper-proof messages
-                            </li>
-                        </ul>
+    <!-- System Information -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-info-circle"></i> System Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>User ID:</strong> {{ user.id }}<br>
+                            <strong>Username:</strong> {{ user.username }}<br>
+                            <strong>Email:</strong> {{ user.email }}
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Last Login:</strong> {{ user.last_login|default:"Never" }}<br>
+                            <strong>Date Joined:</strong> {{ user.date_joined }}<br>
+                            <strong>Status:</strong> <span class="text-primary">ACTIVE</span>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Messages Sent:</strong> {{ messages_sent }}<br>
+                            <strong>Messages Received:</strong> {{ messages_received }}<br>
+                            <strong>Keys Generated:</strong> {{ keys_generated }}
+                        </div>
                     </div>
                 </div>
-                
-                {% if not has_keys %}
-                <div class="mt-3">
-                    <a href="{% url 'chat:generate_keys' %}" class="action-btn">
-                        <i class="bi bi-key me-2"></i>
-                        Generate Cryptographic Keys
-                    </a>
-                </div>
-                {% endif %}
             </div>
         </div>
     </div>

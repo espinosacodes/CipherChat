@@ -1,36 +1,42 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}CipherChat - Cyberpunk Secure Communication{% endblock %}</title>
+    <title>{% block title %}CipherChat - Secure Communication{% endblock %}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/favicon.svg' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/favicon.png' %}">
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Google Fonts - Cyberpunk Style -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts - Terminal Style -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400;700&family=VT323&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/hacking-ui.css' %}">
     <style>
         :root {
-            --neon-red: #ff0000;
-            --neon-red-bright: #ff3333;
-            --neon-red-dark: #cc0000;
-            --neon-orange: #ff6600;
-            --neon-yellow: #ffff00;
-            --neon-pink: #ff0066;
-            --dark-bg: #0a0a0a;
-            --darker-bg: #050505;
-            --card-bg: #1a1a1a;
+            --primary-red: #c5003c;
+            --primary-red-bright: #ff1a4d;
+            --accent-cyan: #55ead4;
+            --dark-bg: #000000;
+            --darker-bg: #0a0a0a;
+            --card-bg: #0f0f0f;
+            --panel-bg: #0d0d0d;
             --text-primary: #ffffff;
             --text-secondary: #cccccc;
-            --text-muted: #888888;
-            --border-neon: #ff0000;
-            --glow-red: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000;
-            --glow-red-bright: 0 0 10px #ff3333, 0 0 20px #ff3333, 0 0 30px #ff3333;
-            --glow-orange: 0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 30px #ff6600;
-            --glow-yellow: 0 0 10px #ffff00, 0 0 20px #ffff00, 0 0 30px #ffff00;
+            --text-muted: #666666;
+            --border-red: #c5003c;
+            --glitch-red: 2px 0 #c5003c, -2px 0 #ff1a4d;
+            --glitch-bright: 3px 0 #ff1a4d, -3px 0 #c5003c;
         }
         
         * {
@@ -38,17 +44,18 @@
         }
         
         body {
-            background: var(--dark-bg);
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
             color: var(--text-primary);
-            font-family: 'Exo 2', 'Rajdhani', sans-serif;
+            font-family: 'Share Tech Mono', 'VT323', monospace;
             font-weight: 400;
-            line-height: 1.6;
+            line-height: 1.4;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
             position: relative;
         }
         
+        /* Subtle glitch effect on body */
         body::before {
             content: '';
             position: fixed;
@@ -57,92 +64,100 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 20% 80%, rgba(255, 0, 0, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 102, 0, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(255, 0, 102, 0.08) 0%, transparent 50%);
+                radial-gradient(circle at 20% 80%, rgba(197, 0, 60, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(197, 0, 60, 0.01) 0%, transparent 50%);
             pointer-events: none;
             z-index: -1;
+            animation: glitch-bg 8s ease-in-out infinite;
         }
         
-        /* Cyberpunk-style background animation */
-        .matrix-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, 
-                transparent 0%, 
-                rgba(255, 0, 0, 0.03) 50%, 
-                transparent 100%);
-            animation: matrix-rain 20s linear infinite;
-            pointer-events: none;
-            z-index: -2;
-        }
-        
-        @keyframes matrix-rain {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
+        @keyframes glitch-bg {
+            0%, 100% { opacity: 1; transform: translateX(0); }
+            2% { opacity: 0.98; transform: translateX(-1px); }
+            4% { opacity: 1; transform: translateX(1px); }
+            6% { opacity: 0.99; transform: translateX(0); }
         }
         
         /* Typography */
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Orbitron', monospace;
+            font-family: 'Orbitron', 'Share Tech Mono', monospace;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
+            color: var(--primary-red);
         }
         
         .navbar {
-            background: rgba(10, 10, 10, 0.95) !important;
-            backdrop-filter: blur(20px);
-            border-bottom: 2px solid var(--neon-red);
-            box-shadow: var(--glow-red);
+            background: rgba(0, 0, 0, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary-red);
             padding: 1rem 0;
+            position: relative;
+        }
+        
+        .navbar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+            animation: scan-line 4s linear infinite;
         }
         
         .navbar-brand {
             font-family: 'Orbitron', monospace;
             font-weight: 900;
-            font-size: 1.8rem;
-            color: var(--neon-red) !important;
-            text-shadow: var(--glow-red);
-            letter-spacing: 3px;
+            font-size: 1.2rem;
+            color: var(--primary-red) !important;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
         
         .navbar-brand:hover {
-            color: var(--neon-orange) !important;
-            text-shadow: var(--glow-orange);
+            animation: text-glitch 0.3s ease-in-out;
+        }
+        
+        @keyframes text-glitch {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-1px); }
+            75% { transform: translateX(1px); }
         }
         
         .nav-link {
-            font-family: 'Exo 2', 'Rajdhani', sans-serif;
-            font-weight: 600;
+            font-family: 'Share Tech Mono', 'VT323', monospace;
+            font-weight: 400;
             color: var(--text-primary) !important;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 0 10px;
             padding: 8px 16px !important;
             border: 1px solid transparent;
-            border-radius: 5px;
+            border-radius: 0;
             transition: all 0.3s ease;
+            position: relative;
         }
         
         .nav-link:hover {
-            color: var(--neon-red) !important;
-            border-color: var(--neon-red);
-            box-shadow: var(--glow-red);
-            background: rgba(255, 0, 0, 0.1);
+            color: var(--primary-red) !important;
+            border-color: var(--primary-red);
+            background: rgba(197, 0, 60, 0.1);
+            animation: glitch-hover 0.2s ease-in-out;
+        }
+        
+        @keyframes glitch-hover {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-1px); }
         }
         
         .main-container {
-            background: rgba(26, 26, 26, 0.9);
-            border: 2px solid var(--neon-red);
-            border-radius: 15px;
-            box-shadow: var(--glow-red);
-            margin: 30px 0;
-            padding: 30px;
-            backdrop-filter: blur(10px);
+            background: var(--panel-bg);
+            border: 1px solid var(--primary-red);
+            border-radius: 0;
+            margin: 20px 0;
+            padding: 20px;
+            backdrop-filter: blur(5px);
             position: relative;
             overflow: hidden;
         }
@@ -153,9 +168,9 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--neon-red), var(--neon-orange), var(--neon-yellow));
-            animation: scan-line 3s linear infinite;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+            animation: scan-line 4s linear infinite;
         }
         
         @keyframes scan-line {
@@ -165,27 +180,46 @@
         
         .card {
             background: var(--card-bg);
-            border: 1px solid var(--neon-red);
-            border-radius: 10px;
-            box-shadow: var(--glow-red);
+            border: 1px solid var(--primary-red);
+            border-radius: 0;
             transition: all 0.3s ease;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--primary-red);
+            animation: pulse 2s ease-in-out infinite;
         }
         
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 20px var(--neon-red), 0 0 40px var(--neon-red);
-            border-color: var(--neon-orange);
+            transform: translateY(-2px);
+            border-color: var(--primary-red-bright);
+            box-shadow: 0 0 10px rgba(197, 0, 60, 0.3);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
         
         .card-header {
-            background: linear-gradient(45deg, var(--neon-red), var(--neon-orange));
+            background: var(--primary-red);
             color: var(--dark-bg);
             font-family: 'Orbitron', monospace;
             font-weight: 700;
+            font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-bottom: 1px solid var(--neon-red);
+            border-bottom: 1px solid var(--primary-red);
+            padding: 10px 15px;
         }
         
         .card-body {
@@ -193,196 +227,179 @@
         }
         
         .btn {
-            font-family: 'Exo 2', 'Rajdhani', sans-serif;
-            font-weight: 600;
+            font-family: 'Share Tech Mono', 'VT323', monospace;
+            font-weight: 400;
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-radius: 5px;
-            padding: 10px 20px;
-            border: 2px solid;
+            border-radius: 0;
+            padding: 8px 16px;
+            border: 1px solid var(--primary-red);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            background: transparent;
+            color: var(--primary-red);
         }
         
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
+        .btn:hover {
+            background: var(--primary-red);
+            color: var(--dark-bg);
+            animation: btn-glitch 0.2s ease-in-out;
         }
         
-        .btn:hover::before {
-            left: 100%;
+        @keyframes btn-glitch {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-1px); }
+            75% { transform: translateX(1px); }
         }
         
         .btn-primary {
-            background: transparent;
-            border-color: var(--neon-red);
-            color: var(--neon-red);
-            box-shadow: var(--glow-red);
+            background: var(--primary-red);
+            color: var(--dark-bg);
+            border-color: var(--primary-red);
         }
         
         .btn-primary:hover {
-            background: var(--neon-red);
+            background: var(--primary-red-bright);
+            border-color: var(--primary-red-bright);
             color: var(--dark-bg);
-            box-shadow: 0 0 20px var(--neon-red);
-            transform: translateY(-2px);
         }
         
-        .btn-success {
-            background: transparent;
-            border-color: var(--neon-orange);
-            color: var(--neon-orange);
-            box-shadow: var(--glow-orange);
+        .btn-outline-primary {
+            border-color: var(--primary-red);
+            color: var(--primary-red);
         }
         
-        .btn-success:hover {
-            background: var(--neon-orange);
+        .btn-outline-primary:hover {
+            background: var(--primary-red);
             color: var(--dark-bg);
-            box-shadow: 0 0 20px var(--neon-orange);
         }
         
-        .btn-danger {
-            background: transparent;
-            border-color: var(--neon-red-bright);
-            color: var(--neon-red-bright);
-            box-shadow: var(--glow-red-bright);
-        }
-        
-        .btn-danger:hover {
-            background: var(--neon-red-bright);
-            color: var(--dark-bg);
-            box-shadow: 0 0 20px var(--neon-red-bright);
-        }
-        
-        .form-control, .form-select {
+        .form-control {
             background: var(--card-bg);
-            border: 2px solid var(--neon-red);
-            border-radius: 5px;
+            border: 1px solid var(--primary-red);
+            border-radius: 0;
             color: var(--text-primary);
-            font-family: 'Exo 2', 'Rajdhani', sans-serif;
-            transition: all 0.3s ease;
+            font-family: 'Share Tech Mono', 'VT323', monospace;
         }
         
-        .form-control:focus, .form-select:focus {
+        .form-control:focus {
             background: var(--card-bg);
-            border-color: var(--neon-orange);
+            border-color: var(--primary-red-bright);
             color: var(--text-primary);
-            box-shadow: var(--glow-orange);
-            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(197, 0, 60, 0.25);
         }
         
         .form-control::placeholder {
             color: var(--text-muted);
         }
         
-        .alert {
+        .progress {
             background: var(--card-bg);
-            border: 2px solid var(--neon-red);
-            border-radius: 10px;
-            color: var(--text-primary);
-            box-shadow: var(--glow-red);
+            border: 1px solid var(--primary-red);
+            border-radius: 0;
+            height: 20px;
+        }
+        
+        .progress-bar {
+            background: var(--primary-red);
+            border-radius: 0;
+        }
+        
+        .alert {
+            border-radius: 0;
+            border: 1px solid;
+            font-family: 'Share Tech Mono', 'VT323', monospace;
         }
         
         .alert-success {
-            border-color: var(--neon-orange);
-            box-shadow: var(--glow-orange);
+            background: rgba(197, 0, 60, 0.1);
+            border-color: var(--primary-red);
+            color: var(--primary-red);
         }
         
         .alert-danger {
-            border-color: var(--neon-red-bright);
-            box-shadow: var(--glow-red-bright);
+            background: rgba(197, 0, 60, 0.2);
+            border-color: var(--primary-red-bright);
+            color: var(--primary-red-bright);
         }
         
         .alert-warning {
-            border-color: var(--neon-orange);
-            box-shadow: 0 0 10px var(--neon-orange), 0 0 20px var(--neon-orange);
+            background: rgba(197, 0, 60, 0.15);
+            border-color: var(--primary-red);
+            color: var(--primary-red);
         }
         
-        .dropdown-menu {
-            background: var(--card-bg);
-            border: 2px solid var(--neon-red);
-            box-shadow: var(--glow-red);
+        .alert-info {
+            background: rgba(85, 234, 212, 0.1);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
         }
         
-        .dropdown-item {
-            color: var(--text-primary);
-            font-family: 'Rajdhani', sans-serif;
-        }
-        
-        .dropdown-item:hover {
-            background: rgba(255, 0, 0, 0.1);
-            color: var(--neon-red);
-        }
-        
-        .footer {
-            background: rgba(10, 10, 10, 0.95);
-            border-top: 2px solid var(--neon-red);
-            box-shadow: var(--glow-red);
-            padding: 20px 0;
-            margin-top: 50px;
-        }
-        
-        .security-badge {
-            background: linear-gradient(45deg, var(--neon-orange), var(--neon-red));
-            color: var(--dark-bg);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: var(--glow-orange);
-        }
-        
-        .message-card {
-            border-left: 4px solid var(--neon-red);
-            transition: all 0.3s ease;
-        }
-        
-        .message-card:hover {
-            border-left-color: var(--neon-orange);
-            box-shadow: var(--glow-orange);
-        }
-        
-        .unread-indicator {
-            background: var(--neon-red-bright);
-            color: var(--dark-bg);
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-            box-shadow: var(--glow-red-bright);
-        }
-        
-        /* Cyberpunk table styling */
         .table {
             color: var(--text-primary);
             background: var(--card-bg);
-            border: 1px solid var(--neon-red);
+            border: 1px solid var(--primary-red);
         }
         
         .table th {
-            background: linear-gradient(45deg, var(--neon-red), var(--neon-orange));
+            background: var(--primary-red);
             color: var(--dark-bg);
+            border-color: var(--primary-red);
             font-family: 'Orbitron', monospace;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-color: var(--neon-red);
         }
         
         .table td {
-            border-color: rgba(255, 0, 0, 0.3);
+            border-color: var(--primary-red);
+            font-family: 'Share Tech Mono', 'VT323', monospace;
+        }
+        
+        .table-hover tbody tr:hover {
+            background: rgba(197, 0, 60, 0.1);
+        }
+        
+        .badge {
+            font-family: 'Share Tech Mono', 'VT323', monospace;
+            border-radius: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .badge-primary {
+            background: var(--primary-red);
+            color: var(--dark-bg);
+        }
+        
+        .text-primary {
+            color: var(--primary-red) !important;
+        }
+        
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+        
+        .border-primary {
+            border-color: var(--primary-red) !important;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--card-bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-red);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-red-bright);
         }
         
         /* Loading animation */
@@ -390,7 +407,7 @@
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 3px solid var(--neon-red);
+            border: 2px solid var(--primary-red);
             border-radius: 50%;
             border-top-color: transparent;
             animation: spin 1s ease-in-out infinite;
@@ -400,51 +417,158 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Glitch effect */
-        .glitch {
+        /* Matrix effect for special elements */
+        .matrix-bg {
             position: relative;
-            animation: glitch 2s infinite;
+            overflow: hidden;
         }
         
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
+        .matrix-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(90deg, transparent 0%, rgba(197, 0, 60, 0.02) 50%, transparent 100%);
+            animation: matrix-flow 10s linear infinite;
+            pointer-events: none;
+            z-index: -1;
         }
         
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .navbar-brand {
-                font-size: 1.4rem;
-            }
-            
-            .main-container {
-                margin: 15px 0;
-                padding: 20px;
-            }
-            
-            .btn {
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
+        @keyframes matrix-flow {
+            0% { transform: translateX(-100%) translateY(-100%); }
+            100% { transform: translateX(100%) translateY(100%); }
+        }
+        
+        /* Terminal-style code blocks */
+        pre {
+            background: var(--card-bg);
+            border: 1px solid var(--primary-red);
+            border-radius: 0;
+            color: var(--text-primary);
+            font-family: 'Share Tech Mono', 'VT323', monospace;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        
+        code {
+            color: var(--primary-red);
+            font-family: 'Share Tech Mono', 'VT323', monospace;
+        }
+        
+        /* Modal styling */
+        .modal-content {
+            background: var(--panel-bg);
+            border: 1px solid var(--primary-red);
+            border-radius: 0;
+        }
+        
+        .modal-header {
+            background: var(--primary-red);
+            color: var(--dark-bg);
+            border-bottom: 1px solid var(--primary-red);
+        }
+        
+        .modal-title {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .modal-body {
+            color: var(--text-primary);
+        }
+        
+        .modal-footer {
+            border-top: 1px solid var(--primary-red);
+        }
+        
+        /* Dropdown styling */
+        .dropdown-menu {
+            background: var(--panel-bg);
+            border: 1px solid var(--primary-red);
+            border-radius: 0;
+        }
+        
+        .dropdown-item {
+            color: var(--text-primary);
+            font-family: 'Share Tech Mono', 'VT323', monospace;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(197, 0, 60, 0.1);
+            color: var(--primary-red);
+        }
+        
+        /* Pagination */
+        .page-link {
+            background: var(--card-bg);
+            border: 1px solid var(--primary-red);
+            color: var(--primary-red);
+            font-family: 'Share Tech Mono', 'VT323', monospace;
+        }
+        
+        .page-link:hover {
+            background: var(--primary-red);
+            color: var(--dark-bg);
+        }
+        
+        .page-item.active .page-link {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+            color: var(--dark-bg);
+        }
+        
+        /* Tooltip */
+        .tooltip-inner {
+            background: var(--panel-bg);
+            border: 1px solid var(--primary-red);
+            color: var(--text-primary);
+            font-family: 'Share Tech Mono', 'VT323', monospace;
+        }
+        
+        .tooltip.bs-tooltip-top .tooltip-arrow::before {
+            border-top-color: var(--primary-red);
+        }
+        
+        /* Custom animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .glitch-text {
+            animation: glitch-text 3s infinite;
+        }
+        
+        @keyframes glitch-text {
+            0%, 100% { transform: translateX(0); }
+            2% { transform: translateX(-1px); }
+            4% { transform: translateX(1px); }
+            6% { transform: translateX(0); }
+            8% { transform: translateX(-1px); }
+            10% { transform: translateX(1px); }
+            12% { transform: translateX(0); }
         }
     </style>
-    
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Matrix background -->
-    <div class="matrix-bg"></div>
+    <!-- Data stream background -->
+    <div class="data-stream"></div>
     
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="{% url 'chat:dashboard' %}">
-                <i class="bi bi-shield-lock-fill me-2"></i>
-                CipherChat
+                <i class="bi bi-shield-lock"></i> CipherChat
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -452,65 +576,56 @@
             </button>
             
             <div class="collapse navbar-collapse" id="navbarNav">
-                {% if user.is_authenticated %}
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'chat:dashboard' %}">
-                            <i class="bi bi-house-door me-1"></i>Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'chat:send_message' %}">
-                            <i class="bi bi-send me-1"></i>Send Message
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'chat:view_messages' %}">
-                            <i class="bi bi-chat-dots me-1"></i>Messages
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'chat:manage_keys' %}">
-                            <i class="bi bi-key me-1"></i>Keys
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'chat:security_logs' %}">
-                            <i class="bi bi-shield-check me-1"></i>Security
-                        </a>
-                    </li>
-                </ul>
-                
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle me-1"></i>{{ user.username }}
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'users:profile' %}">
-                                <i class="bi bi-person me-2"></i>Profile
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'users:logout' %}">
-                                <i class="bi bi-box-arrow-right me-2"></i>Logout
-                            </a></li>
-                        </ul>
-                    </li>
-                </ul>
-                {% else %}
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:login' %}">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>Login
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:register' %}">
-                            <i class="bi bi-person-plus me-1"></i>Register
-                        </a>
-                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'chat:dashboard' %}">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'chat:send_message' %}">
+                                <i class="bi bi-send"></i> Send Message
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'chat:view_messages' %}">
+                                <i class="bi bi-envelope"></i> Messages
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'chat:manage_keys' %}">
+                                <i class="bi bi-key"></i> Keys
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'chat:security_logs' %}">
+                                <i class="bi bi-shield-check"></i> Security
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'users:logout' %}">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:login' %}">
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:register' %}">
+                                <i class="bi bi-person-plus"></i> Register
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
-                {% endif %}
             </div>
         </div>
     </nav>
@@ -518,133 +633,49 @@
     <!-- Main Content -->
     <div class="container">
         {% if messages %}
-        <div class="messages-container">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                <i class="bi bi-info-circle me-2"></i>
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <div class="row">
+                <div class="col-12">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} fade-in" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
-            {% endfor %}
-        </div>
         {% endif %}
         
-        <div class="main-container">
-            {% block content %}{% endblock %}
-        </div>
+        {% block content %}{% endblock %}
     </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h6 class="text-muted">
-                        <i class="bi bi-shield-lock me-2"></i>
-                        CipherChat - Cyberpunk Secure Communication
-                    </h6>
-                </div>
-                <div class="col-md-6 text-end">
-                    <span class="security-badge">
-                        <i class="bi bi-check-circle me-1"></i>
-                        RSA + AES Encryption
-                    </span>
-                </div>
-            </div>
-        </div>
-    </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Custom JavaScript -->
+    <!-- Custom JS -->
     <script>
-        // Auto-hide alerts after 5 seconds
+        // Add glitch effect to elements with glitch-text class
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(function(alert) {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
+            const glitchElements = document.querySelectorAll('.glitch-text');
+            glitchElements.forEach(element => {
+                element.addEventListener('mouseenter', function() {
+                    this.style.animation = 'glitch-text 0.3s infinite';
                 });
-            }, 5000);
-        });
-        
-        // Confirm dangerous actions
-        function confirmAction(message) {
-            return confirm(message || 'Are you sure you want to perform this action?');
-        }
-        
-        // Add glitch effect to important elements
-        function addGlitchEffect() {
-            const elements = document.querySelectorAll('.navbar-brand, .security-badge');
-            elements.forEach(element => {
-                if (Math.random() < 0.1) {
-                    element.classList.add('glitch');
-                    setTimeout(() => {
-                        element.classList.remove('glitch');
-                    }, 2000);
-                }
+                element.addEventListener('mouseleave', function() {
+                    this.style.animation = 'glitch-text 3s infinite';
+                });
             });
-        }
-        
-        // Run glitch effect periodically
-        setInterval(addGlitchEffect, 10000);
-        
-        // Matrix rain effect
-        function createMatrixRain() {
-            const canvas = document.createElement('canvas');
-            canvas.style.position = 'fixed';
-            canvas.style.top = '0';
-            canvas.style.left = '0';
-            canvas.style.width = '100%';
-            canvas.style.height = '100%';
-            canvas.style.pointerEvents = 'none';
-            canvas.style.zIndex = '-3';
-            canvas.style.opacity = '0.1';
             
-            document.body.appendChild(canvas);
-            
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            
-            const matrix = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}";
-            const matrixArray = matrix.split("");
-            
-            const fontSize = 10;
-            const columns = canvas.width / fontSize;
-            const drops = [];
-            
-            for (let x = 0; x < columns; x++) {
-                drops[x] = 1;
-            }
-            
-            function draw() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                ctx.fillStyle = '#0F0';
-                ctx.font = fontSize + 'px monospace';
-                
-                for (let i = 0; i < drops.length; i++) {
-                    const text = matrixArray[Math.floor(Math.random() * matrixArray.length)];
-                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                    
-                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                        drops[i] = 0;
-                    }
-                    drops[i]++;
-                }
-            }
-            
-            setInterval(draw, 35);
-        }
-        
-        // Initialize matrix rain
-        createMatrixRain();
+            // Add subtle glitch to buttons on hover
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(-1px)';
+                });
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+        });
     </script>
-    
     {% block extra_js %}{% endblock %}
 </body>
 </html>

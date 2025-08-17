@@ -1,0 +1,575 @@
+/* Futuristic Hacking Interface CSS */
+:root {
+    --primary-red: #c5003c;
+    --primary-red-bright: #ff1a4d;
+    --accent-cyan: #55ead4;
+    --dark-bg: #000000;
+    --darker-bg: #0a0a0a;
+    --card-bg: #0f0f0f;
+    --panel-bg: #0d0d0d;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-muted: #666666;
+    --border-red: #c5003c;
+    --glitch-red: 2px 0 #c5003c, -2px 0 #ff1a4d;
+    --glitch-bright: 3px 0 #ff1a4d, -3px 0 #c5003c;
+}
+
+/* Base Styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+    color: var(--text-primary);
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+    font-weight: 400;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Subtle glitch effect on body */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(197, 0, 60, 0.02) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(197, 0, 60, 0.01) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+    animation: glitch-bg 8s ease-in-out infinite;
+}
+
+@keyframes glitch-bg {
+    0%, 100% { opacity: 1; transform: translateX(0); }
+    2% { opacity: 0.98; transform: translateX(-1px); }
+    4% { opacity: 1; transform: translateX(1px); }
+    6% { opacity: 0.99; transform: translateX(0); }
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', 'Share Tech Mono', monospace;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Navigation */
+.navbar {
+    background: rgba(0, 0, 0, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid var(--primary-red);
+    padding: 1rem 0;
+    position: relative;
+}
+
+.navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+    animation: scan-line 4s linear infinite;
+}
+
+.navbar-brand {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 1.2rem;
+    color: var(--primary-red) !important;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.navbar-brand:hover {
+    animation: text-glitch 0.3s ease-in-out;
+}
+
+@keyframes text-glitch {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-1px); }
+    75% { transform: translateX(1px); }
+}
+
+.nav-link {
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+    font-weight: 400;
+    color: var(--text-primary) !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 10px;
+    padding: 8px 16px !important;
+    border: 1px solid transparent;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--primary-red) !important;
+    border-color: var(--primary-red);
+    background: rgba(197, 0, 60, 0.1);
+    animation: glitch-hover 0.2s ease-in-out;
+}
+
+@keyframes glitch-hover {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-1px); }
+}
+
+/* Main Container */
+.main-container {
+    background: var(--panel-bg);
+    border: 1px solid var(--primary-red);
+    border-radius: 0;
+    margin: 20px 0;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+    position: relative;
+    overflow: hidden;
+}
+
+.main-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+    animation: scan-line 4s linear infinite;
+}
+
+@keyframes scan-line {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--primary-red);
+    border-radius: 0;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--primary-red);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-red-bright);
+    box-shadow: 0 0 10px rgba(197, 0, 60, 0.3);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.card-header {
+    background: var(--primary-red);
+    color: var(--dark-bg);
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--primary-red);
+    padding: 10px 15px;
+}
+
+.card-body {
+    color: var(--text-primary);
+}
+
+/* Buttons */
+.btn {
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 0;
+    padding: 8px 16px;
+    border: 1px solid var(--primary-red);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    color: var(--primary-red);
+}
+
+.btn:hover {
+    background: var(--primary-red);
+    color: var(--dark-bg);
+    animation: btn-glitch 0.2s ease-in-out;
+}
+
+@keyframes btn-glitch {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-1px); }
+    75% { transform: translateX(1px); }
+}
+
+.btn-primary {
+    background: var(--primary-red);
+    color: var(--dark-bg);
+    border-color: var(--primary-red);
+}
+
+.btn-primary:hover {
+    background: var(--primary-red-bright);
+    border-color: var(--primary-red-bright);
+    color: var(--dark-bg);
+}
+
+.btn-outline-primary {
+    border-color: var(--primary-red);
+    color: var(--primary-red);
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary-red);
+    color: var(--dark-bg);
+}
+
+/* Forms */
+.form-control {
+    background: var(--card-bg);
+    border: 1px solid var(--primary-red);
+    border-radius: 0;
+    color: var(--text-primary);
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+}
+
+.form-control:focus {
+    background: var(--card-bg);
+    border-color: var(--primary-red-bright);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 0.2rem rgba(197, 0, 60, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+}
+
+.form-label {
+    color: var(--primary-red);
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+/* Progress Bars */
+.progress {
+    background: var(--card-bg);
+    border: 1px solid var(--primary-red);
+    border-radius: 0;
+    height: 20px;
+}
+
+.progress-bar {
+    background: var(--primary-red);
+    border-radius: 0;
+}
+
+/* Alerts */
+.alert {
+    border-radius: 0;
+    border: 1px solid;
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+}
+
+.alert-success {
+    background: rgba(197, 0, 60, 0.1);
+    border-color: var(--primary-red);
+    color: var(--primary-red);
+}
+
+.alert-danger {
+    background: rgba(197, 0, 60, 0.2);
+    border-color: var(--primary-red-bright);
+    color: var(--primary-red-bright);
+}
+
+.alert-warning {
+    background: rgba(197, 0, 60, 0.15);
+    border-color: var(--primary-red);
+    color: var(--primary-red);
+}
+
+.alert-info {
+    background: rgba(85, 234, 212, 0.1);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+/* Tables */
+.table {
+    color: var(--text-primary);
+    background: var(--card-bg);
+    border: 1px solid var(--primary-red);
+}
+
+.table th {
+    background: var(--primary-red);
+    color: var(--dark-bg);
+    border-color: var(--primary-red);
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.table td {
+    border-color: var(--primary-red);
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+}
+
+.table-hover tbody tr:hover {
+    background: rgba(197, 0, 60, 0.1);
+}
+
+/* Badges */
+.badge {
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+    border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.badge-primary {
+    background: var(--primary-red);
+    color: var(--dark-bg);
+}
+
+/* Text Colors */
+.text-primary {
+    color: var(--primary-red) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.border-primary {
+    border-color: var(--primary-red) !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--card-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-red);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-red-bright);
+}
+
+/* Loading Animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary-red);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Matrix Effect */
+.matrix-bg {
+    position: relative;
+    overflow: hidden;
+}
+
+.matrix-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(90deg, transparent 0%, rgba(197, 0, 60, 0.02) 50%, transparent 100%);
+    animation: matrix-flow 10s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes matrix-flow {
+    0% { transform: translateX(-100%) translateY(-100%); }
+    100% { transform: translateX(100%) translateY(100%); }
+}
+
+/* Terminal-style Code Blocks */
+pre {
+    background: var(--card-bg);
+    border: 1px solid var(--primary-red);
+    border-radius: 0;
+    color: var(--text-primary);
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+    padding: 15px;
+    overflow-x: auto;
+}
+
+code {
+    color: var(--primary-red);
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+}
+
+/* Modal Styling */
+.modal-content {
+    background: var(--panel-bg);
+    border: 1px solid var(--primary-red);
+    border-radius: 0;
+}
+
+.modal-header {
+    background: var(--primary-red);
+    color: var(--dark-bg);
+    border-bottom: 1px solid var(--primary-red);
+}
+
+.modal-title {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.modal-body {
+    color: var(--text-primary);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--primary-red);
+}
+
+/* Dropdown Styling */
+.dropdown-menu {
+    background: var(--panel-bg);
+    border: 1px solid var(--primary-red);
+    border-radius: 0;
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+}
+
+.dropdown-item:hover {
+    background: rgba(197, 0, 60, 0.1);
+    color: var(--primary-red);
+}
+
+/* Pagination */
+.page-link {
+    background: var(--card-bg);
+    border: 1px solid var(--primary-red);
+    color: var(--primary-red);
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+}
+
+.page-link:hover {
+    background: var(--primary-red);
+    color: var(--dark-bg);
+}
+
+.page-item.active .page-link {
+    background: var(--primary-red);
+    border-color: var(--primary-red);
+    color: var(--dark-bg);
+}
+
+/* Tooltip */
+.tooltip-inner {
+    background: var(--panel-bg);
+    border: 1px solid var(--primary-red);
+    color: var(--text-primary);
+    font-family: 'Share Tech Mono', 'VT323', monospace;
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: var(--primary-red);
+}
+
+/* Custom Animations */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.glitch-text {
+    animation: glitch-text 3s infinite;
+}
+
+@keyframes glitch-text {
+    0%, 100% { transform: translateX(0); }
+    2% { transform: translateX(-1px); }
+    4% { transform: translateX(1px); }
+    6% { transform: translateX(0); }
+    8% { transform: translateX(-1px); }
+    10% { transform: translateX(1px); }
+    12% { transform: translateX(0); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1rem;
+    }
+    
+    .main-container {
+        margin: 15px 0;
+        padding: 15px;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+    
+    h1, h2, h3 {
+        font-size: 1.5rem;
+    }
+}
