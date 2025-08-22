@@ -42,7 +42,7 @@ class PublicKey(models.Model):
 
 
 class Message(models.Model):
-    """Encrypted messages between users."""
+    """Messages between users (encrypted or non-encrypted)."""
     MESSAGE_TYPES = [
         ('text', 'Text Message'),
         ('file', 'File Attachment'),
@@ -53,13 +53,16 @@ class Message(models.Model):
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
     message_type = models.CharField(max_length=20, choices=MESSAGE_TYPES, default='text')
     
-    # Encrypted content
-    encrypted_content = models.TextField(help_text="AES encrypted message content")
-    encrypted_aes_key = models.TextField(help_text="RSA encrypted AES key")
-    iv = models.TextField(help_text="Initialization vector for AES encryption")
+    # Message content (encrypted or plaintext)
+    encrypted_content = models.TextField(help_text="Message content (encrypted or plaintext)")
+    is_encrypted = models.BooleanField(default=True, help_text="Whether this message is encrypted")
+    
+    # Encryption-related fields (optional for non-encrypted messages)
+    encrypted_aes_key = models.TextField(blank=True, null=True, help_text="RSA encrypted AES key")
+    iv = models.TextField(blank=True, null=True, help_text="Initialization vector for AES encryption")
+    signature = models.TextField(blank=True, null=True, help_text="Digital signature for message verification")
     
     # Message metadata
-    signature = models.TextField(help_text="Digital signature for message verification")
     created_at = models.DateTimeField(auto_now_add=True)
     read_at = models.DateTimeField(null=True, blank=True)
     
@@ -68,7 +71,8 @@ class Message(models.Model):
     file_size = models.IntegerField(null=True, blank=True, help_text="File size in bytes")
     
     def __str__(self):
-        return f"Message from {self.sender.username} to {self.recipient.username} ({self.created_at})"
+        encryption_status = "ENCRYPTED" if self.is_encrypted else "PLAINTEXT"
+        return f"{encryption_status} Message from {self.sender.username} to {self.recipient.username} ({self.created_at})"
     
     class Meta:
         verbose_name = "Message"

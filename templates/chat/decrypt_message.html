@@ -39,65 +39,89 @@
                     </div>
 
                     <!-- Security Status -->
-                    <div class="alert alert-success mb-3">
-                        <i class="fas fa-lock"></i>
-                        <strong>Message is encrypted and secure</strong>
-                    </div>
+                    {% if message.is_encrypted %}
+                        <div class="alert alert-success mb-3">
+                            <i class="fas fa-lock"></i>
+                            <strong>Message is encrypted and secure</strong>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning mb-3">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Warning: This message is NOT encrypted!</strong>
+                            <br>
+                            <small>This message was sent without encryption and is not secure.</small>
+                        </div>
+                    {% endif %}
 
                     <!-- Message Content -->
                     <div class="card mb-3">
                         <div class="card-header">
                             <h6 class="mb-0">
-                                                            <i class="fas fa-lock text-success"></i> Encrypted Content
+                                {% if message.is_encrypted %}
+                                    <i class="fas fa-lock text-success"></i> Encrypted Content
+                                {% else %}
+                                    <i class="fas fa-exclamation-triangle text-warning"></i> Plaintext Content
+                                {% endif %}
                             </h6>
                         </div>
                         <div class="card-body">
-                            <div class="mb-3">
-                                <label class="form-label"><strong>Encrypted Data:</strong></label>
-                                <div class="bg-light p-3 rounded">
-                                    <code class="text-muted">{{ message.encrypted_content|truncatechars:200 }}</code>
+                            {% if message.is_encrypted %}
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Encrypted Data:</strong></label>
+                                    <div class="bg-light p-3 rounded">
+                                        <code class="text-muted">{{ message.encrypted_content|truncatechars:200 }}</code>
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label"><strong>Decrypted Content:</strong></label>
-                                <div class="bg-success bg-opacity-10 p-3 rounded border border-success">
-                                    <p class="mb-0">{{ decrypted_content }}</p>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Decrypted Content:</strong></label>
+                                    <div class="bg-success bg-opacity-10 p-3 rounded border border-success">
+                                        <p class="mb-0">{{ decrypted_content }}</p>
+                                    </div>
                                 </div>
-                            </div>
+                            {% else %}
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Message Content:</strong></label>
+                                    <div class="bg-warning bg-opacity-10 p-3 rounded border border-warning">
+                                        <p class="mb-0">{{ decrypted_content }}</p>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
 
                     <!-- Cryptographic Details -->
-                    <div class="card mb-3">
-                        <div class="card-header">
-                            <h6 class="mb-0">
-                                <i class="fas fa-key"></i> Cryptographic Information
-                            </h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label class="form-label"><strong>Encrypted AES Key:</strong></label>
-                                    <div class="bg-light p-2 rounded">
-                                        <code class="text-muted">{{ message.encrypted_aes_key|truncatechars:50 }}</code>
+                    {% if message.is_encrypted %}
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-key"></i> Cryptographic Information
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label"><strong>Encrypted AES Key:</strong></label>
+                                        <div class="bg-light p-2 rounded">
+                                            <code class="text-muted">{{ message.encrypted_aes_key|truncatechars:50 }}</code>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label"><strong>IV:</strong></label>
+                                        <div class="bg-light p-2 rounded">
+                                            <code class="text-muted">{{ message.iv|truncatechars:50 }}</code>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label"><strong>IV:</strong></label>
+                                <div class="mt-3">
+                                    <label class="form-label"><strong>Digital Signature:</strong></label>
                                     <div class="bg-light p-2 rounded">
-                                        <code class="text-muted">{{ message.iv|truncatechars:50 }}</code>
+                                        <code class="text-muted">{{ message.signature|truncatechars:100 }}</code>
                                     </div>
                                 </div>
                             </div>
-                            <div class="mt-3">
-                                <label class="form-label"><strong>Digital Signature:</strong></label>
-                                <div class="bg-light p-2 rounded">
-                                    <code class="text-muted">{{ message.signature|truncatechars:100 }}</code>
-                                </div>
-                            </div>
                         </div>
-                    </div>
+                    {% endif %}
 
                     <!-- Message Status -->
                     <div class="card mb-3">

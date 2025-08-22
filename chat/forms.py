@@ -29,6 +29,16 @@ class SendMessageForm(forms.ModelForm):
         help_text=f"Maximum {settings.CIPHERCHAT_MAX_MESSAGE_LENGTH} characters"
     )
     
+    encryption_enabled = forms.BooleanField(
+        required=False,
+        initial=True,
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input',
+            'id': 'encryption_enabled'
+        }),
+        help_text="Enable encryption for this message (disable for testing/analysis)"
+    )
+    
     class Meta:
         model = Message
         fields = ['message_type']

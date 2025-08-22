@@ -109,7 +109,7 @@ def dashboard(request):
 
 @login_required
 def send_message(request):
-    """Send encrypted message view."""
+    """Send encrypted or non-encrypted message view."""
     if request.method == 'POST':
         form = SendMessageForm(request.POST)
         if form.is_valid():
@@ -117,6 +117,7 @@ def send_message(request):
                 recipient_username = form.cleaned_data['recipient_username']
                 message_content = form.cleaned_data['message_content']
                 message_type = form.cleaned_data['message_type']
+                encryption_enabled = form.cleaned_data.get('encryption_enabled', True)
                 
                 # Check if recipient exists
                 try:
@@ -125,54 +126,78 @@ def send_message(request):
                     messages.error(request, f"User '{recipient_username}' not found.")
                     return render(request, 'chat/send_message.html', {'form': form})
                 
-                # Check if sender has keys
-                try:
-                    sender_profile = UserProfile.objects.get(user=request.user)
-                    if not sender_profile.public_key or not sender_profile.private_key:
+                if encryption_enabled:
+                    # Check if sender has keys
+                    try:
+                        sender_profile = UserProfile.objects.get(user=request.user)
+                        if not sender_profile.public_key or not sender_profile.private_key:
+                            messages.error(request, "You need to generate cryptographic keys first.")
+                            return render(request, 'chat/send_message.html', {'form': form})
+                    except UserProfile.DoesNotExist:
                         messages.error(request, "You need to generate cryptographic keys first.")
                         return render(request, 'chat/send_message.html', {'form': form})
-                except UserProfile.DoesNotExist:
-                    messages.error(request, "You need to generate cryptographic keys first.")
-                    return render(request, 'chat/send_message.html', {'form': form})
-                
-                # Check if recipient has keys
-                try:
-                    recipient_profile = UserProfile.objects.get(user=recipient)
-                    if not recipient_profile.public_key:
+                    
+                    # Check if recipient has keys
+                    try:
+                        recipient_profile = UserProfile.objects.get(user=recipient)
+                        if not recipient_profile.public_key:
+                            messages.error(request, f"User '{recipient_username}' has not generated keys yet.")
+                            return render(request, 'chat/send_message.html', {'form': form})
+                    except UserProfile.DoesNotExist:
                         messages.error(request, f"User '{recipient_username}' has not generated keys yet.")
                         return render(request, 'chat/send_message.html', {'form': form})
-                except UserProfile.DoesNotExist:
-                    messages.error(request, f"User '{recipient_username}' has not generated keys yet.")
-                    return render(request, 'chat/send_message.html', {'form': form})
+                    
+                    # TODO: Implement actual encryption when crypto engine is ready
+                    # For now, create a placeholder encrypted message
+                    encrypted_content = f"ENCRYPTED:{message_content}"
+                    aes_key = "placeholder_aes_key"
+                    iv = "placeholder_iv"
+                    signature = "placeholder_signature"
+                    
+                    # Create the encrypted message
+                    message = Message.objects.create(
+                        sender=request.user,
+                        recipient=recipient,
+                        encrypted_content=encrypted_content,
+                        message_type=message_type,
+                        encrypted_aes_key=aes_key,
+                        iv=iv,
+                        signature=signature,
+                        is_encrypted=True
+                    )
+                    
+                    # Log the event
+                    log_security_event(
+                        "message_send",
+                        f"Encrypted message sent to {recipient_username}",
+                        request.user,
+                        success=True,
+                        details={'message_id': message.id, 'recipient': recipient_username, 'encrypted': True}
+                    )
+                    
+                    messages.success(request, f"Encrypted message sent successfully to {recipient_username}!")
+                    
+                else:
+                    # Send non-encrypted message
+                    message = Message.objects.create(
+                        sender=request.user,
+                        recipient=recipient,
+                        encrypted_content=message_content,  # Store plaintext in encrypted_content field
+                        message_type=message_type,
+                        is_encrypted=False
+                    )
+                    
+                    # Log the event
+                    log_security_event(
+                        "message_send",
+                        f"Non-encrypted message sent to {recipient_username}",
+                        request.user,
+                        success=True,
+                        details={'message_id': message.id, 'recipient': recipient_username, 'encrypted': False}
+                    )
+                    
+                    messages.warning(request, f"Non-encrypted message sent to {recipient_username}! This message is NOT secure.")
                 
-                # TODO: Implement actual encryption when crypto engine is ready
-                # For now, create a placeholder encrypted message
-                encrypted_content = f"ENCRYPTED:{message_content}"
-                aes_key = "placeholder_aes_key"
-                iv = "placeholder_iv"
-                signature = "placeholder_signature"
-                
-                # Create the message
-                message = Message.objects.create(
-                    sender=request.user,
-                    recipient=recipient,
-                    encrypted_content=encrypted_content,
-                    message_type=message_type,
-                    encrypted_aes_key=aes_key,
-                    iv=iv,
-                    signature=signature
-                )
-                
-                # Log the event
-                log_security_event(
-                    "message_send",
-                    f"Message sent to {recipient_username}",
-                    request.user,
-                    success=True,
-                    details={'message_id': message.id, 'recipient': recipient_username}
-                )
-                
-                messages.success(request, f"Message sent successfully to {recipient_username}!")
                 return redirect('chat:dashboard')
                 
             except Exception as e:
@@ -247,9 +272,14 @@ def decrypt_message(request, message_id):
             messages.error(request, "You don't have permission to view this message.")
             return redirect('chat:view_messages')
         
-        # TODO: Implement actual decryption when crypto engine is ready
-        # For now, show the encrypted content
-        decrypted_content = message.encrypted_content.replace("ENCRYPTED:", "")
+        # Handle encrypted vs non-encrypted messages
+        if message.is_encrypted:
+            # TODO: Implement actual decryption when crypto engine is ready
+            # For now, show the encrypted content
+            decrypted_content = message.encrypted_content.replace("ENCRYPTED:", "")
+        else:
+            # Non-encrypted message - content is already plaintext
+            decrypted_content = message.encrypted_content
         
         # Mark as read if user is recipient
         if message.recipient == request.user and not message.read_at:

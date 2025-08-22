@@ -128,6 +128,26 @@
         10% { transform: translateX(1px); }
         12% { transform: translateX(0); }
     }
+    
+    .btn-danger {
+        background: var(--primary-red);
+        border-color: var(--primary-red);
+    }
+    
+    .btn-danger:hover {
+        background: var(--primary-red-bright);
+        border-color: var(--primary-red-bright);
+    }
+    
+    .encryption-warning {
+        background: rgba(255, 193, 7, 0.1);
+        border: 1px solid #ffc107;
+        color: #ffc107;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 0;
+        font-family: 'Share Tech Mono', 'VT323', monospace;
+    }
 </style>
 {% endblock %}
 
@@ -195,9 +215,22 @@
                             </div>
                         </div>
                         
+                        <div class="mb-3">
+                            <div class="form-check">
+                                {{ form.encryption_enabled }}
+                                <label class="form-check-label" for="{{ form.encryption_enabled.id_for_label }}">
+                                    <i class="bi bi-shield-lock"></i> Enable Encryption
+                                </label>
+                                <div class="form-text">
+                                    Uncheck this box to send a non-encrypted message for testing/analysis purposes.
+                                    <strong class="text-warning">Warning: Non-encrypted messages are NOT secure!</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-shield-lock"></i> Encrypt & Send Message
+                            <button type="submit" class="btn btn-primary btn-lg" id="send-button">
+                                <i class="bi bi-shield-lock"></i> <span id="button-text">Encrypt & Send Message</span>
                             </button>
                         </div>
                     </form>
@@ -294,4 +327,35 @@
     </div>
 </div>
 {% endblock %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const encryptionCheckbox = document.getElementById('encryption_enabled');
+    const sendButton = document.getElementById('send-button');
+    const buttonText = document.getElementById('button-text');
+    const encryptionInfo = document.querySelector('.encryption-info');
+    const securityStatus = document.querySelector('.card.mt-4');
+    
+    function updateUI() {
+        if (encryptionCheckbox.checked) {
+            // Encryption enabled
+            sendButton.className = 'btn btn-primary btn-lg';
+            buttonText.textContent = 'Encrypt & Send Message';
+            sendButton.innerHTML = '<i class="bi bi-shield-lock"></i> <span id="button-text">Encrypt & Send Message</span>';
+            encryptionInfo.style.display = 'block';
+            securityStatus.style.display = 'block';
+        } else {
+            // Encryption disabled
+            sendButton.className = 'btn btn-danger btn-lg';
+            buttonText.textContent = 'Send Unencrypted Message';
+            sendButton.innerHTML = '<i class="bi bi-exclamation-triangle"></i> <span id="button-text">Send Unencrypted Message</span>';
+            encryptionInfo.style.display = 'none';
+            securityStatus.style.display = 'none';
+        }
+    }
+    
+    encryptionCheckbox.addEventListener('change', updateUI);
+    updateUI(); // Initial state
+});
+</script>
 
