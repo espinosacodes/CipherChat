@@ -1070,46 +1070,11 @@
         
         // Enhanced dropdown functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Function to position dropdown correctly
-            function positionDropdown(dropdownMenu, triggerButton) {
-                const rect = triggerButton.getBoundingClientRect();
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-                
-                // Set initial position
-                dropdownMenu.style.position = 'fixed';
-                dropdownMenu.style.zIndex = '99999';
-                dropdownMenu.style.top = (rect.bottom + scrollTop + 5) + 'px';
-                dropdownMenu.style.left = (rect.left + scrollLeft) + 'px';
-                dropdownMenu.style.transform = 'none';
-                dropdownMenu.style.margin = '0';
-                dropdownMenu.style.padding = '0';
-                
-                // Force display to calculate dimensions
-                dropdownMenu.style.display = 'block';
-                dropdownMenu.style.visibility = 'hidden';
-                
-                const dropdownRect = dropdownMenu.getBoundingClientRect();
-                
-                // Adjust if dropdown goes off-screen horizontally
-                if (dropdownRect.right > window.innerWidth) {
-                    dropdownMenu.style.left = (window.innerWidth - dropdownRect.width - 10) + 'px';
-                }
-                
-                // Adjust if dropdown goes off-screen vertically
-                if (dropdownRect.bottom > window.innerHeight) {
-                    dropdownMenu.style.top = (rect.top + scrollTop - dropdownRect.height - 5) + 'px';
-                }
-                
-                // Make visible
-                dropdownMenu.style.visibility = 'visible';
-            }
-            
             // Ensure dropdowns are properly styled
             const dropdowns = document.querySelectorAll('.dropdown-menu');
             dropdowns.forEach(dropdown => {
-                dropdown.style.zIndex = '99999';
-                dropdown.style.position = 'fixed';
+                dropdown.style.zIndex = '999999';
+                dropdown.style.position = 'absolute';
                 dropdown.style.margin = '0';
                 dropdown.style.padding = '0';
                 
@@ -1118,73 +1083,14 @@
                 }
             });
             
-            // Enhanced dropdown toggle behavior
-            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-            dropdownToggles.forEach(toggle => {
-                toggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    const dropdownMenu = this.nextElementSibling;
-                    if (dropdownMenu && dropdownMenu.classList.contains('dropdown-menu')) {
-                        // Close all other dropdowns
-                        document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-                            if (menu !== dropdownMenu) {
-                                menu.classList.remove('show');
-                                menu.style.display = 'none';
-                            }
-                        });
-                        
-                        // Toggle current dropdown
-                        const isVisible = dropdownMenu.classList.contains('show');
-                        
-                        if (!isVisible) {
-                            // Show dropdown
-                            dropdownMenu.classList.add('show');
-                            positionDropdown(dropdownMenu, this);
-                        } else {
-                            // Hide dropdown
-                            dropdownMenu.classList.remove('show');
-                            dropdownMenu.style.display = 'none';
-                        }
-                    }
-                });
-            });
-            
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.dropdown')) {
-                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-                        menu.classList.remove('show');
-                        menu.style.display = 'none';
-                    });
+            // Let Bootstrap handle dropdown positioning naturally
+            // Just ensure proper styling is applied
+            document.addEventListener('show.bs.dropdown', function(e) {
+                const dropdownMenu = e.target.querySelector('.dropdown-menu');
+                if (dropdownMenu) {
+                    dropdownMenu.style.zIndex = '999999';
+                    dropdownMenu.style.position = 'absolute';
                 }
-            });
-            
-            // Close dropdowns on escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-                        menu.classList.remove('show');
-                        menu.style.display = 'none';
-                    });
-                }
-            });
-            
-            // Handle window resize to reposition dropdowns
-            window.addEventListener('resize', function() {
-                document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-                    menu.classList.remove('show');
-                    menu.style.display = 'none';
-                });
-            });
-            
-            // Handle scroll to reposition dropdowns
-            window.addEventListener('scroll', function() {
-                document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-                    menu.classList.remove('show');
-                    menu.style.display = 'none';
-                });
             });
         });
         });
