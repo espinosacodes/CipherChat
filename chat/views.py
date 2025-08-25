@@ -117,7 +117,9 @@ def send_message(request):
                 recipient_username = form.cleaned_data['recipient_username']
                 message_content = form.cleaned_data['message_content']
                 message_type = form.cleaned_data['message_type']
-                encryption_enabled = form.cleaned_data.get('encryption_enabled', True)
+                # Handle checkbox properly - unchecked checkboxes don't send any value
+                # If the field is in cleaned_data, it means the checkbox was checked
+                encryption_enabled = 'encryption_enabled' in form.cleaned_data
                 
                 # Check if recipient exists
                 try:
